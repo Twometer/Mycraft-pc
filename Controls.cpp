@@ -25,6 +25,10 @@ Controls::~Controls()
 {
 }
 
+glm::vec3 Controls::getPosition() {
+	return position;
+}
+
 void Controls::setPosition(double x, double y, double z) {
 	position = glm::vec3(x, y, z);
 	std::cout << "New position is " << position.x << endl;

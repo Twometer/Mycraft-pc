@@ -2,11 +2,12 @@
 
 
 
-Block::Block(char id, int textureX, int textureY)
+Block::Block(char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex)
 {
 	this->id = id;
-	this->textureX = textureX;
-	this->textureY = textureY;
+	this->topTex = topTex;
+	this->sideTex = sideTex;
+	this->bottomTex = bottomTex;
 }
 
 

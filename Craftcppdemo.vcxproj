@@ -163,6 +163,7 @@
     <ClInclude Include="ChunkExtracted.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="lodepng.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="World.h" />
     <ClInclude Include="Section.h" />
     <ClInclude Include="Controls.h" />

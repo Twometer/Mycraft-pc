@@ -139,6 +139,8 @@ void OpenGLRenderer::start() {
 			offset += 21;
 		}
 		loader.renderText("FPS: " + to_string(fps), colorLocation, 1.0f, 100.0f, 1.0f, glm::vec3(0.0, 0.0f, 0.0f));
+		glm::vec3 pos = controls->getPosition();
+		loader.renderText("Pos: " + to_string(pos.x) + " " + to_string(pos.y) + " " + to_string(pos.z), colorLocation, 1.0f, 150.0f, 1.0f, glm::vec3(0.0, 0.0f, 0.0f));
 
 		glBindVertexArray(VertexArrayID);
 		glBindTexture(GL_TEXTURE_2D, texture);

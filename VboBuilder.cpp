@@ -17,11 +17,11 @@ static const GLfloat vertices_negative_x[] = {
 };
 
 static const GLfloat tvertices_negative_x[] = {
-	0.0f, 0.0f,
+	1.0f, 1.0f,
 	0.0f, 1.0f,
-	1.0f, 1.0f,
 	0.0f, 0.0f,
 	1.0f, 1.0f,
+	0.0f, 0.0f,
 	1.0f, 0.0f
 };
 
@@ -53,12 +53,12 @@ static const GLfloat vertices_negative_z[] = {
 };
 
 static const GLfloat tvertices_negative_z[] = {
-	1.0f, 1.0f,
-	0.0f, 0.0f,
-	0.0f, 1.0f,
-	1.0f, 1.0f,
 	1.0f, 0.0f,
-	0.0f, 0.0f
+	0.0f, 1.0f,
+	0.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 1.0f,
+	0.0f, 1.0f
 };
 
 static const GLfloat vertices_positive_x[] = {
@@ -71,12 +71,12 @@ static const GLfloat vertices_positive_x[] = {
 };
 
 static const GLfloat tvertices_positive_x[] = {
-	0.0f, 0.0f,
-	1.0f, 1.0f,
 	0.0f, 1.0f,
-	1.0f, 1.0f,
-	0.0f, 0.0f,
 	1.0f, 0.0f,
+	1.0f, 1.0f,
+	1.0f, 0.0f,
+	0.0f, 1.0f,
+	0.0f, 0.0f,
 };
 
 static const GLfloat vertices_positive_y[] = {
@@ -108,12 +108,12 @@ static const GLfloat vertices_positive_z[] = {
 };
 
 static const GLfloat tvertices_positive_z[] = {
-	0.0f, 1.0f,
-	0.0f, 0.0f,
 	1.0f, 0.0f,
 	1.0f, 1.0f,
 	0.0f, 1.0f,
-	1.0f, 0.0f
+	0.0f, 0.0f,
+	1.0f, 0.0f,
+	0.0f, 1.0f
 };
 
 
@@ -163,16 +163,21 @@ void VboBuilder::build(int xo, int yo, int zo) {
 				unsigned char blockId = chk.getBlock(x, y, z);
 				if (blockId != 0) {
 					Block* block = BlockRegistry::getBlock(blockId);
-					int bx = block->textureX;
-					int by = block->textureY;
+					int bx = block->sideTex.x;
+					int by = block->sideTex.y;
 					if (getBlock(x + 1, y, z) == 0) drawDisplacedVertices(tvertices_positive_x, vertices_positive_x, absX, absY, absZ, bx, by);
 					if (getBlock(x - 1, y, z) == 0) drawDisplacedVertices(tvertices_negative_x, vertices_negative_x, absX, absY, absZ, bx, by);
 
-					if (getBlock(x, y + 1, z) == 0) drawDisplacedVertices(tvertices_positive_y, vertices_positive_y, absX, absY, absZ, bx, by);
-					if (getBlock(x, y - 1, z) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by);
-
 					if (getBlock(x, y, z + 1) == 0) drawDisplacedVertices(tvertices_positive_z, vertices_positive_z, absX, absY, absZ, bx, by);
 					if (getBlock(x, y, z - 1) == 0) drawDisplacedVertices(tvertices_negative_z, vertices_negative_z, absX, absY, absZ, bx, by);
+
+					bx = block->topTex.x;
+					by = block->topTex.y;
+					if (getBlock(x, y + 1, z) == 0) drawDisplacedVertices(tvertices_positive_y, vertices_positive_y, absX, absY, absZ, bx, by);
+
+					bx = block->bottomTex.x;
+					by = block->bottomTex.y;
+					if (getBlock(x, y - 1, z) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by);
 				}
 			}
 		}
