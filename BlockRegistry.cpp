@@ -21,8 +21,18 @@ void BlockRegistry::initialize() {
 	registerBlock(7, TEXTURE(5, 0)); // Bedrock
 	registerBlock(8, TEXTURE(2, 12)); // Flowing water
 	registerBlock(9, TEXTURE(3, 13)); // Still water
+	registerBlock(12, TEXTURE(16, 9)); // Sand
+	registerBlock(13, TEXTURE(9, 5)); // Gravel
+	registerBlock(14, TEXTURE(4, 5)); // Gold Ore
+	registerBlock(15, TEXTURE(4, 6)); // Iron Ore
+	registerBlock(16, TEXTURE(1, 1)); // Coal Ore
 	registerBlock(17, TEXTURE(28, 6)); // Log
 	registerBlock(18, TEXTURE(13, 6)); // Leaves
+	registerBlock(21, TEXTURE(11, 6)); // Lapis Lazuli Ore
+	registerBlock(56, TEXTURE(29, 1)); // Diamond Ore
+	registerBlock(78, TEXTURE(30, 9)); // Snow
+	registerBlock(80, TEXTURE(30, 9)); // Snow
+
 }
 
 Block* BlockRegistry::getBlock(unsigned char id) {

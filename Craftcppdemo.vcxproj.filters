@@ -49,6 +49,9 @@
     <Filter Include="Source Files\Postproc">
       <UniqueIdentifier>{069433e5-9475-406b-b333-8a7b737e41fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Postproc">
+      <UniqueIdentifier>{6616f71b-6a57-4c94-90d6-7ec991320823}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -126,9 +129,6 @@
     <ClInclude Include="lodepng.h">
       <Filter>Header Files\png</Filter>
     </ClInclude>
-    <ClInclude Include="Frustum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ChatParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -136,10 +136,13 @@
       <Filter>Header Files\World</Filter>
     </ClInclude>
     <ClInclude Include="Fbo.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Postproc</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="PostProcessing.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Postproc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -215,9 +218,6 @@
     <ClCompile Include="lodepng.cpp">
       <Filter>Source Files\png</Filter>
     </ClCompile>
-    <ClCompile Include="Frustum.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ChatParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -225,7 +225,10 @@
       <Filter>Source Files\Postproc</Filter>
     </ClCompile>
     <ClCompile Include="PostProcessing.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Postproc</Filter>
+    </ClCompile>
+    <ClCompile Include="Frustum.cpp">
+      <Filter>Source Files\Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
