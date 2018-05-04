@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Section.h"
 #include <stdio.h>
-#include "VboBuilder.h"
+#include "SectionBuilder.h"
 #include "Chunk.h"
 #include <vector>
 #include "OpenGLRenderer.h"
@@ -25,7 +25,7 @@ Section::~Section()
 }
 
 void Section::buildVertexData() {
-	builder = new VboBuilder(this);
+	builder = new SectionBuilder(this);
 	builder->build(x << 4, idx << 4, z << 4);
 	this->vertexCount = builder->verticesAlloc;
 	state = STATE_SHOULD_UPLOAD;
@@ -61,7 +61,7 @@ int vertexDataBuiltAmount;
 void Section::resetData() {
 	vertexDataBuiltAmount = 0;
 }
-void Section::render(bool inFrustum) {
+void Section::render(bool transparencyPass, bool inFrustum) {
 	if (state == STATE_SHOULD_BUILD) {
 		state = STATE_AWAITING_BUILD;
 		OpenGLRenderer::manager->schedule(this);

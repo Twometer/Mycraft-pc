@@ -172,6 +172,7 @@
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="VboBuilder.h" />
     <ClInclude Include="World.h" />
     <ClInclude Include="Section.h" />
     <ClInclude Include="Controls.h" />
@@ -179,7 +180,7 @@
     <ClInclude Include="OpenGLRenderer.h" />
     <ClInclude Include="TcpClient.h" />
     <ClInclude Include="Loader.h" />
-    <ClInclude Include="VboBuilder.h" />
+    <ClInclude Include="SectionBuilder.h" />
     <ClInclude Include="zconf.h" />
     <ClInclude Include="zlib.h" />
     <ClInclude Include="ZlibUtils.h" />
@@ -203,6 +204,7 @@
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
+    <ClCompile Include="VboBuilder.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="Section.cpp" />
     <ClCompile Include="Controls.cpp" />
@@ -211,7 +213,7 @@
     <ClCompile Include="OpenGLRenderer.cpp" />
     <ClCompile Include="TcpClient.cpp" />
     <ClCompile Include="Loader.cpp" />
-    <ClCompile Include="VboBuilder.cpp" />
+    <ClCompile Include="SectionBuilder.cpp" />
     <ClCompile Include="ZlibUtils.cpp" />
     <ClCompile Include="Craftcppdemo.cpp" />
     <ClCompile Include="McBuffer.cpp" />

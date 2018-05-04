@@ -36,11 +36,11 @@ void World::setBlock(int x, int y, int z, unsigned char id)
 
 }
 
-void World::render() {
+void World::render(bool transparencyPass) {
 	for (unsigned int i = 0; i < chunkLen; i++) {
 		Chunk* chk = *(chunkArray + i);
 		if (chk != nullptr)
-			chk->render();
+			chk->render(transparencyPass);
 	}
 }
 

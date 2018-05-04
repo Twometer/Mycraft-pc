@@ -8,7 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Controls.h"
 #include "Chunk.h"
-#include "VboBuilder.h"
+#include "SectionBuilder.h"
 #include "AsyncVboBuildingManager.h"
 #include "Loader.h"
 #include "World.h"
@@ -149,7 +149,7 @@ void OpenGLRenderer::start() {
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
-		world->render();
+		world->render(false);
 	
 		glDisableVertexAttribArray(2);
 		glDisableVertexAttribArray(1);

@@ -2,7 +2,7 @@
 #include "GLFW\glfw3.h"
 #include "Chunk.h"
 class Chunk;
-class VboBuilder;
+class SectionBuilder;
 class Section
 {
 private:
@@ -13,7 +13,7 @@ private:
 	int z;
 	int dataLen;
 	int vertexCount;
-	VboBuilder* builder;
+	SectionBuilder* builder;
 	GLuint vertexBuffer;
 	GLuint colorBuffer;
 	GLuint textureBuffer;
@@ -32,7 +32,7 @@ public:
 	unsigned char* getBlockPointer(int x, int y, int z);
 	void buildVertexData();
 	void uploadVertexData();
-	void render(bool inFrustum);
+	void render(bool transparencyPass, bool inFrustum);
 	static void resetData();
 	Section(Chunk* parent, int x, int idx, int z);
 	~Section();

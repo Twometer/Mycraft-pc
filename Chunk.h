@@ -14,7 +14,7 @@ public:
 	void setBlock(int x, int y, int z, unsigned char id);
 	void buildVertexData();
 	void uploadVertexData();
-	void render();
+	void render(bool transparencyPass);
 	void initialize(ChunkExtracted* data);
 	Chunk(int x, int z);
 	~Chunk();

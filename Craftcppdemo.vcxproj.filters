@@ -93,9 +93,6 @@
     <ClInclude Include="TcpClient.h">
       <Filter>Header Files\Net</Filter>
     </ClInclude>
-    <ClInclude Include="VboBuilder.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
     <ClInclude Include="zconf.h">
       <Filter>Header Files\zlib</Filter>
     </ClInclude>
@@ -144,6 +141,12 @@
     <ClInclude Include="PostProcessing.h">
       <Filter>Header Files\Postproc</Filter>
     </ClInclude>
+    <ClInclude Include="SectionBuilder.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="VboBuilder.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -188,9 +191,6 @@
     <ClCompile Include="Controls.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="VboBuilder.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
     <ClCompile Include="Section.cpp">
       <Filter>Source Files\World</Filter>
     </ClCompile>
@@ -228,6 +228,12 @@
       <Filter>Source Files\Postproc</Filter>
     </ClCompile>
     <ClCompile Include="Frustum.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="SectionBuilder.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="VboBuilder.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
   </ItemGroup>
