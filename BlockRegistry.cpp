@@ -35,6 +35,14 @@ void BlockRegistry::initialize() {
 
 }
 
+bool BlockRegistry::isSpecialTransparent(unsigned char id) {
+	return id == 18 || id == 161; // Leaves
+}
+
+bool BlockRegistry::isTransparent(unsigned char id) {
+	return id == 8 || id == 9 || id == 79; // Water and ice
+}
+
 Block* BlockRegistry::getBlock(unsigned char id) {
 	if (id <= 0 || id > 255) return registry[0];
 	Block* block = *(registry + id);

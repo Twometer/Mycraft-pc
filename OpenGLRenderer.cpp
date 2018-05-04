@@ -112,6 +112,7 @@ void OpenGLRenderer::start() {
 	GLint colorLocation = glGetUniformLocation(fontShader, "textColor");
 
 	GLuint postProcShader = loader.loadShaders("shaders\\postproc.v.glsl", "shaders\\postproc.f.glsl");
+	//GLint timeLocation = glGetUniformLocation(postProcShader, "time");
 
 	MATRICES matrices;
 	glm::mat4 projection = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f);
@@ -145,11 +146,13 @@ void OpenGLRenderer::start() {
 
 
 		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
 		world->render();
 	
 		glDisableVertexAttribArray(2);
+		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(0);
 
 		fbo.unbindFrameBuffer();

@@ -41,17 +41,17 @@ void Section::uploadVertexData() {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(GLfloat), builder->vertices, GL_STATIC_DRAW);
 
-	/*GLuint colorbuffer;
+	GLuint colorbuffer;
 	glGenBuffers(1, &colorbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-	glBufferData(GL_ARRAY_BUFFER, colorCount * sizeof(GLfloat), builder->colors, GL_STATIC_DRAW);*/
+	glBufferData(GL_ARRAY_BUFFER, colorCount * sizeof(GLfloat), builder->colors, GL_STATIC_DRAW);
 
 	GLuint texturebuffer;
 	glGenBuffers(1, &texturebuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, texturebuffer);
 	glBufferData(GL_ARRAY_BUFFER, textureCount * sizeof(GLfloat), builder->textureCoords, GL_STATIC_DRAW);
 
-	//this->colorBuffer = colorbuffer;
+	this->colorBuffer = colorbuffer;
 	this->vertexBuffer = vertexbuffer;
 	this->textureBuffer = texturebuffer;
 	delete builder;
@@ -83,7 +83,7 @@ void Section::render(bool inFrustum) {
 			0,                  // stride
 			(void*)0            // array buffer offset
 		);
-		/*glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 		glVertexAttribPointer(
 			1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
 			3,                                // size
@@ -91,7 +91,7 @@ void Section::render(bool inFrustum) {
 			GL_FALSE,                         // normalized?
 			0,                                // stride
 			(void*)0                          // array buffer offset
-		);*/
+		);
 		glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
 		glVertexAttribPointer(
 			2,                                // attribute. No particular reason for 1, but must match the layout in the shader.

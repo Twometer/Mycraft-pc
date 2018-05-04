@@ -35,6 +35,7 @@ void PostProcessing::stop() {
 void PostProcessing::doPostProc(GLuint colortex) {
 	start();
 	glUseProgram(shader);
+	//glUniform1i(timeLocation, time);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colortex);
 	glClear(GL_COLOR_BUFFER_BIT);

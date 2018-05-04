@@ -6,7 +6,7 @@ class VboBuilder
 {
 private:
 	Section* chunk;
-	void drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int tX, int tY);
+	void drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int tX, int tY, GLfloat color);
 	int absX;
 	int absY;
 	int absZ;
@@ -14,7 +14,7 @@ private:
 	int y;
 	int z;
 	int xo, yo, zo;
-	unsigned char getBlock(int x, int y, int z);
+	unsigned char getBlock(unsigned char, int x, int y, int z);
 public:
 	GLfloat * vertices;
 	int verticesAlloc;
