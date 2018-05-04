@@ -39,7 +39,10 @@ void Controls::setPosition(float x, float y, float z) {
 	std::cout << "New position is " << position.x << endl;
 }
 
-glm::mat4 Controls::computeMvpMatrix(GLFWwindow* win) {
+MATRICES Controls::computeMatrices(GLFWwindow* win) {
+
+	MATRICES matrices = MATRICES();
+
 	int focused = glfwGetWindowAttrib(win, GLFW_FOCUSED);
 
 
@@ -115,9 +118,10 @@ glm::mat4 Controls::computeMvpMatrix(GLFWwindow* win) {
 		up                  // Head is up (set to 0,-1,0 to look upside-down)
 	);
 
-	glm::mat4 mvpMatrix = ProjectionMatrix * ViewMatrix * ModelMatrix;
+	matrices.modelviewMatrix = ViewMatrix * ModelMatrix;
+	matrices.projectionMatrix = ProjectionMatrix;
 
-	OpenGLRenderer::frustum->extractFrustum(mvpMatrix);
+	OpenGLRenderer::frustum->extractFrustum(matrices.projectionMatrix * matrices.modelviewMatrix);
 
-	return mvpMatrix;
+	return matrices;
 }

@@ -13,6 +13,8 @@
 #include "Loader.h"
 #include "World.h"
 #include <ctime>
+#include "Fbo.h"
+#include "PostProcessing.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -90,36 +92,57 @@ void OpenGLRenderer::start() {
 	cout << "Loading fonts..." << endl;
 	loader.loadFonts();
 
+	// Creating vertex array
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
 
+	// Loading textures
 	GLuint texture = loader.loadPng("atlas_blocks.png");
 
 	manager = new AsyncVboBuildingManager();
 	manager->initialize();
 
 	GLuint simpleShader = loader.loadShaders("shaders\\simple.v.glsl", "shaders\\simple.f.glsl");
-	GLint mvpMatrixLocation = glGetUniformLocation(simpleShader, "mvpMatrix");
+	GLint mvMatrixLocation = glGetUniformLocation(simpleShader, "mvMatrix");
+	GLint prMatrixLocation = glGetUniformLocation(simpleShader, "prMatrix");
+	GLint skyColorLocation = glGetUniformLocation(simpleShader, "skyColor");
 
 	GLuint fontShader = loader.loadShaders("shaders\\font.v.glsl", "shaders\\font.f.glsl");
 	GLint fontMatrixLocation = glGetUniformLocation(fontShader, "projection");
 	GLint colorLocation = glGetUniformLocation(fontShader, "textColor");
 
-	mat4 mvpMatrix;
-	glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
+	GLuint postProcShader = loader.loadShaders("shaders\\postproc.v.glsl", "shaders\\postproc.f.glsl");
+
+	MATRICES matrices;
+	glm::mat4 projection = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f);
 	
 	int frames = 0;
 	int fps = 0;
 	int lastReset = clock();
 
+	Fbo fbo = Fbo(640, 480, DEPTH_RENDER_BUFFER);
+	PostProcessing postProc = PostProcessing(postProcShader);
+	postProc.init();
+
+	vec3 skyColor = vec3(0.72f, 0.83f, 0.996f);
+
+	glUniform3f(skyColorLocation, skyColor.x, skyColor.y,skyColor.z);
+
 	while (!glfwWindowShouldClose(window))
 	{
+		fbo.bindFrameBuffer();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
 		glUseProgram(simpleShader);
 
-		mvpMatrix = controls->computeMvpMatrix(window);
-		glUniformMatrix4fv(mvpMatrixLocation, 1, false, &mvpMatrix[0][0]);
+		matrices = controls->computeMatrices(window);
+		glUniformMatrix4fv(mvMatrixLocation, 1, false, &matrices.modelviewMatrix[0][0]);
+		glUniformMatrix4fv(prMatrixLocation, 1, false, &matrices.projectionMatrix[0][0]);
+
+
+		glBindVertexArray(VertexArrayID);
+		glBindTexture(GL_TEXTURE_2D, texture);
+
 
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(2);
@@ -129,8 +152,13 @@ void OpenGLRenderer::start() {
 		glDisableVertexAttribArray(2);
 		glDisableVertexAttribArray(0);
 
+		fbo.unbindFrameBuffer();
+
 		Section::resetData();
 
+		postProc.doPostProc(fbo.getColorTexture());
+
+		glClear(GL_DEPTH_BUFFER_BIT);
 		glUseProgram(fontShader);
 		glUniformMatrix4fv(fontMatrixLocation, 1, false, &projection[0][0]);
 		float offset = 0;
@@ -142,9 +170,6 @@ void OpenGLRenderer::start() {
 		glm::vec3 pos = controls->getPosition();
 		loader.renderText("Pos: " + to_string(pos.x) + " " + to_string(pos.y) + " " + to_string(pos.z), colorLocation, 1.0f, 150.0f, 1.0f, glm::vec3(0.0, 0.0f, 0.0f));
 
-		glBindVertexArray(VertexArrayID);
-		glBindTexture(GL_TEXTURE_2D, texture);
-
 		frames++;
 
 		if (clock() - lastReset > 1000) {
@@ -153,10 +178,14 @@ void OpenGLRenderer::start() {
 			frames = 0;
 		}
 
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
 	}
+
+	fbo.cleanUp();
+
 	glDeleteVertexArrays(1, &VertexArrayID);
 	glDeleteProgram(simpleShader);
 	glfwTerminate();

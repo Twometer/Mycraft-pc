@@ -161,8 +161,10 @@
     <ClInclude Include="ChatParser.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkExtracted.h" />
+    <ClInclude Include="Fbo.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="lodepng.h" />
+    <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="World.h" />
     <ClInclude Include="Section.h" />
@@ -191,8 +193,10 @@
     <ClCompile Include="ChatParser.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkExtracted.cpp" />
+    <ClCompile Include="Fbo.cpp" />
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="lodepng.cpp" />
+    <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="Section.cpp" />
     <ClCompile Include="Controls.cpp" />

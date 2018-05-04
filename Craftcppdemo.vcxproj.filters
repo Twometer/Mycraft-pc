@@ -46,6 +46,9 @@
     <Filter Include="Source Files\png">
       <UniqueIdentifier>{a877ba2d-bac9-4237-b621-340afa7a81f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Postproc">
+      <UniqueIdentifier>{069433e5-9475-406b-b333-8a7b737e41fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -132,6 +135,12 @@
     <ClInclude Include="Texture.h">
       <Filter>Header Files\World</Filter>
     </ClInclude>
+    <ClInclude Include="Fbo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -210,6 +219,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ChatParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Fbo.cpp">
+      <Filter>Source Files\Postproc</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
