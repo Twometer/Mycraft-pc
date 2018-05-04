@@ -149,8 +149,12 @@ void OpenGLRenderer::start() {
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
-		world->render(false);
-	
+		world->render(false); // Render pass 1: Solid and transparent blocks
+
+		glDisable(GL_CULL_FACE);
+		world->render(true); // Render pass 2: Translucent blocks (water, etc.)
+		glEnable(GL_CULL_FACE);
+
 		glDisableVertexAttribArray(2);
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(0);

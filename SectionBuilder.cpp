@@ -123,6 +123,10 @@ SectionBuilder::SectionBuilder(Section* chunk)
 	this->vertices = new GLfloat[50000];
 	this->colors = new GLfloat[50000];
 	this->textureCoords = new GLfloat[50000];
+
+	this->verticesX = new GLfloat[50000];
+	this->colorsX = new GLfloat[50000];
+	this->textureCoordsX = new GLfloat[50000];
 }
 
 SectionBuilder::~SectionBuilder()
@@ -130,24 +134,28 @@ SectionBuilder::~SectionBuilder()
 	delete[] vertices;
 	delete[] colors;
 	delete[] textureCoords;
+
+	delete[] verticesX;
+	delete[] colorsX;
+	delete[] textureCoordsX;
 }
 
-void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int texX, int texY, GLfloat col) {
+void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int texX, int texY, GLfloat col, GLfloat* vertexPtr, GLfloat* texPtr, GLfloat* colorPtr, int* vertexC, int* texC, int * colorC) {
 
 	for (int i = 0; i < 18; i += 3) {
-		*(this->vertices + (this->verticesAlloc++)) = *(vertices + i) + x;
-		*(this->vertices + (this->verticesAlloc++)) = *(vertices + i + 1) + y;
-		*(this->vertices + (this->verticesAlloc++)) = *(vertices + i + 2) + z;
-		*(this->colors + (this->colorsAlloc++)) = col;
-		*(this->colors + (this->colorsAlloc++)) = col;
-		*(this->colors + (this->colorsAlloc++)) = col;
+		*(vertexPtr + ((*vertexC)++)) = *(vertices + i) + x;
+		*(vertexPtr + ((*vertexC)++)) = *(vertices + i + 1) + y;
+		*(vertexPtr + ((*vertexC)++)) = *(vertices + i + 2) + z;
+		*(colorPtr + ((*colorC)++)) = col;
+		*(colorPtr + ((*colorC)++)) = col;
+		*(colorPtr + ((*colorC)++)) = col;
 	}
 
 	GLfloat d = 0.03125;
 
 	for (int i = 0; i < 12; i += 2) {
-		*(this->textureCoords + (this->textureCoordsAlloc++)) = (*(textures + i)) * d + texX * d;
-		*(this->textureCoords + (this->textureCoordsAlloc++)) = (*(textures + i + 1)) * d + texY * d;
+		*(texPtr + ((*texC)++)) = (*(textures + i)) * d + texX * d;
+		*(texPtr + ((*texC)++)) = (*(textures + i + 1)) * d + texY * d;
 	}
 }
 
@@ -163,25 +171,33 @@ void SectionBuilder::build(int xo, int yo, int zo) {
 			for (z = 0; z < 16; z++) {
 				absZ = z + zo;
 				unsigned char blockId = chk.getBlock(x, y, z);
-				if (BlockRegistry::isTransparent(blockId))continue;
+				bool isTransparent = BlockRegistry::isTransparent(blockId);
+				GLfloat* vertexPtr = isTransparent ? verticesX : vertices;
+				GLfloat* texPtr = isTransparent ? textureCoordsX : textureCoords;
+				GLfloat* colorPtr = isTransparent ? colorsX : colors;
+				
+				int* vertexC = isTransparent ? &verticesAllocX : &verticesAlloc;
+				int* colorC = isTransparent ? &colorsAllocX : &colorsAlloc;
+				int* texC = isTransparent ? &textureCoordsAllocX : &textureCoordsAlloc;
+
 				if (blockId != 0) {
 					Block* block = BlockRegistry::getBlock(blockId);
 					
 					int bx = block->sideTex.x;
 					int by = block->sideTex.y;
-					if (getBlock(blockId, x + 1, y, z) == 0) drawDisplacedVertices(tvertices_positive_x, vertices_positive_x, absX, absY, absZ, bx, by, 0.75);
-					if (getBlock(blockId, x - 1, y, z) == 0) drawDisplacedVertices(tvertices_negative_x, vertices_negative_x, absX, absY, absZ, bx, by, 0.75);
+					if (getBlock(blockId, x + 1, y, z) == 0) drawDisplacedVertices(tvertices_positive_x, vertices_positive_x, absX, absY, absZ, bx, by, 0.75, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC);
+					if (getBlock(blockId, x - 1, y, z) == 0) drawDisplacedVertices(tvertices_negative_x, vertices_negative_x, absX, absY, absZ, bx, by, 0.75, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC);
 
-					if (getBlock(blockId, x, y, z + 1) == 0) drawDisplacedVertices(tvertices_positive_z, vertices_positive_z, absX, absY, absZ, bx, by, 0.65);
-					if (getBlock(blockId, x, y, z - 1) == 0) drawDisplacedVertices(tvertices_negative_z, vertices_negative_z, absX, absY, absZ, bx, by, 0.65);
+					if (getBlock(blockId, x, y, z + 1) == 0) drawDisplacedVertices(tvertices_positive_z, vertices_positive_z, absX, absY, absZ, bx, by, 0.65, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC);
+					if (getBlock(blockId, x, y, z - 1) == 0) drawDisplacedVertices(tvertices_negative_z, vertices_negative_z, absX, absY, absZ, bx, by, 0.65, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC);
 
 					bx = block->topTex.x;
 					by = block->topTex.y;
-					if (getBlock(blockId, x, y + 1, z) == 0) drawDisplacedVertices(tvertices_positive_y, vertices_positive_y, absX, absY, absZ, bx, by, 1.00);
+					if (getBlock(blockId, x, y + 1, z) == 0) drawDisplacedVertices(tvertices_positive_y, vertices_positive_y, absX, absY, absZ, bx, by, 1.00, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC);
 
 					bx = block->bottomTex.x;
 					by = block->bottomTex.y;
-					if (getBlock(blockId, x, y - 1, z) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by, 0.20);
+					if (getBlock(blockId, x, y - 1, z) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by, 0.20, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC);
 				}
 			}
 		}

@@ -13,10 +13,14 @@ private:
 	int z;
 	int dataLen;
 	int vertexCount;
+	int vertexCountX;
 	SectionBuilder* builder;
 	GLuint vertexBuffer;
+	GLuint vertexBufferX;
 	GLuint colorBuffer;
+	GLuint colorBufferX;
 	GLuint textureBuffer;
+	GLuint textureBufferX;
 	int state = 0;
 public:
 	enum State {
