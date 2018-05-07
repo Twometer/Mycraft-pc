@@ -25,6 +25,9 @@ using namespace glm;
 static const int WIDTH = 640;
 static const int HEIGHT = 480;
 
+static const bool ADVANCED_WATER = true;
+
+
 AsyncVboBuildingManager* OpenGLRenderer::manager;
 World* OpenGLRenderer::world;
 Frustum* OpenGLRenderer::frustum;
@@ -85,7 +88,7 @@ void OpenGLRenderer::start() {
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.5);
-	
+
 
 	Loader loader;
 
@@ -97,42 +100,50 @@ void OpenGLRenderer::start() {
 	glGenVertexArrays(1, &VertexArrayID);
 
 	// Loading textures
-	GLuint texture = loader.loadPng("atlas_blocks.png");
+	GLuint texture = loader.loadPng("textures\\atlas_blocks.png");
 
 	manager = new AsyncVboBuildingManager();
 	manager->initialize();
 
-	GLuint simpleShader = loader.loadShaders("shaders\\simple.v.glsl", "shaders\\simple.f.glsl");
+	GLuint simpleShader = loader.loadShaders("simple");
 	GLint mvMatrixLocation = glGetUniformLocation(simpleShader, "mvMatrix");
 	GLint prMatrixLocation = glGetUniformLocation(simpleShader, "prMatrix");
 	GLint skyColorLocation = glGetUniformLocation(simpleShader, "skyColor");
 
-	GLuint fontShader = loader.loadShaders("shaders\\font.v.glsl", "shaders\\font.f.glsl");
+	GLuint fontShader = loader.loadShaders("font");
 	GLint fontMatrixLocation = glGetUniformLocation(fontShader, "projection");
 	GLint colorLocation = glGetUniformLocation(fontShader, "textColor");
 
-	GLuint postProcShader = loader.loadShaders("shaders\\postproc.v.glsl", "shaders\\postproc.f.glsl");
+	GLuint postProcShader = loader.loadShaders("postproc");
+	GLint underWaterLocation = glGetUniformLocation(postProcShader, "belowWater");
+
+	GLuint waterShader = loader.loadShaders("water");
+	GLint mvMatrixLocationW = glGetUniformLocation(waterShader, "mvMatrix");
+	GLint prMatrixLocationW = glGetUniformLocation(waterShader, "prMatrix");
+	GLint skyColorLocationW = glGetUniformLocation(waterShader, "skyColor");
+	GLint timeLocation = glGetUniformLocation(waterShader, "time");
 
 	MATRICES matrices;
 	glm::mat4 projection = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f);
-	
+
 	int frames = 0;
 	int fps = 0;
 	int lastReset = clock();
 
-	Fbo fbo = Fbo(640, 480, DEPTH_RENDER_BUFFER);
+	Fbo fbo = Fbo(WIDTH, HEIGHT, DEPTH_RENDER_BUFFER);
 	PostProcessing postProc = PostProcessing(postProcShader);
 	postProc.init();
 
 	vec3 skyColor = vec3(0.72f, 0.83f, 0.996f);
 
-	glUniform3f(skyColorLocation, skyColor.x, skyColor.y,skyColor.z);
+	glUniform3f(skyColorLocation, skyColor.x, skyColor.y, skyColor.z);
+
 
 	while (!glfwWindowShouldClose(window))
 	{
 		fbo.bindFrameBuffer();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		glUseProgram(simpleShader);
 
 		matrices = controls->computeMatrices(window);
@@ -143,13 +154,19 @@ void OpenGLRenderer::start() {
 		glBindVertexArray(VertexArrayID);
 		glBindTexture(GL_TEXTURE_2D, texture);
 
-
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
 		world->render(false); // Render pass 1: Solid and transparent blocks
 
+		if (ADVANCED_WATER) {
+			glUseProgram(waterShader);
+			glUniform1i(timeLocation, clock());
+			glUniformMatrix4fv(mvMatrixLocationW, 1, false, &matrices.modelviewMatrix[0][0]);
+			glUniformMatrix4fv(prMatrixLocationW, 1, false, &matrices.projectionMatrix[0][0]);
+			glUniform3f(skyColorLocationW, skyColor.x, skyColor.y, skyColor.z);
+		}
 		glDisable(GL_CULL_FACE);
 		world->render(true); // Render pass 2: Translucent blocks (water, etc.)
 		glEnable(GL_CULL_FACE);
@@ -162,7 +179,9 @@ void OpenGLRenderer::start() {
 
 		Section::resetData();
 
-		postProc.doPostProc(fbo.getColorTexture());
+		vec3 x = controls->getPosition();
+		char bl = world->getBlock(x.x, x.y, x.z);
+		postProc.doPostProc(fbo.getColorTexture(), underWaterLocation, bl == 8 || bl == 9);
 
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glUseProgram(fontShader);

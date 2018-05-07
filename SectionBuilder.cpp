@@ -171,7 +171,7 @@ void SectionBuilder::build(int xo, int yo, int zo) {
 			for (z = 0; z < 16; z++) {
 				absZ = z + zo;
 				unsigned char blockId = chk.getBlock(x, y, z);
-				bool isTransparent = BlockRegistry::isTransparent(blockId);
+				bool isTransparent = BlockRegistry::isFluid(blockId);
 				GLfloat* vertexPtr = isTransparent ? verticesX : vertices;
 				GLfloat* texPtr = isTransparent ? textureCoordsX : textureCoords;
 				GLfloat* colorPtr = isTransparent ? colorsX : colors;
@@ -208,7 +208,7 @@ unsigned char SectionBuilder::getBlock(unsigned char me, int x, int y, int z) {
 	unsigned char id = 0;
 	if (x < 0 || y < 0 || z < 0 || x > 15 || y > 15 || z > 15) id = OpenGLRenderer::world->getBlock(xo + x, yo + y, zo + z);
 	else id = chunk->getBlock(x, y, z);
-	if ((!BlockRegistry::isTransparent(me) && BlockRegistry::isTransparent(id)) || BlockRegistry::isSpecialTransparent(me))
+	if ((!BlockRegistry::isFluid(me) && BlockRegistry::isFluid(id)) || BlockRegistry::isTransparent(me))
 		return 0;
 	else return id;
 }

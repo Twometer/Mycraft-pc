@@ -35,11 +35,11 @@ void BlockRegistry::initialize() {
 
 }
 
-bool BlockRegistry::isSpecialTransparent(unsigned char id) {
+bool BlockRegistry::isTransparent(unsigned char id) {
 	return id == 18 || id == 161; // Leaves
 }
 
-bool BlockRegistry::isTransparent(unsigned char id) {
+bool BlockRegistry::isFluid(unsigned char id) {
 	return id == 8 || id == 9 || id == 79; // Water and ice
 }
 

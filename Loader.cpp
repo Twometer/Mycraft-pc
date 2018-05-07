@@ -180,6 +180,17 @@ GLuint Loader::loadPng(const char* imagepath) {
 	return textureID;
 }
 
+GLuint Loader::loadShaders(const char * shadername) {
+	string vertex_shader("shaders\\");
+	vertex_shader.append(shadername);
+	vertex_shader.append(".v.glsl");
+
+	string frag_shader("shaders\\");
+	frag_shader.append(shadername);
+	frag_shader.append(".f.glsl");
+	return loadShaders(vertex_shader.c_str(), frag_shader.c_str());
+}
+
 GLuint Loader::loadShaders(const char * vertex_file_path, const char * fragment_file_path) {
 
 	// Create the shaders

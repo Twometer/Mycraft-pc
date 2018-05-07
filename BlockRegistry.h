@@ -13,8 +13,8 @@ public:
 	BlockRegistry();
 	~BlockRegistry();
 	static void initialize();
+	static bool isFluid(unsigned char id);
 	static bool isTransparent(unsigned char id);
-	static bool isSpecialTransparent(unsigned char id);
 	static Block* getBlock(unsigned char id);
 };
 
