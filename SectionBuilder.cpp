@@ -175,14 +175,14 @@ void SectionBuilder::build(int xo, int yo, int zo) {
 				GLfloat* vertexPtr = isTransparent ? verticesX : vertices;
 				GLfloat* texPtr = isTransparent ? textureCoordsX : textureCoords;
 				GLfloat* colorPtr = isTransparent ? colorsX : colors;
-				
+
 				int* vertexC = isTransparent ? &verticesAllocX : &verticesAlloc;
 				int* colorC = isTransparent ? &colorsAllocX : &colorsAlloc;
 				int* texC = isTransparent ? &textureCoordsAllocX : &textureCoordsAlloc;
 
 				if (blockId != 0) {
 					Block* block = BlockRegistry::getBlock(blockId);
-					
+
 					int bx = block->sideTex.x;
 					int by = block->sideTex.y;
 					if (getBlock(blockId, x + 1, y, z) == 0) drawDisplacedVertices(tvertices_positive_x, vertices_positive_x, absX, absY, absZ, bx, by, 0.75, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC);
@@ -197,7 +197,7 @@ void SectionBuilder::build(int xo, int yo, int zo) {
 
 					bx = block->bottomTex.x;
 					by = block->bottomTex.y;
-					if (getBlock(blockId, x, y - 1, z) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by, 0.20, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC);
+					if (getBlock(blockId, x, y - 1, z) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by, 0.60, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC);
 				}
 			}
 		}
@@ -208,7 +208,7 @@ unsigned char SectionBuilder::getBlock(unsigned char me, int x, int y, int z) {
 	unsigned char id = 0;
 	if (x < 0 || y < 0 || z < 0 || x > 15 || y > 15 || z > 15) id = OpenGLRenderer::world->getBlock(xo + x, yo + y, zo + z);
 	else id = chunk->getBlock(x, y, z);
-	if ((!BlockRegistry::isFluid(me) && BlockRegistry::isFluid(id)) || BlockRegistry::isTransparent(me))
+	if ((!BlockRegistry::isFluid(me) && BlockRegistry::isFluid(id)) || BlockRegistry::isTransparent(me) || BlockRegistry::isTransparent(id))
 		return 0;
 	else return id;
 }

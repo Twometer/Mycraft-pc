@@ -6,11 +6,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "AABB.h"
 
 glm::vec3 position = glm::vec3(-100, 270, -100);
 float yaw = 45.0f;
 float pitch = -15.0f;
-float speed = 8.0f;
+float speed = 5.0f;
 float mouseSpeed = 5;
 double lastTime;
 int width = 640;
@@ -93,29 +94,49 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 
 	glm::vec3 up = glm::cross(right, direction);
 
+	glm::vec3 motionVector = glm::vec3(0, 0, 0);
+
 	if (focused == GLFW_TRUE) {
 		if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS) {
-			position += directionMovement * deltaTime * speed;
+			motionVector += directionMovement * deltaTime * speed;
 		}
 		// Move backward
 		if (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS) {
-			position -= directionMovement * deltaTime * speed;
+			motionVector -= directionMovement * deltaTime * speed;
 		}
 		// Strafe right
 		if (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS) {
-			position += right * deltaTime * speed;
+			motionVector += right * deltaTime * speed;
 		}
 		// Strafe left
 		if (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS) {
-			position -= right * deltaTime * speed;
+			motionVector -= right * deltaTime * speed;
 		}
 		if (glfwGetKey(win, GLFW_KEY_SPACE) == GLFW_PRESS) {
-			position += glm::vec3(0, 1.0, 0) * deltaTime * speed;
+			motionVector += glm::vec3(0, 1.0, 0) * deltaTime * speed;
 		}
 		if (glfwGetKey(win, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-			position -= glm::vec3(0, 1.0, 0) * deltaTime * speed;
+			motionVector -= glm::vec3(0, 1.0, 0) * deltaTime * speed;
 		}
 	}
+
+	AABB myAABB = AABB(position - glm::vec3(0.33, 0, 0.33), position + glm::vec3(0.33, 1.9, 0.33));
+	vector<AABB> v = OpenGLRenderer::world->getCubes(floor(position.x), floor(position.y), floor(position.z), 6);
+	for (int i = 0; i < v.size(); i++) {
+		motionVector.y = v.at(i).clipYCollide(myAABB, motionVector.y);
+	}
+	myAABB.move(0, motionVector.y, 0);
+	for (int i = 0; i < v.size(); i++) {
+		motionVector.x = v.at(i).clipXCollide(myAABB, motionVector.x);
+	}
+	myAABB.move(motionVector.x, 0, 0);
+	for (int i = 0; i < v.size(); i++) {
+		motionVector.z = v.at(i).clipZCollide(myAABB, motionVector.z);
+	}
+	myAABB.move(0, 0, motionVector.z);
+
+	position = glm::vec3((myAABB.p0.x + myAABB.p1.x) / 2, myAABB.p0.y, (myAABB.p0.z + myAABB.p1.z) / 2);
+
 	glm::mat4 ModelMatrix(1.0f);
 	glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(65.0f), 4.0f / 3.0f, 0.1f, 2000.0f);
 	glm::mat4 ViewMatrix = glm::lookAt(

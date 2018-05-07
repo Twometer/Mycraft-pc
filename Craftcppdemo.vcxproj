@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="AsyncVboBuildingManager.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="BlockRegistry.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AABB.cpp" />
     <ClCompile Include="AsyncVboBuildingManager.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BlockRegistry.cpp" />
