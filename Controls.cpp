@@ -10,7 +10,7 @@
 glm::vec3 position = glm::vec3(-100, 270, -100);
 float yaw = 45.0f;
 float pitch = -15.0f;
-float speed = 100.0f; // 3 units / second
+float speed = 8.0f;
 float mouseSpeed = 5;
 double lastTime;
 int width = 640;
@@ -29,6 +29,10 @@ glm::vec3 Controls::getPosition() {
 	return position;
 }
 
+glm::vec3 Controls::getEyePosition() {
+	return position + glm::vec3(0, 1.73, 0);
+}
+
 void Controls::setPosition(double x, double y, double z) {
 	position = glm::vec3(x, y, z);
 	std::cout << "New position is " << position.x << endl;
@@ -40,6 +44,8 @@ void Controls::setPosition(float x, float y, float z) {
 }
 
 MATRICES Controls::computeMatrices(GLFWwindow* win) {
+
+	glm::vec3 eyePosition = getEyePosition();
 
 	MATRICES matrices = MATRICES();
 
@@ -111,10 +117,10 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 		}
 	}
 	glm::mat4 ModelMatrix(1.0f);
-	glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 2000.0f);
+	glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(65.0f), 4.0f / 3.0f, 0.1f, 2000.0f);
 	glm::mat4 ViewMatrix = glm::lookAt(
-		position,           // Camera is here
-		position + direction, // and looks here : at the same position, plus "direction"
+		eyePosition,           // Camera is here
+		eyePosition + direction, // and looks here : at the same position, plus "direction"
 		up                  // Head is up (set to 0,-1,0 to look upside-down)
 	);
 

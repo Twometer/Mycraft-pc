@@ -196,7 +196,7 @@ void OpenGLRenderer::start() {
 
 		Section::resetData();
 
-		vec3 x = controls->getPosition();
+		vec3 x = controls->getEyePosition();
 		char bl = world->getBlock(x.x, x.y, x.z);
 		postProc.doPostProc(fbo.getColorTexture(), underWaterLocation, bl == 8 || bl == 9);
 

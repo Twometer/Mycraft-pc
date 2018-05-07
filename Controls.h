@@ -16,6 +16,7 @@ public:
 	~Controls();
 	MATRICES computeMatrices(GLFWwindow* win);
 	glm::vec3 getPosition();
+	glm::vec3 getEyePosition();
 	void setPosition(float x, float y, float z);
 	void setPosition(double x, double y, double z);
 };
