@@ -27,8 +27,7 @@ public:
 		STATE_SHOULD_BUILD = 0,
 		STATE_AWAITING_BUILD = 1,
 		STATE_SHOULD_UPLOAD = 2,
-		STATE_SHOULD_RENDER = 3,
-		STATE_SHOULD_DELETE = 4
+		STATE_SHOULD_RENDER = 3
 	};
 
 	void setBlock(int x, int y, int z, unsigned char id);
