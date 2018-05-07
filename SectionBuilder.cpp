@@ -120,13 +120,13 @@ static const GLfloat tvertices_positive_z[] = {
 SectionBuilder::SectionBuilder(Section* chunk)
 {
 	this->chunk = chunk;
-	this->vertices = new GLfloat[50000];
-	this->colors = new GLfloat[50000];
-	this->textureCoords = new GLfloat[50000];
+	this->vertices = new GLfloat[100000]; // Three entries per vertex
+	this->colors = new GLfloat[100000]; // Three entries per vertex
+	this->textureCoords = new GLfloat[75000]; // Two entries per vertex
 
-	this->verticesX = new GLfloat[50000];
-	this->colorsX = new GLfloat[50000];
-	this->textureCoordsX = new GLfloat[50000];
+	this->verticesX = new GLfloat[25000]; // 3
+	this->colorsX = new GLfloat[25000]; // 3
+	this->textureCoordsX = new GLfloat[19000]; // 2
 }
 
 SectionBuilder::~SectionBuilder()
