@@ -15,6 +15,7 @@
 #include <ctime>
 #include "Fbo.h"
 #include "PostProcessing.h"
+#include "Skybox.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -26,7 +27,7 @@ static const int WIDTH = 640;
 static const int HEIGHT = 480;
 
 static const bool ADVANCED_WATER = true;
-
+static const bool SKYBOX = true;
 
 AsyncVboBuildingManager* OpenGLRenderer::manager;
 World* OpenGLRenderer::world;
@@ -100,7 +101,7 @@ void OpenGLRenderer::start() {
 	glGenVertexArrays(1, &VertexArrayID);
 
 	// Loading textures
-	GLuint texture = loader.loadPng("textures\\atlas_blocks.png");
+	GLuint texture = loader.loadTexture("textures\\atlas_blocks.png");
 
 	manager = new AsyncVboBuildingManager();
 	manager->initialize();
@@ -123,8 +124,15 @@ void OpenGLRenderer::start() {
 	GLint skyColorLocationW = glGetUniformLocation(waterShader, "skyColor");
 	GLint timeLocation = glGetUniformLocation(waterShader, "time");
 
+	GLuint skyboxShader = loader.loadShaders("skybox");
+	GLint loc_projMatSkybox = glGetUniformLocation(skyboxShader, "projectionMatrix");
+	GLint loc_viewMatSkybox = glGetUniformLocation(skyboxShader, "viewMatrix");
+
 	MATRICES matrices;
 	glm::mat4 projection = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f);
+
+	Skybox skybox;
+	skybox.initialize(loader);
 
 	int frames = 0;
 	int fps = 0;
@@ -137,7 +145,6 @@ void OpenGLRenderer::start() {
 	vec3 skyColor = vec3(0.72f, 0.83f, 0.996f);
 
 	glUniform3f(skyColorLocation, skyColor.x, skyColor.y, skyColor.z);
-
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -174,6 +181,16 @@ void OpenGLRenderer::start() {
 		glDisableVertexAttribArray(2);
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(0);
+
+		if (SKYBOX) {
+			glUseProgram(skyboxShader);
+			matrices.viewMatrix[3][0] = 0;
+			matrices.viewMatrix[3][1] = 0;
+			matrices.viewMatrix[3][2] = 0;
+			glUniformMatrix4fv(loc_projMatSkybox, 1, false, &matrices.projectionMatrix[0][0]);
+			glUniformMatrix4fv(loc_viewMatSkybox, 1, false, &matrices.viewMatrix[0][0]);
+			skybox.render();
+		}
 
 		fbo.unbindFrameBuffer();
 

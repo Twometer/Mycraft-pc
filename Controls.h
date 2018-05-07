@@ -3,6 +3,7 @@
 #include "GLFW/glfw3.h"
 
 struct MATRICES {
+	glm::mat4 viewMatrix;
 	glm::mat4 modelviewMatrix;
 	glm::mat4 projectionMatrix;
 };

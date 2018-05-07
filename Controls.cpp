@@ -120,6 +120,7 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 
 	matrices.modelviewMatrix = ViewMatrix * ModelMatrix;
 	matrices.projectionMatrix = ProjectionMatrix;
+	matrices.viewMatrix = ViewMatrix;
 
 	OpenGLRenderer::frustum->extractFrustum(matrices.projectionMatrix * matrices.modelviewMatrix);
 

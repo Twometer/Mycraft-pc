@@ -163,17 +163,22 @@ void Loader::renderText(std::string text, GLint loc, GLfloat x, GLfloat y, GLflo
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-GLuint Loader::loadPng(const char* imagepath) {
-	vector<unsigned char> image;
+IMAGE Loader::loadImage(const char * imagepath) {
+	vector<unsigned char>* image = new vector<unsigned char>;
 	unsigned width, height;
-	unsigned error = lodepng::decode(image, width, height, imagepath);
+	unsigned error = lodepng::decode(*image, width, height, imagepath);
 	if (error) std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+	return IMAGE(&image->front(), image->size(), width, height);
+}
+
+GLuint Loader::loadTexture(const char* imagepath) {
+	IMAGE image = loadImage(imagepath);
 	GLuint textureID;
 	glGenTextures(1, &textureID);
 
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image.front());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.data);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

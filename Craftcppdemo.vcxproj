@@ -171,6 +171,7 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="PostProcessing.h" />
+    <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VboBuilder.h" />
     <ClInclude Include="World.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
+    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="VboBuilder.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="Section.cpp" />

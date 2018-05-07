@@ -147,6 +147,9 @@
     <ClInclude Include="VboBuilder.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -234,6 +237,9 @@
       <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="VboBuilder.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
   </ItemGroup>
