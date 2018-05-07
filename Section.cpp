@@ -78,7 +78,7 @@ void Section::uploadVertexData() {
 	this->colorBufferX = colorbufferX;
 	this->vertexBufferX = vertexbufferX;
 	this->textureBufferX = texturebufferX;
-	delete builder;
+	
 }
 
 int vertexDataBuiltAmount;
@@ -86,6 +86,11 @@ void Section::resetData() {
 	vertexDataBuiltAmount = 0;
 }
 void Section::render(bool transparencyPass, bool inFrustum) {
+	if (state == STATE_SHOULD_DELETE) {
+		state = STATE_SHOULD_RENDER;
+		delete builder;
+	}
+
 	if (state == STATE_SHOULD_BUILD) {
 		state = STATE_AWAITING_BUILD;
 		OpenGLRenderer::manager->schedule(this);
@@ -93,7 +98,7 @@ void Section::render(bool transparencyPass, bool inFrustum) {
 	else if (state == STATE_SHOULD_UPLOAD && vertexDataBuiltAmount <= 16) {
 		vertexDataBuiltAmount++;
 		uploadVertexData();
-		state = STATE_SHOULD_RENDER;
+		state = STATE_SHOULD_DELETE;
 	}
 	if (state == STATE_SHOULD_RENDER && inFrustum) {
 		if (transparencyPass) {
