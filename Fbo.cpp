@@ -1,5 +1,5 @@
 #include "Fbo.h"
-
+#include "OpenGLRenderer.h"
 
 
 Fbo::Fbo(int width, int height, int depthBufferType)
@@ -16,7 +16,7 @@ void Fbo::bindFrameBuffer() {
 
 void Fbo::unbindFrameBuffer() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, 640, 480);
+	glViewport(0, 0, OpenGLRenderer::width, OpenGLRenderer::height);
 }
 
 void Fbo::cleanUp() {

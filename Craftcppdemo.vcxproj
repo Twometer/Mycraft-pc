@@ -172,6 +172,7 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="PostProcessing.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VboBuilder.h" />

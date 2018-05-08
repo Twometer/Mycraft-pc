@@ -6,6 +6,8 @@
 class OpenGLRenderer
 {
 public:
+	static int width;
+	static int height;
 	static AsyncVboBuildingManager* manager;
 	static Controls* controls;
 	static Frustum* frustum;

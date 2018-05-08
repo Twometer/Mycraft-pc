@@ -16,6 +16,7 @@
 #include "Fbo.h"
 #include "PostProcessing.h"
 #include "Skybox.h"
+#include "Settings.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -23,18 +24,15 @@
 using namespace std;
 using namespace glm;
 
-static const int WIDTH = 640;
-static const int HEIGHT = 480;
-
-static const bool ADVANCED_WATER = true;
-static const bool SKYBOX = true;
-
 AsyncVboBuildingManager* OpenGLRenderer::manager;
 World* OpenGLRenderer::world;
 Frustum* OpenGLRenderer::frustum;
 Controls* OpenGLRenderer::controls;
 vector<string*>* OpenGLRenderer::chatMessages;
 
+int OpenGLRenderer::width;
+int OpenGLRenderer::height;
+glm::mat4 projection;
 OpenGLRenderer::OpenGLRenderer()
 {
 	world = new World();
@@ -44,8 +42,10 @@ OpenGLRenderer::OpenGLRenderer()
 OpenGLRenderer::~OpenGLRenderer()
 {
 }
-
+void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void OpenGLRenderer::start() {
+	width = 640;
+	height = 480;
 	GLFWwindow* window;
 	controls = new Controls();
 	frustum = new Frustum();
@@ -58,9 +58,9 @@ void OpenGLRenderer::start() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+	
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(WIDTH, HEIGHT, "Mycraft v1.0-beta", NULL, NULL);
+	window = glfwCreateWindow(width, height, "Mycraft v1.0-beta", NULL, NULL);
 	if (!window)
 	{
 		cout << "Window could not be created" << endl;
@@ -68,6 +68,7 @@ void OpenGLRenderer::start() {
 		return;
 	}
 	glfwMakeContextCurrent(window);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -129,7 +130,7 @@ void OpenGLRenderer::start() {
 	GLint loc_viewMatSkybox = glGetUniformLocation(skyboxShader, "viewMatrix");
 
 	MATRICES matrices;
-	glm::mat4 projection = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f);
+	projection = glm::ortho(0.0f, (float)OpenGLRenderer::width, 0.0f, (float)OpenGLRenderer::height);
 
 	Skybox skybox;
 	skybox.initialize(loader);
@@ -138,7 +139,7 @@ void OpenGLRenderer::start() {
 	int fps = 0;
 	int lastReset = clock();
 
-	Fbo fbo = Fbo(WIDTH, HEIGHT, DEPTH_RENDER_BUFFER);
+	Fbo fbo = Fbo(width, height, DEPTH_RENDER_BUFFER);
 	PostProcessing postProc = PostProcessing(postProcShader);
 	postProc.init();
 
@@ -167,7 +168,7 @@ void OpenGLRenderer::start() {
 
 		world->render(false); // Render pass 1: Solid and transparent blocks
 
-		if (ADVANCED_WATER) {
+		if (Settings::ADVANCED_WATER) {
 			glUseProgram(waterShader);
 			glUniform1i(timeLocation, clock());
 			glUniformMatrix4fv(mvMatrixLocationW, 1, false, &matrices.modelviewMatrix[0][0]);
@@ -182,7 +183,7 @@ void OpenGLRenderer::start() {
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(0);
 
-		if (SKYBOX) {
+		if (Settings::SKYBOX) {
 			glUseProgram(skyboxShader);
 			matrices.viewMatrix[3][0] = 0;
 			matrices.viewMatrix[3][1] = 0;
@@ -232,4 +233,12 @@ void OpenGLRenderer::start() {
 	glDeleteProgram(simpleShader);
 	glfwTerminate();
 	return;
+}
+
+void framebuffer_size_callback(GLFWwindow *window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+	OpenGLRenderer::width = width;
+	OpenGLRenderer::height = height;
+	projection = glm::ortho(0.0f, (float)width, 0.0f, (float)height);
 }
