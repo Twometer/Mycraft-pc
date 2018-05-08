@@ -9,14 +9,26 @@
 #include "AABB.h"
 
 glm::vec3 position = glm::vec3(-100, 270, -100);
+glm::vec3 velocityVector = glm::vec3(0, 0, 0);
 float yaw = 45.0f;
 float pitch = -15.0f;
-float speed = 5.0f;
+float speedBase = 5.0f;
 float mouseSpeed = 5;
 double lastTime;
 int width = 640;
 int height = 480;
 int first = 1;
+
+bool isOnGround;
+
+float gravity = 0.5;
+float slipperiness = 0.61;
+
+float fov = 70.0f;
+float sprintTicks = 0.0f;
+
+bool lastWater;
+
 Controls::Controls()
 {
 }
@@ -96,7 +108,28 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 
 	glm::vec3 motionVector = glm::vec3(0, 0, 0);
 
+	bool sprinting = false;
+	float speed = 0;
+
+	glm::vec3 x = getEyePosition();
+	char bl = OpenGLRenderer::world->getBlock(floor(x.x), floor(x.y - 1), floor(x.z));
+	bool inWater = bl == 8 || bl == 9;
+	if (inWater && !lastWater) {
+		velocityVector.y *= .3;
+	}
+	lastWater = inWater;
+	
+
+	slipperiness = inWater ? 0.9 : 0.61;
+	gravity = inWater ? 0.1 : 0.5;
+
+
 	if (focused == GLFW_TRUE) {
+		if (glfwGetKey(win, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+			sprinting = true;
+		}
+		speed = sprinting ? speedBase * 1.5 : speedBase;
+		if (inWater) speed *= .4;
 		if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS) {
 			motionVector += directionMovement * deltaTime * speed;
 		}
@@ -113,32 +146,53 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 			motionVector -= right * deltaTime * speed;
 		}
 		if (glfwGetKey(win, GLFW_KEY_SPACE) == GLFW_PRESS) {
-			motionVector += glm::vec3(0, 1.0, 0) * deltaTime * speed;
+			if (isOnGround || inWater) {
+				motionVector += glm::vec3(0, inWater ? 0.8 : 1.6, 0) * deltaTime * speedBase;
+			}
 		}
 		if (glfwGetKey(win, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 			motionVector -= glm::vec3(0, 1.0, 0) * deltaTime * speed;
 		}
 	}
 
+
+	if (motionVector.x != 0) velocityVector.x = motionVector.x;
+	if (motionVector.y != 0) velocityVector.y = motionVector.y;
+	if (motionVector.z != 0) velocityVector.z = motionVector.z;
+
 	AABB myAABB = AABB(position - glm::vec3(0.33, 0, 0.33), position + glm::vec3(0.33, 1.9, 0.33));
 	vector<AABB> v = OpenGLRenderer::world->getCubes(floor(position.x), floor(position.y), floor(position.z), 6);
+	double yaOrg = velocityVector.y;
 	for (int i = 0; i < v.size(); i++) {
-		motionVector.y = v.at(i).clipYCollide(myAABB, motionVector.y);
+		velocityVector.y = v.at(i).clipYCollide(myAABB, velocityVector.y);
 	}
-	myAABB.move(0, motionVector.y, 0);
+	myAABB.move(0, velocityVector.y, 0);
 	for (int i = 0; i < v.size(); i++) {
-		motionVector.x = v.at(i).clipXCollide(myAABB, motionVector.x);
+		velocityVector.x = v.at(i).clipXCollide(myAABB, velocityVector.x);
 	}
-	myAABB.move(motionVector.x, 0, 0);
+	myAABB.move(velocityVector.x, 0, 0);
 	for (int i = 0; i < v.size(); i++) {
-		motionVector.z = v.at(i).clipZCollide(myAABB, motionVector.z);
+		velocityVector.z = v.at(i).clipZCollide(myAABB, velocityVector.z);
 	}
-	myAABB.move(0, 0, motionVector.z);
+	myAABB.move(0, 0, velocityVector.z);
+
+	isOnGround = velocityVector.y != yaOrg && yaOrg < 0.0;
 
 	position = glm::vec3((myAABB.p0.x + myAABB.p1.x) / 2, myAABB.p0.y, (myAABB.p0.z + myAABB.p1.z) / 2);
 
+	velocityVector.x *= slipperiness;
+	velocityVector.y -= deltaTime * gravity;
+	velocityVector.z *= slipperiness;
+
 	glm::mat4 ModelMatrix(1.0f);
-	glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(65.0f), 4.0f / 3.0f, 0.1f, 2000.0f);
+	float fovDiff = (fov * 1.2f) - fov;
+
+	if (sprinting && sprintTicks < 1.0) sprintTicks += deltaTime * 8;
+	else if (!sprinting && sprintTicks > 0.0) sprintTicks -= deltaTime * 8;
+
+	float add = fovDiff * sprintTicks;
+
+	glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(fov + (add)), 4.0f / 3.0f, 0.1f, 2000.0f);
 	glm::mat4 ViewMatrix = glm::lookAt(
 		eyePosition,           // Camera is here
 		eyePosition + direction, // and looks here : at the same position, plus "direction"
@@ -150,6 +204,5 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 	matrices.viewMatrix = ViewMatrix;
 
 	OpenGLRenderer::frustum->extractFrustum(matrices.projectionMatrix * matrices.modelviewMatrix);
-
 	return matrices;
 }

@@ -197,7 +197,7 @@ void OpenGLRenderer::start() {
 		Section::resetData();
 
 		vec3 x = controls->getEyePosition();
-		char bl = world->getBlock(x.x, x.y, x.z);
+		char bl = world->getBlock(floor(x.x), floor(x.y), floor(x.z));
 		postProc.doPostProc(fbo.getColorTexture(), underWaterLocation, bl == 8 || bl == 9);
 
 		glClear(GL_DEPTH_BUFFER_BIT);
