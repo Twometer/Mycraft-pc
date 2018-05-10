@@ -77,7 +77,7 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 	double xpos, ypos;
 	glfwGetCursorPos(win, &xpos, &ypos);
 
-	if (focused == GLFW_TRUE && !first) {
+	if (focused == GLFW_TRUE && !first && !OpenGLRenderer::chatOpen) {
 		glfwSetCursorPos(win, OpenGLRenderer::width / 2, OpenGLRenderer::height / 2);
 		yaw += mouseSpeed * deltaTime * float(OpenGLRenderer::width / 2 - xpos);
 		pitch += mouseSpeed * deltaTime * float(OpenGLRenderer::height  / 2 - ypos);
@@ -129,7 +129,7 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 	gravity = inWater ? 0.1 : 0.5;
 
 
-	if (focused == GLFW_TRUE) {
+	if (focused == GLFW_TRUE && !OpenGLRenderer::chatOpen) {
 		if (glfwGetKey(win, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
 			sprinting = true;
 		}

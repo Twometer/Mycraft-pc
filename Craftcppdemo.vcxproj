@@ -166,10 +166,12 @@
     <ClInclude Include="C00PacketKeepAlive.h" />
     <ClInclude Include="C00PacketLogin.h" />
     <ClInclude Include="C01PacketChat.h" />
+    <ClInclude Include="ChatMessage.h" />
     <ClInclude Include="ChatParser.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkExtracted.h" />
     <ClInclude Include="Fbo.h" />
+    <ClInclude Include="Font.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="Position.h" />
@@ -210,6 +212,7 @@
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkExtracted.cpp" />
     <ClCompile Include="Fbo.cpp" />
+    <ClCompile Include="Font.cpp" />
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="PostProcessing.cpp" />

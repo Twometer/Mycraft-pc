@@ -1,6 +1,6 @@
 #include "ChatParser.h"
 #include <iostream>
-
+#include <sstream>
 
 ChatParser::ChatParser()
 {
@@ -114,16 +114,21 @@ JSONDATA* ChatParser::string2Data(string toparse, int * cursorpos) {
 		data->stringValue = new string;
 		(*cursorpos)++;
 		while (toparse[*cursorpos] != '"') {
-			/*if (toparse[*cursorpos] == '\\') {
+			if (toparse[*cursorpos] == '\\') {
 				if (toparse[(*cursorpos) + 1] == 'u'
 					&& isHex(toparse[(*cursorpos) + 2])
 					&& isHex(toparse[(*cursorpos) + 3])
 					&& isHex(toparse[(*cursorpos) + 4])
 					&& isHex(toparse[(*cursorpos) + 5])) {
+					unsigned int x;
+					std::stringstream ss;
+					ss << std::hex << toparse.substr(*cursorpos + 2, 4);
+					ss >> x;
+					*data->stringValue += (char)x;
 					(*cursorpos) += 6;
 				}
 				else (*cursorpos)++;
-			}*/
+			}
 			char chr = toparse[*cursorpos];
 			*data->stringValue += chr;
 			(*cursorpos)++;

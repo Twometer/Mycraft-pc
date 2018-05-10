@@ -19,6 +19,7 @@
 #include "Settings.h"
 #include "Raycast.h"
 #include "BBRenderer.h"
+#include "Font.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -30,15 +31,17 @@ AsyncVboBuildingManager* OpenGLRenderer::manager;
 World* OpenGLRenderer::world;
 Frustum* OpenGLRenderer::frustum;
 Controls* OpenGLRenderer::controls;
-vector<string*>* OpenGLRenderer::chatMessages;
+vector<CHATMESSAGE>* OpenGLRenderer::chatMessages;
 
 int OpenGLRenderer::width;
 int OpenGLRenderer::height;
+bool OpenGLRenderer::chatOpen;
 glm::mat4 projection;
 
 Fbo fbo;
 
 bool lastPressed;
+string chatInput = string();
 OpenGLRenderer::OpenGLRenderer()
 {
 	world = new World();
@@ -47,6 +50,32 @@ OpenGLRenderer::OpenGLRenderer()
 OpenGLRenderer::~OpenGLRenderer()
 {
 }
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (action == GLFW_RELEASE && key == GLFW_KEY_T && !OpenGLRenderer::chatOpen) {
+		OpenGLRenderer::chatOpen = true;
+		chatInput = "";
+	}
+	if (OpenGLRenderer::chatOpen && key != GLFW_KEY_LEFT_SHIFT) {
+		if (action == GLFW_RELEASE) return;
+		if (key == GLFW_KEY_BACKSPACE && chatInput.length() > 0) {
+			chatInput = chatInput.substr(0, chatInput.length() - 1);
+		}
+		else {
+			char x = (char)key;
+			if (!iscntrl(x)) {
+				if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS) x = tolower(x);
+				chatInput += x;
+			}
+		}
+	}
+	if (OpenGLRenderer::chatOpen && key == GLFW_KEY_ENTER) {
+		//OpenGLRenderer::socket->sendPacket(new C01PacketChat(chatInput.c_str()));
+		OpenGLRenderer::chatOpen = false;
+	}
+
+
+}
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void OpenGLRenderer::start() {
 	width = 640;
@@ -54,7 +83,7 @@ void OpenGLRenderer::start() {
 	GLFWwindow* window;
 	controls = new Controls();
 	frustum = new Frustum();
-	chatMessages = new vector<string*>;
+	chatMessages = new vector<CHATMESSAGE>;
 
 	if (!glfwInit())
 		return;
@@ -63,7 +92,7 @@ void OpenGLRenderer::start() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	
+
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(width, height, "Mycraft v1.0-beta", NULL, NULL);
 	if (!window)
@@ -74,6 +103,7 @@ void OpenGLRenderer::start() {
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	glfwSetKeyCallback(window, key_callback);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -101,7 +131,7 @@ void OpenGLRenderer::start() {
 	Loader loader;
 
 	cout << "Loading fonts..." << endl;
-	loader.loadFonts();
+	Font roboto = Font("fonts\\roboto.ttf", 18);
 
 	// Creating vertex array
 	GLuint VertexArrayID;
@@ -160,9 +190,10 @@ void OpenGLRenderer::start() {
 	vec3 skyColor = vec3(0.72f, 0.83f, 0.996f);
 
 	glUniform3f(skyColorLocation, skyColor.x, skyColor.y, skyColor.z);
-
 	while (!glfwWindowShouldClose(window))
 	{
+		int current_time = clock();
+
 		fbo.bindFrameBuffer();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -184,7 +215,7 @@ void OpenGLRenderer::start() {
 
 		if (Settings::ADVANCED_WATER) {
 			glUseProgram(waterShader);
-			glUniform1i(timeLocation, clock());
+			glUniform1i(timeLocation, current_time);
 			glUniformMatrix4fv(mvMatrixLocationW, 1, false, &matrices.modelviewMatrix[0][0]);
 			glUniformMatrix4fv(prMatrixLocationW, 1, false, &matrices.projectionMatrix[0][0]);
 			glUniform3f(skyColorLocationW, skyColor.x, skyColor.y, skyColor.z);
@@ -230,26 +261,43 @@ void OpenGLRenderer::start() {
 
 		Section::resetData();
 
-		vec3 x = controls->getEyePosition();
-		char bl = world->getBlock(floor(x.x), floor(x.y), floor(x.z));
-		postProc.doPostProc(fbo.getColorTexture(), underWaterLocation, bl == 8 || bl == 9);
+		vec3 playerPos = controls->getPosition();
+		vec3 eyePos = controls->getEyePosition();
+
+		char blockInEyes = world->getBlock(floor(eyePos.x), floor(eyePos.y), floor(eyePos.z));
+		postProc.doPostProc(fbo.getColorTexture(), underWaterLocation, blockInEyes == 8 || blockInEyes == 9);
 
 		glClear(GL_DEPTH_BUFFER_BIT);
+		glDisable(GL_DEPTH_TEST);
 		glUseProgram(fontShader);
 		glUniformMatrix4fv(fontMatrixLocation, 1, false, &projection[0][0]);
-		float offset = 0;
-		for (unsigned int i = 0; i < chatMessages->size(); i++) {
-			loader.renderText(*chatMessages->at(i), colorLocation, 1.0f, 1.0f + offset, 1.0f, glm::vec3(0.0, 0.0f, 0.0f));
-			offset += 21;
+
+		float offset = height - 100;
+
+		for (int i = chatMessages->size() - 1; i >= 0; i--) {
+			CHATMESSAGE msg = chatMessages->at(i);
+			if (current_time - msg.timeCreated < 10000) {
+				roboto.renderTextWithShadow(*msg.content, colorLocation, 15, 1.0f + offset, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+				offset -= 25;
+				if (offset < height / 3) break;
+			}
 		}
-		loader.renderText("FPS: " + to_string(fps), colorLocation, 1.0f, 100.0f, 1.0f, glm::vec3(0.0, 0.0f, 0.0f));
-		glm::vec3 pos = controls->getPosition();
-		loader.renderText("Pos: " + to_string(pos.x) + " " + to_string(pos.y) + " " + to_string(pos.z), colorLocation, 1.0f, 150.0f, 1.0f, glm::vec3(0.0, 0.0f, 0.0f));
+
+		/* Debug Information */
+		roboto.renderTextWithShadow("Debug Information", colorLocation, 25, 25, 1.0, vec3(1.0, 1.0, 1.0));
+		roboto.renderTextWithShadow(" FPS: " + to_string(fps), colorLocation, 25, 40, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+		roboto.renderTextWithShadow(" XYZ: " + to_string(playerPos.x) + " " + to_string(floorf(playerPos.y) / 100.0f) + " " + to_string(playerPos.z), colorLocation, 25, 55, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+
+		if (chatOpen) {
+			string append = current_time % 1000 < 500 ? "|" : "";
+			roboto.renderTextWithShadow(chatInput + append, colorLocation, 15, height - 15, 1.0f, vec3(1, 1, 1));
+		}
+		glEnable(GL_DEPTH_TEST);
 
 		frames++;
 
-		if (clock() - lastReset > 1000) {
-			lastReset = clock();
+		if (current_time - lastReset > 1000) {
+			lastReset = current_time;
 			fps = frames;
 			frames = 0;
 		}
