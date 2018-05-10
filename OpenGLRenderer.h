@@ -4,7 +4,6 @@
 #include "Controls.h"
 #include "Frustum.h"
 #include "ChatMessage.h"
-#include "MinecraftSocket.h"
 class OpenGLRenderer
 {
 public:
