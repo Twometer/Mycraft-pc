@@ -166,6 +166,8 @@
     <ClInclude Include="C00PacketKeepAlive.h" />
     <ClInclude Include="C00PacketLogin.h" />
     <ClInclude Include="C01PacketChat.h" />
+    <ClInclude Include="C06PlayerPosLook.h" />
+    <ClInclude Include="C07PlayerDigging.h" />
     <ClInclude Include="ChatMessage.h" />
     <ClInclude Include="ChatParser.h" />
     <ClInclude Include="Chunk.h" />
@@ -208,6 +210,8 @@
     <ClCompile Include="C00PacketKeepAlive.cpp" />
     <ClCompile Include="C00PacketLogin.cpp" />
     <ClCompile Include="C01PacketChat.cpp" />
+    <ClCompile Include="C06PlayerPosLook.cpp" />
+    <ClCompile Include="C07PlayerDigging.cpp" />
     <ClCompile Include="ChatParser.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkExtracted.cpp" />

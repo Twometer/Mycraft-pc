@@ -12,6 +12,7 @@ class Controls
 {
 
 public:
+	static bool first;
 	Controls();
 	~Controls();
 	MATRICES computeMatrices(GLFWwindow* win);

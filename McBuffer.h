@@ -14,7 +14,7 @@ public:
 	char* readToEnd(int* len);
 	char* readString(int* len);
 	int readInt();
-	uint64_t readUlong();
+	unsigned __int64 readUlong();
 	double readDouble();
 	float readFloat();
 	short readShort();
@@ -24,7 +24,11 @@ public:
 	void putBytes(char* array, int len);
 	void putVarInt(int vi);
 	void putUshort(unsigned short ushort);
+	void putUlong(unsigned __int64 ulong);
 	void putString(const char* string);
+	void putDouble(double dbl);
+	void putFloat(float flt);
+	void putBool(bool b);
 	char readByte();
 	int readVarInt();
 };

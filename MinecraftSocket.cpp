@@ -22,12 +22,18 @@
 
 #define DEFAULT_BUFLEN 65565
 
+
+MinecraftSocket* MinecraftSocket::instance;
+bool MinecraftSocket::connected;
+
+
 using namespace std;
 
 int compressionThreshold;
 
 MinecraftSocket::MinecraftSocket()
 {
+	instance = this;
 }
 
 
@@ -41,7 +47,6 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 	char recvbuf[DEFAULT_BUFLEN];
 	int recvbuflen = DEFAULT_BUFLEN;
 	int iResult;
-	SOCKET ConnectSocket;
 
 	TcpClient client;
 	client.connectToServer(hostname, to_string(port).c_str());
@@ -50,8 +55,8 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 	if (ConnectSocket == INVALID_SOCKET)
 		return;
 
-	sendPacket(ConnectSocket, new C00PacketHandshake(47, hostname, port, 2));
-	sendPacket(ConnectSocket, new C00PacketLogin(username));
+	sendPacket(new C00PacketHandshake(47, hostname, port, 2));
+	sendPacket(new C00PacketLogin(username));
 
 	int packetLen;
 	int packetId;
@@ -87,11 +92,12 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 					if (packetId == 2) {
 						cout << "Login completed." << endl;
 						isLoginMode = false;
+						connected = true;
 					}
 				}
 				else {
 					if (packetId == 0) {
-						sendPacket(ConnectSocket, new C00PacketKeepAlive(buf->readVarInt()));
+						sendPacket(new C00PacketKeepAlive(buf->readVarInt()));
 					}
 					if (packetId == 2) {
 						int* len = 0;
@@ -114,8 +120,6 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 						float pitch = buf->readFloat();
 						char flags = buf->readByte();
 						OpenGLRenderer::controls->setPosition(x, y, z);
-
-						cout << "Set position to " << x << " " << y << " " << z << endl;
 					}
 					if (packetId == 0x23) {
 						uint64_t pos = buf->readUlong();
@@ -205,21 +209,21 @@ int MinecraftSocket::receive(SOCKET socket, char* buf, int len) {
 	return read > 0 ? read : -1;
 }
 
-int MinecraftSocket::sendPacket(SOCKET socket, IPacket* packet) {
+int MinecraftSocket::sendPacket(IPacket* packet) {
 	McBuffer* buffer = new McBuffer();
 	packet->write(buffer);
-	int iResult = sendPacketBuffer(socket, packet->getId(), buffer);
+	int iResult = sendPacketBuffer(packet->getId(), buffer);
 	delete packet;
 	if (iResult == SOCKET_ERROR) {
 		printf("send failed with error: %d\n", WSAGetLastError());
-		closesocket(socket);
+		closesocket(ConnectSocket);
 		WSACleanup();
 		return iResult;
 	}
 	return iResult;
 }
 
-int MinecraftSocket::sendPacketBuffer(SOCKET socket, int pid, McBuffer* buffer) {
+int MinecraftSocket::sendPacketBuffer(int pid, McBuffer* buffer) {
 	char* packetContent = buffer->getBytes();
 	int packetIdViLen = 0;
 	char* packetIdVi = createVarInt(pid, &packetIdViLen);
@@ -241,7 +245,7 @@ int MinecraftSocket::sendPacketBuffer(SOCKET socket, int pid, McBuffer* buffer) 
 	char* packetHeader = createVarInt(packetBodyLen, &packetHeaderLen);
 	int fullPacketLen = 0;
 	char* fullPacket = concatArrays(packetHeader, packetHeaderLen, packetBody, packetBodyLen, &fullPacketLen);
-	int result = send(socket, fullPacket, fullPacketLen, 0);
+	int result = send(ConnectSocket, fullPacket, fullPacketLen, 0);
 	delete[] fullPacket;
 	delete buffer;
 	return result;

@@ -8,7 +8,7 @@ using namespace std;
 
 McBuffer::McBuffer()
 {
-	i = new char[8192*32];
+	i = new char[8192 * 32];
 }
 
 McBuffer::McBuffer(char* inputBuffer, int inputSize) {
@@ -54,7 +54,7 @@ float McBuffer::readFloat() {
 
 void McBuffer::readArray(char* target, int len) {
 	if (readOffset + len > inputSize) {
-		cout << "Buffer underflow: tried reading " << len << " but only got " << (inputSize-readOffset) << " left" << endl;
+		cout << "Buffer underflow: tried reading " << len << " but only got " << (inputSize - readOffset) << " left" << endl;
 		return;
 	}
 	memcpy(target, i + readOffset, len);
@@ -72,8 +72,8 @@ short McBuffer::readShort() {
 	return s;
 }
 
-uint64_t McBuffer::readUlong() {
-	uint64_t i = 0;
+unsigned __int64 McBuffer::readUlong() {
+	unsigned __int64 i = 0;
 	int size = sizeof(i);
 	char* tmp = new char[size];
 	readArray(tmp, size);
@@ -136,6 +136,7 @@ void McBuffer::putUshort(unsigned short us) {
 	delete[] b;
 }
 
+
 void McBuffer::putVarInt(int vi) {
 	int len = 0;
 	char* chr = MinecraftSocket::createVarInt(vi, &len);
@@ -144,7 +145,7 @@ void McBuffer::putVarInt(int vi) {
 }
 
 void McBuffer::putBytes(char* array, int len) {
-	memcpy(i+allocated, array, len);
+	memcpy(i + allocated, array, len);
 	allocated += len;
 }
 
@@ -161,4 +162,33 @@ void McBuffer::replaceBuffer(char* newBuffer, int newLen) {
 	allocated = 0;
 	inputSize = newLen;
 	readOffset = 0;
+}
+void McBuffer::putUlong(unsigned __int64 l) {
+	int size = 8;
+	char* bytes = new char[size];
+	memcpy(bytes, &l, size);
+	reverse(bytes, bytes + size);
+	putBytes(bytes, size);
+	delete[] bytes;
+}
+void McBuffer::putDouble(double dbl) {
+	int size = 8;
+	char* bytes = new char[size];
+	memcpy(bytes, &dbl, size);
+	reverse(bytes, bytes + size);
+	putBytes(bytes, size);
+	delete[] bytes;
+}
+void McBuffer::putFloat(float flt) {
+	int size = 4;
+	char* bytes = new char[size];
+	memcpy(bytes, &flt, size);
+	reverse(bytes, bytes + size);
+	putBytes(bytes, size);
+	delete[] bytes;
+}
+void McBuffer::putBool(bool b) {
+	char* chr = new char[1];
+	chr[0] = 1;
+	putBytes(chr, 1);
 }

@@ -5,13 +5,16 @@
 class MinecraftSocket
 {
 public:
+	static MinecraftSocket * instance;
 	MinecraftSocket();
 	~MinecraftSocket();
 	void connectToServer(const char* username, const char* hostname, unsigned short port);
-	int sendPacketBuffer(SOCKET socket, int pid, McBuffer* buffer);
-	int sendPacket(SOCKET socket, IPacket* packet);
+	int sendPacketBuffer(int pid, McBuffer* buffer);
+	int sendPacket(IPacket* packet);
 	static char* createVarInt(int i, int* len);
+	static bool connected;
 private:
+	SOCKET ConnectSocket;
 	int compressionThreshold = 0;
 	char* concatArrays(char* a, int alen, char* b, int blen, int* resultLen);
 	int readVarIntRaw(TcpClient* socket, int* resultptr);

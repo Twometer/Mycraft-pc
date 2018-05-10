@@ -20,6 +20,10 @@
 #include "Raycast.h"
 #include "BBRenderer.h"
 #include "Font.h"
+#include "C01PacketChat.h"
+#include "MinecraftSocket.h"
+#include "IPacket.h"
+#include "C07PlayerDigging.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -50,6 +54,13 @@ OpenGLRenderer::OpenGLRenderer()
 OpenGLRenderer::~OpenGLRenderer()
 {
 }
+
+void OpenGLRenderer::sendPacket(IPacket * packet)
+{
+	if (MinecraftSocket::connected)
+		MinecraftSocket::instance->sendPacket(packet);
+}
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (action == GLFW_RELEASE && key == GLFW_KEY_T && !OpenGLRenderer::chatOpen) {
@@ -69,8 +80,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			}
 		}
 	}
+	if (OpenGLRenderer::chatOpen && key == GLFW_KEY_ESCAPE) {
+		Controls::first = true;
+		OpenGLRenderer::chatOpen = false;
+	}
 	if (OpenGLRenderer::chatOpen && key == GLFW_KEY_ENTER) {
-		//OpenGLRenderer::socket->sendPacket(new C01PacketChat(chatInput.c_str()));
+		Controls::first = true;
+		MinecraftSocket::instance->sendPacket(new C01PacketChat(chatInput.c_str()));
 		OpenGLRenderer::chatOpen = false;
 	}
 
@@ -251,6 +267,8 @@ void OpenGLRenderer::start() {
 
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
 			if (!lastPressed) {
+				sendPacket(new C07PlayerDigging(START_DESTROY_BLOCK, POSITION(result.blockX, result.blockY, result.blockZ), result.face));
+				sendPacket(new C07PlayerDigging(STOP_DESTROY_BLOCK, POSITION(result.blockX, result.blockY, result.blockZ), result.face));
 				world->setBlock(result.blockX, result.blockY, result.blockZ, 0);
 			}
 			lastPressed = true;
@@ -276,17 +294,17 @@ void OpenGLRenderer::start() {
 
 		for (int i = chatMessages->size() - 1; i >= 0; i--) {
 			CHATMESSAGE msg = chatMessages->at(i);
-			if (current_time - msg.timeCreated < 10000) {
+			if (chatOpen || current_time - msg.timeCreated < 10000) {
 				roboto.renderTextWithShadow(*msg.content, colorLocation, 15, 1.0f + offset, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
 				offset -= 25;
-				if (offset < height / 3) break;
+				if (!chatOpen && offset < height / 3) break;
 			}
 		}
 
 		/* Debug Information */
 		roboto.renderTextWithShadow("Debug Information", colorLocation, 25, 25, 1.0, vec3(1.0, 1.0, 1.0));
 		roboto.renderTextWithShadow(" FPS: " + to_string(fps), colorLocation, 25, 40, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
-		roboto.renderTextWithShadow(" XYZ: " + to_string(playerPos.x) + " " + to_string(floorf(playerPos.y) / 100.0f) + " " + to_string(playerPos.z), colorLocation, 25, 55, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+		roboto.renderTextWithShadow(" XYZ: " + to_string(playerPos.x) + " " + to_string(playerPos.y) + " " + to_string(playerPos.z), colorLocation, 25, 55, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
 
 		if (chatOpen) {
 			string append = current_time % 1000 < 500 ? "|" : "";

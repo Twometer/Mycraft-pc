@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "AABB.h"
 #include "Settings.h"
+#include "C06PlayerPosLook.h"
 
 glm::vec3 position = glm::vec3(-100, 270, -100);
 glm::vec3 velocityVector = glm::vec3(0, 0, 0);
@@ -16,7 +17,7 @@ float pitch = -15.0f;
 float speedBase = 5.0f;
 float mouseSpeed = 5;
 double lastTime;
-int first = 1;
+bool Controls::first;
 
 bool isOnGround;
 
@@ -24,6 +25,8 @@ float gravity = 0.5;
 float slipperiness = 0.61;
 
 float sprintTicks = 0.0f;
+
+int last_pos_update = 0;
 
 bool lastWater;
 
@@ -52,13 +55,11 @@ bool physics = false;
 
 void Controls::setPosition(double x, double y, double z) {
 	position = glm::vec3(x, y, z);
-	std::cout << "New position is " << position.x << endl;
 	physics = true;
 }
 
 void Controls::setPosition(float x, float y, float z) {
 	position = glm::vec3(x, y, z);
-	std::cout << "New position is " << position.x << endl;
 }
 
 MATRICES Controls::computeMatrices(GLFWwindow* win) {
@@ -80,7 +81,7 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 	if (focused == GLFW_TRUE && !first && !OpenGLRenderer::chatOpen) {
 		glfwSetCursorPos(win, OpenGLRenderer::width / 2, OpenGLRenderer::height / 2);
 		yaw += mouseSpeed * deltaTime * float(OpenGLRenderer::width / 2 - xpos);
-		pitch += mouseSpeed * deltaTime * float(OpenGLRenderer::height  / 2 - ypos);
+		pitch += mouseSpeed * deltaTime * float(OpenGLRenderer::height / 2 - ypos);
 		pitch = glm::clamp(pitch, -90.0f, 90.0f);
 	}
 
@@ -190,6 +191,12 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 		velocityVector.y -= deltaTime * gravity;
 		velocityVector.z *= slipperiness;
 	}
+
+	if (clock() - last_pos_update >= 50) {
+		OpenGLRenderer::sendPacket(new C06PlayerPosLook(position.x, position.y, position.z, yaw, pitch, isOnGround));
+		last_pos_update = clock();
+	}
+
 
 	glm::mat4 ModelMatrix(1.0f);
 	float fovDiff = (Settings::FOV * 1.2f) - Settings::FOV;

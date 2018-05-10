@@ -8,6 +8,12 @@ struct POSITION {
 
 	}
 
+	POSITION(int x, int y, int z) {
+		this->x = x;
+		this->y = y;
+		this->z = z;
+	}
+
 	POSITION(uint64_t pos) {
 		int x = (int)(pos >> 38);
 		int y = (int)(pos << 26 >> 52);
@@ -18,5 +24,9 @@ struct POSITION {
 		this->x = x;
 		this->y = y;
 		this->z = z;
+	}
+
+	long serialize() {
+		return (((long)x & 0x3FFFFFF) << 38) | (((long)y & 0xFFF) << 26) | ((long)z & 0x3FFFFFF);
 	}
 };
