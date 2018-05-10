@@ -175,6 +175,7 @@
     <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="RaycastResult.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VboBuilder.h" />

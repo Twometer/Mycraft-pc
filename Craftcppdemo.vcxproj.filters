@@ -153,6 +153,9 @@
     <ClInclude Include="AABB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Raycast.h">
       <Filter>Header Files</Filter>
     </ClInclude>

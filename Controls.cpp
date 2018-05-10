@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "AABB.h"
+#include "Settings.h"
 
 glm::vec3 position = glm::vec3(-100, 270, -100);
 glm::vec3 velocityVector = glm::vec3(0, 0, 0);
@@ -15,8 +16,6 @@ float pitch = -15.0f;
 float speedBase = 5.0f;
 float mouseSpeed = 5;
 double lastTime;
-int width = 640;
-int height = 480;
 int first = 1;
 
 bool isOnGround;
@@ -24,7 +23,6 @@ bool isOnGround;
 float gravity = 0.5;
 float slipperiness = 0.61;
 
-float fov = 70.0f;
 float sprintTicks = 0.0f;
 
 bool lastWater;
@@ -80,14 +78,14 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 	glfwGetCursorPos(win, &xpos, &ypos);
 
 	if (focused == GLFW_TRUE && !first) {
-		glfwSetCursorPos(win, width / 2, height / 2);
-		yaw += mouseSpeed * deltaTime * float(width / 2 - xpos);
-		pitch += mouseSpeed * deltaTime * float(height / 2 - ypos);
+		glfwSetCursorPos(win, OpenGLRenderer::width / 2, OpenGLRenderer::height / 2);
+		yaw += mouseSpeed * deltaTime * float(OpenGLRenderer::width / 2 - xpos);
+		pitch += mouseSpeed * deltaTime * float(OpenGLRenderer::height  / 2 - ypos);
 		pitch = glm::clamp(pitch, -90.0f, 90.0f);
 	}
 
 	if (first) {
-		glfwSetCursorPos(win, width / 2, height / 2);
+		glfwSetCursorPos(win, OpenGLRenderer::width / 2, OpenGLRenderer::height / 2);
 		first = false;
 	}
 
@@ -194,14 +192,14 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 	}
 
 	glm::mat4 ModelMatrix(1.0f);
-	float fovDiff = (fov * 1.2f) - fov;
+	float fovDiff = (Settings::FOV * 1.2f) - Settings::FOV;
 
 	if (sprinting && sprintTicks < 1.0) sprintTicks += deltaTime * 8;
 	else if (!sprinting && sprintTicks > 0.0) sprintTicks -= deltaTime * 8;
 
 	float add = fovDiff * sprintTicks;
 
-	glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(fov + (add)), 4.0f / 3.0f, 0.1f, 2000.0f);
+	glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(Settings::FOV + (add)), (float)OpenGLRenderer::width / (float)OpenGLRenderer::height, 0.1f, 2000.0f);
 	glm::mat4 ViewMatrix = glm::lookAt(
 		eyePosition,           // Camera is here
 		eyePosition + direction, // and looks here : at the same position, plus "direction"
