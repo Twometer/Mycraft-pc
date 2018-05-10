@@ -26,7 +26,7 @@ struct POSITION {
 		this->z = z;
 	}
 
-	long serialize() {
-		return (((long)x & 0x3FFFFFF) << 38) | (((long)y & 0xFFF) << 26) | ((long)z & 0x3FFFFFF);
+	unsigned __int64 serialize() {
+		return (((unsigned __int64)x & 0x3FFFFFF) << 38) | (((unsigned __int64)y & 0xFFF) << 26) | ((unsigned __int64)z & 0x3FFFFFF);
 	}
 };

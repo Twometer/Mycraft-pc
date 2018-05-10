@@ -1,4 +1,5 @@
 #include "C07PlayerDigging.h"
+#include <iostream>
 
 
 
@@ -15,6 +16,7 @@ C07PlayerDigging::~C07PlayerDigging()
 }
 
 void C07PlayerDigging::write(McBuffer* buffer) {
+	POSITION px = POSITION(position.serialize());
 	buffer->putVarInt(status);
 	buffer->putUlong(position.serialize());
 	buffer->putBytes(&face, 1);
