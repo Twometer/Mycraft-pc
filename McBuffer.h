@@ -14,6 +14,7 @@ public:
 	char* readToEnd(int* len);
 	char* readString(int* len);
 	int readInt();
+	uint64_t readUlong();
 	double readDouble();
 	float readFloat();
 	short readShort();

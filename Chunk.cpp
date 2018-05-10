@@ -37,7 +37,7 @@ void Chunk::uploadVertexData() {
 	}
 }
 
-void Chunk::setBlock(int x, int y, int z, unsigned char id) {
+void Chunk::setBlock(int x, int y, int z, unsigned char id, bool updateSection) {
 	if (x < 0 || y < 0 || z < 0 || x > 15 || y > 255 || z > 15)
 		return;
 	int sectionIdx = y >> 4;
@@ -46,8 +46,7 @@ void Chunk::setBlock(int x, int y, int z, unsigned char id) {
 		sec = new Section(this, this->x, sectionIdx, this->z);
 		*(sections + sectionIdx) = sec;
 	}
-
-	sec->setBlock(x, y << 4, z, id);
+	sec->setBlock(x, y - (sectionIdx << 4), z, id, updateSection);
 }
 
 unsigned char Chunk::getBlock(int x, int y, int z) {
@@ -84,7 +83,7 @@ void Chunk::initialize(ChunkExtracted* data) {
 						unsigned char b = (unsigned char)(((data->storage[idx + 1] & 255) << 8 | data->storage[idx] & 255) >> 4);
 						if (b > 0)
 						{
-							sec->setBlock(x, y, z, b);
+							sec->setBlock(x, y, z, b, false);
 						}
 						idx += 2;
 					}

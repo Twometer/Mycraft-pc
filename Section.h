@@ -22,6 +22,7 @@ private:
 	GLuint textureBuffer;
 	GLuint textureBufferX;
 	int state = 0;
+	bool continueRender;
 public:
 	enum State {
 		STATE_SHOULD_BUILD = 0,
@@ -30,7 +31,7 @@ public:
 		STATE_SHOULD_RENDER = 3
 	};
 
-	void setBlock(int x, int y, int z, unsigned char id);
+	void setBlock(int x, int y, int z, unsigned char id, bool update);
 	void generate();
 	unsigned char getBlock(int x, int y, int z);
 	unsigned char* getBlockPointer(int x, int y, int z);

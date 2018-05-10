@@ -45,7 +45,7 @@ void Loader::loadFonts() {
 	FT_Face face;
 	if (FT_New_Face(ft, "fonts/Roboto.ttf", 0, &face))
 		std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-	FT_Set_Pixel_Sizes(face, 0, 20);
+	FT_Set_Pixel_Sizes(face, 0, 15);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
 

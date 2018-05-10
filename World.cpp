@@ -33,7 +33,15 @@ unsigned char World::getBlock(int x, int y, int z)
 
 void World::setBlock(int x, int y, int z, unsigned char id)
 {
-
+	if (y < 0 || y > 255) return;
+	int chunkX = x >> 4;
+	int chunkZ = z >> 4;
+	for (unsigned int i = 0; i < chunkLen; i++) {
+		Chunk* chk = *(chunkArray + i);
+		if (chk != nullptr && chk->x == chunkX && chk->z == chunkZ) {
+			chk->setBlock(x - (chunkX << 4), y, z - (chunkZ << 4), id, true);
+		}
+	}
 }
 
 void World::render(bool transparencyPass) {

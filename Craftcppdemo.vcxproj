@@ -172,6 +172,7 @@
     <ClInclude Include="Fbo.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="lodepng.h" />
+    <ClInclude Include="Position.h" />
     <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="RaycastResult.h" />

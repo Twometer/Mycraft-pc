@@ -72,6 +72,17 @@ short McBuffer::readShort() {
 	return s;
 }
 
+uint64_t McBuffer::readUlong() {
+	uint64_t i = 0;
+	int size = sizeof(i);
+	char* tmp = new char[size];
+	readArray(tmp, size);
+	reverse(tmp, tmp + size);
+	memcpy(&i, tmp, size);
+	free(tmp);
+	return i;
+}
+
 int McBuffer::readVarInt() {
 	int i = 0;
 	int j = 0;

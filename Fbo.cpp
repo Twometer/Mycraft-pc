@@ -2,6 +2,9 @@
 #include "OpenGLRenderer.h"
 
 
+Fbo::Fbo() {
+
+}
 Fbo::Fbo(int width, int height, int depthBufferType)
 {
 	this->width = width;

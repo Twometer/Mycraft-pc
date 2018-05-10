@@ -35,11 +35,14 @@ vector<string*>* OpenGLRenderer::chatMessages;
 int OpenGLRenderer::width;
 int OpenGLRenderer::height;
 glm::mat4 projection;
+
+Fbo fbo;
+
+bool lastPressed;
 OpenGLRenderer::OpenGLRenderer()
 {
 	world = new World();
 }
-
 
 OpenGLRenderer::~OpenGLRenderer()
 {
@@ -150,7 +153,7 @@ void OpenGLRenderer::start() {
 	int fps = 0;
 	int lastReset = clock();
 
-	Fbo fbo = Fbo(width, height, DEPTH_RENDER_BUFFER);
+	fbo = Fbo(width, height, DEPTH_RENDER_BUFFER);
 	PostProcessing postProc = PostProcessing(postProcShader);
 	postProc.init();
 
@@ -215,6 +218,14 @@ void OpenGLRenderer::start() {
 		bbRenderer.render();
 		glEnable(GL_CULL_FACE);
 
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
+			if (!lastPressed) {
+				world->setBlock(result.blockX, result.blockY, result.blockZ, 0);
+			}
+			lastPressed = true;
+		}
+		else lastPressed = false;
+
 		fbo.unbindFrameBuffer();
 
 		Section::resetData();
@@ -263,4 +274,5 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 	OpenGLRenderer::width = width;
 	OpenGLRenderer::height = height;
 	projection = glm::ortho(0.0f, (float)width, 0.0f, (float)height);
+	fbo = Fbo(width, height, DEPTH_RENDER_BUFFER);
 }

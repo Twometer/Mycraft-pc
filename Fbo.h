@@ -21,6 +21,7 @@ class Fbo
 
 
 public:
+	Fbo();
 	Fbo(int width, int height, int depthBufferType);
 	~Fbo();
 	void bindFrameBuffer();

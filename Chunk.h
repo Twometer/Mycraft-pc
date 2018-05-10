@@ -11,7 +11,7 @@ public:
 	int x;
 	int z;
 	unsigned char getBlock(int x, int y, int z);
-	void setBlock(int x, int y, int z, unsigned char id);
+	void setBlock(int x, int y, int z, unsigned char id, bool updateSection);
 	void buildVertexData();
 	void uploadVertexData();
 	void render(bool transparencyPass);

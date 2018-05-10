@@ -94,8 +94,9 @@ void Section::render(bool transparencyPass, bool inFrustum) {
 		vertexDataBuiltAmount++;
 		uploadVertexData();
 		state = STATE_SHOULD_RENDER;
+		continueRender = false;
 	}
-	if (state == STATE_SHOULD_RENDER && inFrustum) {
+	if ((state == STATE_SHOULD_RENDER || continueRender) && inFrustum) {
 		if (transparencyPass) {
 			if (vertexCountX <= 0)
 				return;
@@ -167,14 +168,18 @@ void Section::generate() {
 	for (int x = 0; x < 16; x++) {
 		for (int z = 0; z < 16; z++) {
 			for (int y = 0; y < 16; y += 1) {
-				setBlock(x, y, z, 1);
+				setBlock(x, y, z, 1, false);
 			}
 		}
 	}
 }
 
-void Section::setBlock(int x, int y, int z, unsigned char blockId) {
+void Section::setBlock(int x, int y, int z, unsigned char blockId, bool update) {
 	*getBlockPointer(x, y, z) = blockId;
+	if (update) {
+		state = STATE_SHOULD_BUILD;
+		continueRender = true;
+	}
 }
 
 unsigned char Section::getBlock(int x, int y, int z) {

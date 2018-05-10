@@ -14,6 +14,7 @@
 #include "Chunk.h"
 #include <string>
 #include "ChatParser.h"
+#include "Position.h"
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -115,6 +116,12 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 						OpenGLRenderer::controls->setPosition(x, y, z);
 
 						cout << "Set position to " << x << " " << y << " " << z << endl;
+					}
+					if (packetId == 0x23) {
+						uint64_t pos = buf->readUlong();
+						int id = buf->readVarInt() >> 4;
+						POSITION position = POSITION(pos);
+						OpenGLRenderer::world->setBlock(position.x, position.y, position.z, id);
 					}
 					if (packetId == 0x26) {
 						bool skylight = buf->readByte() == 0x01;

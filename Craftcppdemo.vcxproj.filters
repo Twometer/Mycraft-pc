@@ -150,19 +150,22 @@
     <ClInclude Include="Skybox.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="AABB.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Raycast.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RaycastResult.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Raycast.h">
+      <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="BBRenderer.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AABB.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Position.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -257,14 +260,14 @@
     <ClCompile Include="Skybox.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="AABB.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Raycast.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="AABB.cpp">
+      <Filter>Source Files\World</Filter>
     </ClCompile>
     <ClCompile Include="BBRenderer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
