@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="AABB.h" />
     <ClInclude Include="AsyncVboBuildingManager.h" />
+    <ClInclude Include="BBRenderer.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="BlockRegistry.h" />
     <ClInclude Include="C00PacketHandshake.h" />
@@ -172,6 +173,8 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="PostProcessing.h" />
+    <ClInclude Include="Raycast.h" />
+    <ClInclude Include="RaycastResult.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VboBuilder.h" />
@@ -194,6 +197,7 @@
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="AsyncVboBuildingManager.cpp" />
+    <ClCompile Include="BBRenderer.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BlockRegistry.cpp" />
     <ClCompile Include="C00PacketHandshake.cpp" />
@@ -207,6 +211,7 @@
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
+    <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="VboBuilder.cpp" />
     <ClCompile Include="World.cpp" />

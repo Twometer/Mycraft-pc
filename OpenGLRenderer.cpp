@@ -16,6 +16,8 @@
 #include "Fbo.h"
 #include "PostProcessing.h"
 #include "Skybox.h"
+#include "Raycast.h"
+#include "BBRenderer.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -68,6 +70,7 @@ void OpenGLRenderer::start() {
 		return;
 	}
 	glfwMakeContextCurrent(window);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -128,8 +131,16 @@ void OpenGLRenderer::start() {
 	GLint loc_projMatSkybox = glGetUniformLocation(skyboxShader, "projectionMatrix");
 	GLint loc_viewMatSkybox = glGetUniformLocation(skyboxShader, "viewMatrix");
 
+	GLuint wireframeShader = loader.loadShaders("wireframe");
+	GLint loc_projMatWire = glGetUniformLocation(wireframeShader, "projectionMatrix");
+	GLint loc_mdvwMatWire = glGetUniformLocation(wireframeShader, "modelviewMatrix");
+	GLint offsetLocation = glGetUniformLocation(wireframeShader, "offset");
+
 	MATRICES matrices;
 	glm::mat4 projection = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f);
+
+	Raycast raycast;
+	BBRenderer bbRenderer = BBRenderer();
 
 	Skybox skybox;
 	skybox.initialize(loader);
@@ -191,6 +202,17 @@ void OpenGLRenderer::start() {
 			glUniformMatrix4fv(loc_viewMatSkybox, 1, false, &matrices.viewMatrix[0][0]);
 			skybox.render();
 		}
+
+		glDisable(GL_CULL_FACE);
+		vec2 rot = controls->getRotation();
+		RAYCAST_RESULT result = raycast.cast(rot.x, rot.y);
+		glUseProgram(wireframeShader);
+		glUniformMatrix4fv(loc_mdvwMatWire, 1, false, &matrices.modelviewMatrix[0][0]);
+		glUniformMatrix4fv(loc_projMatWire, 1, false, &matrices.projectionMatrix[0][0]);
+		vec3 renderOffset = vec3(result.blockX, result.blockY, result.blockZ);
+		glUniform3fv(offsetLocation, 1, &renderOffset[0]);
+		bbRenderer.render();
+		glEnable(GL_CULL_FACE);
 
 		fbo.unbindFrameBuffer();
 

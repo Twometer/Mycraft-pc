@@ -46,9 +46,16 @@ glm::vec3 Controls::getEyePosition() {
 	return position + glm::vec3(0, 1.73, 0);
 }
 
+glm::vec2 Controls::getRotation() {
+	return glm::vec2(yaw, pitch);
+}
+
+bool physics = false;
+
 void Controls::setPosition(double x, double y, double z) {
 	position = glm::vec3(x, y, z);
 	std::cout << "New position is " << position.x << endl;
+	physics = true;
 }
 
 void Controls::setPosition(float x, float y, float z) {
@@ -118,7 +125,7 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 		velocityVector.y *= .3;
 	}
 	lastWater = inWater;
-	
+
 
 	slipperiness = inWater ? 0.9 : 0.61;
 	gravity = inWater ? 0.1 : 0.5;
@@ -180,9 +187,11 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 
 	position = glm::vec3((myAABB.p0.x + myAABB.p1.x) / 2, myAABB.p0.y, (myAABB.p0.z + myAABB.p1.z) / 2);
 
-	velocityVector.x *= slipperiness;
-	velocityVector.y -= deltaTime * gravity;
-	velocityVector.z *= slipperiness;
+	if (physics) {
+		velocityVector.x *= slipperiness;
+		velocityVector.y -= deltaTime * gravity;
+		velocityVector.z *= slipperiness;
+	}
 
 	glm::mat4 ModelMatrix(1.0f);
 	float fovDiff = (fov * 1.2f) - fov;
