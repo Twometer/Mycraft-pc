@@ -176,7 +176,7 @@ void Section::generate() {
 
 void Section::setBlock(int x, int y, int z, unsigned char blockId, bool update) {
 	*getBlockPointer(x, y, z) = blockId;
-	if (update) {
+	if (update && state != STATE_SHOULD_UPLOAD && state != STATE_AWAITING_BUILD) {
 		state = STATE_SHOULD_BUILD;
 		continueRender = true;
 	}
