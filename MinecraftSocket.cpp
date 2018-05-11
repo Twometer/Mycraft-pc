@@ -15,6 +15,7 @@
 #include <string>
 #include "ChatParser.h"
 #include "Position.h"
+#include "C16Respawn.h"
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -110,6 +111,12 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 						char* str = buf->readString(len);
 						cout << "[Kicked from Server] " << str << endl;
 						delete[] str;
+					}
+					if (packetId == 0x06) {
+						float health = buf->readFloat();
+						if (health <= 0.1) {
+							sendPacket(new C16Respawn());
+						}
 					}
 					if (packetId == 0x08) {
 						double x = buf->readDouble();

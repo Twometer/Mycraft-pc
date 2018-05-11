@@ -180,6 +180,12 @@
     <ClInclude Include="C07PlayerDigging.h">
       <Filter>Header Files\Packets</Filter>
     </ClInclude>
+    <ClInclude Include="CrosshairRenderer.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="C16Respawn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -289,6 +295,12 @@
     </ClCompile>
     <ClCompile Include="C07PlayerDigging.cpp">
       <Filter>Source Files\Packets</Filter>
+    </ClCompile>
+    <ClCompile Include="CrosshairRenderer.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="C16Respawn.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

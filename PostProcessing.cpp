@@ -21,12 +21,10 @@ void PostProcessing::loadToVao(GLfloat* positions) {
 void PostProcessing::start() {
 	glBindVertexArray(vao);
 	glEnableVertexAttribArray(0);
-	glDisable(GL_DEPTH_TEST);
 }
 
 
 void PostProcessing::stop() {
-	glEnable(GL_DEPTH_TEST);
 	glDisableVertexAttribArray(0);
 	glBindVertexArray(0);
 }

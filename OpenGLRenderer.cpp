@@ -24,6 +24,7 @@
 #include "MinecraftSocket.h"
 #include "IPacket.h"
 #include "C07PlayerDigging.h"
+#include "CrosshairRenderer.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -155,6 +156,7 @@ void OpenGLRenderer::start() {
 
 	// Loading textures
 	GLuint texture = loader.loadTexture("textures\\atlas_blocks.png");
+	GLuint crosshair = loader.loadTexture("textures\\hud\\crosshair.png");
 
 	manager = new AsyncVboBuildingManager();
 	manager->initialize();
@@ -170,6 +172,10 @@ void OpenGLRenderer::start() {
 
 	GLuint postProcShader = loader.loadShaders("postproc");
 	GLint underWaterLocation = glGetUniformLocation(postProcShader, "belowWater");
+
+	GLuint crosshairShader = loader.loadShaders("crosshair");
+	GLint crosshairMatrixLocation = glGetUniformLocation(crosshairShader, "projection");
+	GLint crosshairOffsetLocation = glGetUniformLocation(crosshairShader, "offset");
 
 	GLuint waterShader = loader.loadShaders("water");
 	GLint mvMatrixLocationW = glGetUniformLocation(waterShader, "mvMatrix");
@@ -190,7 +196,7 @@ void OpenGLRenderer::start() {
 	projection = glm::ortho(0.0f, (float)OpenGLRenderer::width, 0.0f, (float)OpenGLRenderer::height);
 
 	Raycast raycast;
-	BBRenderer bbRenderer = BBRenderer();
+	BBRenderer bbRenderer;
 
 	Skybox skybox;
 	skybox.initialize(loader);
@@ -200,6 +206,9 @@ void OpenGLRenderer::start() {
 	int lastReset = clock();
 
 	fbo = Fbo(width, height, DEPTH_RENDER_BUFFER);
+	CrosshairRenderer crosshairRenderer = CrosshairRenderer(crosshair);
+	crosshairRenderer.init();
+
 	PostProcessing postProc = PostProcessing(postProcShader);
 	postProc.init();
 
@@ -277,6 +286,9 @@ void OpenGLRenderer::start() {
 
 		fbo.unbindFrameBuffer();
 
+		glDisable(GL_DEPTH_TEST);
+
+
 		Section::resetData();
 
 		vec3 playerPos = controls->getPosition();
@@ -285,8 +297,14 @@ void OpenGLRenderer::start() {
 		char blockInEyes = world->getBlock(floor(eyePos.x), floor(eyePos.y), floor(eyePos.z));
 		postProc.doPostProc(fbo.getColorTexture(), underWaterLocation, blockInEyes == 8 || blockInEyes == 9);
 
+		glUseProgram(crosshairShader);
+		vec2 chOffset = vec2(width / 2, height / 2);
+		glUniform2fv(crosshairOffsetLocation, 1, &chOffset[0]);
+		glUniformMatrix4fv(crosshairMatrixLocation, 1, false, &projection[0][0]);
+		crosshairRenderer.render();
+
+
 		glClear(GL_DEPTH_BUFFER_BIT);
-		glDisable(GL_DEPTH_TEST);
 		glUseProgram(fontShader);
 		glUniformMatrix4fv(fontMatrixLocation, 1, false, &projection[0][0]);
 

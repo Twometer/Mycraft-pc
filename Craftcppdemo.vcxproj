@@ -168,10 +168,12 @@
     <ClInclude Include="C01PacketChat.h" />
     <ClInclude Include="C06PlayerPosLook.h" />
     <ClInclude Include="C07PlayerDigging.h" />
+    <ClInclude Include="C16Respawn.h" />
     <ClInclude Include="ChatMessage.h" />
     <ClInclude Include="ChatParser.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkExtracted.h" />
+    <ClInclude Include="CrosshairRenderer.h" />
     <ClInclude Include="Fbo.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Frustum.h" />
@@ -212,9 +214,11 @@
     <ClCompile Include="C01PacketChat.cpp" />
     <ClCompile Include="C06PlayerPosLook.cpp" />
     <ClCompile Include="C07PlayerDigging.cpp" />
+    <ClCompile Include="C16Respawn.cpp" />
     <ClCompile Include="ChatParser.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkExtracted.cpp" />
+    <ClCompile Include="CrosshairRenderer.cpp" />
     <ClCompile Include="Fbo.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="Frustum.cpp" />
