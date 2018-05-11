@@ -9,7 +9,7 @@ private:
 	void start();
 	void stop();
 public:
-	void doPostProc(GLuint colorTex, GLint shaderLocation, bool water);
+	void doPostProc(GLuint colorTex, GLint shaderLocation, int fluidMode);
 	void init();
 	PostProcessing(GLuint shader);
 	~PostProcessing();

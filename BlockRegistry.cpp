@@ -47,7 +47,7 @@ bool BlockRegistry::isTransparent(unsigned char id) {
 }
 
 bool BlockRegistry::isFluid(unsigned char id) {
-	return id == 8 || id == 9 || id == 79; // Water (and ice)
+	return id == 8 || id == 9 || id == 79 || id == 10 || id == 11; // Water (and ice)
 }
 
 Block* BlockRegistry::getBlock(unsigned char id) {

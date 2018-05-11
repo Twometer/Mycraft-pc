@@ -30,10 +30,10 @@ void PostProcessing::stop() {
 }
 
 
-void PostProcessing::doPostProc(GLuint colortex, GLint shaderLocation, bool water) {
+void PostProcessing::doPostProc(GLuint colortex, GLint shaderLocation, int fluidMode) {
 	start();
 	glUseProgram(shader);
-	glUniform1i(shaderLocation, water);
+	glUniform1i(shaderLocation, fluidMode);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colortex);
 	glClear(GL_COLOR_BUFFER_BIT);

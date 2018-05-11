@@ -68,7 +68,7 @@ vector<AABB> World::getCubes(int xx, int xy, int xz, int r) {
 			for (int z = -r; z < r; z++)
 			{
 				unsigned char bid = getBlock(xx + x, xy + y, xz + z);
-				if (bid > 0 && bid != 8 && bid != 9 && bid != 31 && bid != 175) {
+				if (bid > 0 && bid != 8 && bid != 9 && bid != 31 && bid != 175 && bid != 10 && bid != 11) {
 					cubes.push_back(AABB(glm::vec3(xx + x, xy + y, xz + z), glm::vec3(xx + x, xy + y, xz + z)).expand(1.0, 1.0, 1.0));
 				}
 			}

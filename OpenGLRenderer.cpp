@@ -171,7 +171,7 @@ void OpenGLRenderer::start() {
 	GLint colorLocation = glGetUniformLocation(fontShader, "textColor");
 
 	GLuint postProcShader = loader.loadShaders("postproc");
-	GLint underWaterLocation = glGetUniformLocation(postProcShader, "belowWater");
+	GLint fluidModeLocation = glGetUniformLocation(postProcShader, "fluidMode");
 
 	GLuint crosshairShader = loader.loadShaders("crosshair");
 	GLint crosshairMatrixLocation = glGetUniformLocation(crosshairShader, "projection");
@@ -295,7 +295,10 @@ void OpenGLRenderer::start() {
 		vec3 eyePos = controls->getEyePosition();
 
 		char blockInEyes = world->getBlock(floor(eyePos.x), floor(eyePos.y), floor(eyePos.z));
-		postProc.doPostProc(fbo.getColorTexture(), underWaterLocation, blockInEyes == 8 || blockInEyes == 9);
+		int fluidMode = 0;
+		if (blockInEyes == 8 || blockInEyes == 9) fluidMode = 1;
+		else if (blockInEyes == 10 || blockInEyes == 11) fluidMode = 2;
+		postProc.doPostProc(fbo.getColorTexture(), fluidModeLocation, fluidMode);
 
 		glUseProgram(crosshairShader);
 		vec2 chOffset = vec2(width / 2, height / 2);

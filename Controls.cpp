@@ -28,7 +28,9 @@ float sprintTicks = 0.0f;
 
 int last_pos_update = 0;
 
-bool lastWater;
+bool lastInFluid;
+
+float ticks_in_water = 0;
 
 Controls::Controls()
 {
@@ -119,15 +121,24 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 
 	glm::vec3 x = getEyePosition();
 	char bl = OpenGLRenderer::world->getBlock(floor(x.x), floor(x.y - 1), floor(x.z));
-	bool inWater = bl == 8 || bl == 9;
-	if (inWater && !lastWater) {
-		velocityVector.y *= .3;
+	bool inFluid = bl == 8 || bl == 9 || bl == 10 || bl == 11;
+	if (inFluid && !lastInFluid && velocityVector.y > -0.1) {
+		velocityVector.y *= .5;
 	}
-	lastWater = inWater;
+	if (!inFluid && lastInFluid) {
+		velocityVector.y *= 1.6;
+	}
+	if (inFluid && velocityVector.y < -1.5 * deltaTime) {
+		velocityVector.y = -1.5 * deltaTime;
+	}
+	if (inFluid) ticks_in_water += deltaTime;
+	else ticks_in_water = 0;
+
+	lastInFluid = inFluid;
 
 
-	slipperiness = inWater ? 0.9 : 0.61;
-	gravity = inWater ? 0.1 : 0.5;
+	slipperiness = inFluid ? 0.9 : 0.61;
+	gravity = inFluid ? 0.1 : 0.5;
 
 
 	if (focused == GLFW_TRUE && !OpenGLRenderer::chatOpen) {
@@ -135,7 +146,7 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 			sprinting = true;
 		}
 		speed = sprinting ? speedBase * 1.5 : speedBase;
-		if (inWater) speed *= .4;
+		if (inFluid) speed *= .4;
 		if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS) {
 			motionVector += directionMovement * deltaTime * speed;
 		}
@@ -152,8 +163,8 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 			motionVector -= right * deltaTime * speed;
 		}
 		if (glfwGetKey(win, GLFW_KEY_SPACE) == GLFW_PRESS) {
-			if (isOnGround || inWater) {
-				motionVector += glm::vec3(0, inWater ? 0.8 : 1.6, 0) * deltaTime * speedBase;
+			if (isOnGround || (inFluid && ticks_in_water > 0.2)) {
+				motionVector += glm::vec3(0, inFluid ? 0.8 : 1.6, 0) * deltaTime * speedBase;
 			}
 		}
 		if (glfwGetKey(win, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
