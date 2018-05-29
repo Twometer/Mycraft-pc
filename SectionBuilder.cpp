@@ -230,7 +230,7 @@ SectionBuilder::~SectionBuilder()
 
 bool canOcclude(int x, int y, int z) {
 	unsigned char block = OpenGLRenderer::world->getBlock(x, y, z);
-	return block && !BlockRegistry::isPlant(block);
+	return block && !BlockRegistry::isPlant(block) && block != 78;
 }
 
 bool isOccluded(int x, int y, int z, int vx, int vy, int vz, int f) {
@@ -261,7 +261,7 @@ void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloa
 		GLfloat vy = *(vertices + i + 1);
 		int vz = *(vertices + i + 2);
 		vy *= ym;
-		float colx = !isOccluded(x, y, z, vx, vy, vz, f) ? 1.0 : 0.7;
+		float colx = ym != 1 ? 1.0f :  !isOccluded(x, y, z, vx, vy, vz, f) ? 1.0 : 0.7;
 		*(vertexPtr + ((*vertexC)++)) = vx + x;
 		*(vertexPtr + ((*vertexC)++)) = vy + y;
 		*(vertexPtr + ((*vertexC)++)) = vz + z;
