@@ -15,6 +15,7 @@ public:
 	static void initialize();
 	static bool isFluid(unsigned char id);
 	static bool isTransparent(unsigned char id);
+	static bool isPlant(unsigned char id);
 	static Block* getBlock(unsigned char id);
 };
 

@@ -67,11 +67,15 @@ void BlockRegistry::initialize() {
 }
 
 bool BlockRegistry::isTransparent(unsigned char id) {
-	return id == 18 || id == 161 || id == 111 || id == 31; // Leaves
+	return id == 18 || id == 161 || id == 111 || isPlant(id) || id == 78;
 }
 
 bool BlockRegistry::isFluid(unsigned char id) {
 	return id == 8 || id == 9 || id == 79 || id == 10 || id == 11; // Water (and ice)
+}
+
+bool BlockRegistry::isPlant(unsigned char id) {
+	return id == 31 || id == 32 || id == 37 || id == 38 || id == 39 || id == 40;
 }
 
 Block* BlockRegistry::getBlock(unsigned char id) {
