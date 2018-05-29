@@ -90,7 +90,7 @@ void Section::render(bool transparencyPass, bool inFrustum) {
 		state = STATE_AWAITING_BUILD;
 		OpenGLRenderer::manager->schedule(this);
 	}
-	else if (state == STATE_SHOULD_UPLOAD && vertexDataBuiltAmount <= 16) {
+	else if (state == STATE_SHOULD_UPLOAD && vertexDataBuiltAmount <= 8) {
 		vertexDataBuiltAmount++;
 		uploadVertexData();
 		state = STATE_SHOULD_RENDER;

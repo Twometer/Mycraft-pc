@@ -32,6 +32,10 @@ bool lastInFluid;
 
 float ticks_in_water = 0;
 
+bool ctrl_flying;
+bool ctrl_flyingpr;
+float ctrl_flyinglast;
+
 Controls::Controls()
 {
 }
@@ -138,6 +142,7 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 
 
 	slipperiness = inFluid ? 0.9 : 0.61;
+	if (ctrl_flying) slipperiness = 0.94;
 	gravity = inFluid ? 0.1 : 0.5;
 
 
@@ -163,10 +168,18 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 			motionVector -= right * deltaTime * speed;
 		}
 		if (glfwGetKey(win, GLFW_KEY_SPACE) == GLFW_PRESS) {
-			if (isOnGround || (inFluid && ticks_in_water > 0.2)) {
+			if (isOnGround || (inFluid && ticks_in_water > 0.2) || ctrl_flying) {
 				motionVector += glm::vec3(0, inFluid ? 0.8 : 1.6, 0) * deltaTime * speedBase;
 			}
+			if (!ctrl_flyingpr) {
+				ctrl_flyingpr = true;
+				if (clock() - ctrl_flyinglast < 200) {
+					ctrl_flying = !ctrl_flying;
+				}
+				ctrl_flyinglast = clock();
+			}
 		}
+		else ctrl_flyingpr = false;
 		if (glfwGetKey(win, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 			motionVector -= glm::vec3(0, 1.0, 0) * deltaTime * speed;
 		}
@@ -199,7 +212,9 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 
 	if (physics) {
 		velocityVector.x *= slipperiness;
-		velocityVector.y -= deltaTime * gravity;
+		if (!ctrl_flying)
+			velocityVector.y -= deltaTime * gravity;
+		else velocityVector.y *= slipperiness;
 		velocityVector.z *= slipperiness;
 	}
 

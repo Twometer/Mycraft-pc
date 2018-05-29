@@ -300,7 +300,7 @@
       <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="C16Respawn.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Packets</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
