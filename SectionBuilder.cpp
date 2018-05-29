@@ -143,7 +143,7 @@ SectionBuilder::~SectionBuilder()
 
 bool canOcclude(int x, int y, int z) {
 	unsigned char block = OpenGLRenderer::world->getBlock(x, y, z);
-	return block && !BlockRegistry::isTransparent(block);
+	return block && block != 31;
 }
 
 bool isOccluded(int x, int y, int z, int vx, int vy, int vz, int f) {
@@ -152,19 +152,19 @@ bool isOccluded(int x, int y, int z, int vx, int vy, int vz, int f) {
 	if (vz == 0) vz = -1;
 
 	if (f == 0)
-		return canOcclude(x + vx, y + vy, z)
-		|| canOcclude(x + vx, y + vy, z + vz)
-		|| canOcclude(x + vx, y, z + vz);
+		return canOcclude(x + vx, y + vy, z     )
+	   	    || canOcclude(x + vx, y + vy, z + vz)
+		    || canOcclude(x + vx, y     , z + vz);
 
 	if (f == 1)
-		return canOcclude(x + vx, y + vy, z)
-		|| canOcclude(x, y + vy, z + vz)
-		|| canOcclude(x + vx, y + vy, z + vz);
+		return canOcclude(x + vx, y + vy, z     )
+		    || canOcclude(x     , y + vy, z + vz)
+		    || canOcclude(x + vx, y + vy, z + vz);
 
 	if (f == 2)
-		return canOcclude(x + vx, y, z + vz)
-		|| canOcclude(x, y + vy, z + vz)
-		|| canOcclude(x + vx, y + vy, z + vz);
+		return canOcclude(x + vx, y     , z + vz)
+		    || canOcclude(x     , y + vy, z + vz)
+		    || canOcclude(x + vx, y + vy, z + vz);
 }
 
 void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int texX, int texY, GLfloat col, GLfloat* vertexPtr, GLfloat* texPtr, GLfloat* colorPtr, int* vertexC, int* texC, int * colorC, int f) {

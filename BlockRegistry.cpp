@@ -32,9 +32,33 @@ void BlockRegistry::initialize() {
 	registerBlock(16, TEXTURE(1, 1)); // Coal Ore
 	registerBlock(17, TEXTURE(29, 6), TEXTURE(28, 6), TEXTURE(29, 6)); // Log
 	registerBlock(18, TEXTURE(13, 6)); // Leaves
+	registerBlock(19, TEXTURE(0, 10)); // Sponge
+	registerBlock(20, TEXTURE(0, 4)); // Glass
 	registerBlock(21, TEXTURE(11, 6)); // Lapis Lazuli Ore
+	registerBlock(22, TEXTURE(10, 6)); // Lapis Lazuli Block
 	registerBlock(31, TEXTURE(15, 10)); // Tall grass
+	registerBlock(32, TEXTURE(17, 1)); // Dead bush
+	registerBlock(33, TEXTURE(23, 7), TEXTURE(22, 7), TEXTURE(20, 7)); // Piston
+	registerBlock(35, TEXTURE(18, 11)); // Wool
+	registerBlock(37, TEXTURE(18, 3)); // Dandelion
+	registerBlock(38, TEXTURE(23, 3)); // Poppy
+	registerBlock(39, TEXTURE(9, 7)); // Brown Mushroom
+	registerBlock(40, TEXTURE(10, 7)); // Red Mushroom
+	registerBlock(41, TEXTURE(3, 5)); // Gold Block
+	registerBlock(42, TEXTURE(3, 6)); // Iron Block
+	registerBlock(45, TEXTURE(15, 0)); // Bricks
+	registerBlock(46, TEXTURE(18, 10), TEXTURE(17, 10), TEXTURE(16, 10)); // TNT
+	registerBlock(47, TEXTURE(29, 7), TEXTURE(12, 0), TEXTURE(29, 7)); // Bookshelf
+	registerBlock(48, TEXTURE(4, 1)); // Mossy Stone
+	registerBlock(49, TEXTURE(19, 7)); // Obsidian
+	registerBlock(50, TEXTURE(19, 10)); // Torch
+	registerBlock(51, TEXTURE(15, 3)); // Fire
+	registerBlock(52, TEXTURE(4, 7)); // Spawner
 	registerBlock(56, TEXTURE(29, 1)); // Diamond Ore
+	registerBlock(58, TEXTURE(13, 1), TEXTURE(11,1), TEXTURE(29,7)); // Crafting Table
+	registerBlock(60, TEXTURE(11, 3), TEXTURE(30, 1), TEXTURE(30, 1)); // Farmland
+	registerBlock(73, TEXTURE(4, 9)); // Redstone Ore
+	registerBlock(74, TEXTURE(4, 9)); // Glowing Redstone Ore
 	registerBlock(78, TEXTURE(30, 9)); // Snow
 	registerBlock(79, TEXTURE(0, 6)); // Ice
 	registerBlock(80, TEXTURE(30, 9)); // Snow
@@ -43,7 +67,7 @@ void BlockRegistry::initialize() {
 }
 
 bool BlockRegistry::isTransparent(unsigned char id) {
-	return id == 18 || id == 161 || id == 111 || id ==31; // Leaves
+	return id == 18 || id == 161 || id == 111 || id == 31; // Leaves
 }
 
 bool BlockRegistry::isFluid(unsigned char id) {
