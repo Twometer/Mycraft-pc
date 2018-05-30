@@ -25,6 +25,13 @@ void VboBuilder::vertex2(int x, int y)
 	vertices.push_back((GLfloat)y);
 }
 
+void VboBuilder::texture2(int x, int y)
+{
+	texVertices.push_back((GLfloat)x);
+	texVertices.push_back((GLfloat)y);
+}
+
+
 void VboBuilder::color(int r, int g, int b, int a)
 {
 	colors.push_back((GLfloat)r / 255.0f);
@@ -33,18 +40,24 @@ void VboBuilder::color(int r, int g, int b, int a)
 	colors.push_back((GLfloat)a / 255.0f);
 	hasColor = true;
 }
-
-void VboBuilder::drawRect(int x, int y, int w, int h, COLORDATA c)
+void VboBuilder::drawRect(int x, int y, int w, int h, COLORDATA c) {
+	drawRect(x, y, w, h, c, false);
+}
+void VboBuilder::drawRect(int x, int y, int w, int h, COLORDATA c, bool useTextures)
 {
+	if(useTextures) texture2(0, 1);
 	color(c.r, c.g, c.b, c.a);
 	vertex2(x, y + h);
 
+	if (useTextures) texture2(0, 0);
 	color(c.r, c.g, c.b, c.a);
 	vertex2(x, y);
 
+	if (useTextures) texture2(1, 1);
 	color(c.r, c.g, c.b, c.a);
 	vertex2(x + w, y + h);
 
+	if (useTextures) texture2(1, 0);
 	color(c.r, c.g, c.b, c.a);
 	vertex2(x + w, y);
 }
@@ -68,6 +81,14 @@ void VboBuilder::build()
 		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	}
 
+	if (hasTexture) {
+		GLuint textureBuffer;
+		glGenBuffers(1, &textureBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * texVertices.size(), &texVertices.front(), GL_STATIC_DRAW);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	}
+
 	glBindVertexArray(0);
 }
 
@@ -75,13 +96,15 @@ void VboBuilder::render()
 {
 	glBindVertexArray(vao);
 	glEnableVertexAttribArray(0);
-	if(hasColor) glEnableVertexAttribArray(1);
+	if (hasColor) glEnableVertexAttribArray(1);
+	if (hasTexture) glEnableVertexAttribArray(2);
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, vertices.size() / dimen);
 
+	if (hasTexture) glDisableVertexAttribArray(2);
 	if (hasColor) glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
-	
+
 	glBindVertexArray(0);
 }
 

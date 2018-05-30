@@ -180,6 +180,8 @@
     <ClInclude Include="Fbo.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Frustum.h" />
+    <ClInclude Include="Gui.h" />
+    <ClInclude Include="GuiChat.h" />
     <ClInclude Include="GuiRenderer.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="Position.h" />
@@ -228,6 +230,8 @@
     <ClCompile Include="Fbo.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="Frustum.cpp" />
+    <ClCompile Include="Gui.cpp" />
+    <ClCompile Include="GuiChat.cpp" />
     <ClCompile Include="GuiRenderer.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="PostProcessing.cpp" />

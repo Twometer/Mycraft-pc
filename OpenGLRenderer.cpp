@@ -27,6 +27,7 @@
 #include "CrosshairRenderer.h"
 #include "VboBuilder.h"
 #include "Title.h"
+#include "GuiChat.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -35,6 +36,7 @@ using namespace std;
 using namespace glm;
 
 AsyncVboBuildingManager* OpenGLRenderer::manager;
+GuiRenderer* OpenGLRenderer::guiRenderer;
 World* OpenGLRenderer::world;
 Frustum* OpenGLRenderer::frustum;
 Controls* OpenGLRenderer::controls;
@@ -42,16 +44,15 @@ vector<CHATMESSAGE>* OpenGLRenderer::chatMessages;
 
 int OpenGLRenderer::width;
 int OpenGLRenderer::height;
-bool OpenGLRenderer::chatOpen;
 glm::mat4 projection;
 
 Fbo fbo;
 
 bool lastPressed;
-string chatInput = string();
 OpenGLRenderer::OpenGLRenderer()
 {
 	world = new World();
+	guiRenderer = new GuiRenderer();
 }
 
 OpenGLRenderer::~OpenGLRenderer()
@@ -63,37 +64,21 @@ void OpenGLRenderer::sendPacket(IPacket * packet)
 	if (MinecraftSocket::connected)
 		MinecraftSocket::instance->sendPacket(packet);
 }
-
+void character_callback(GLFWwindow* window, unsigned int codepoint)
+{
+	OpenGLRenderer::guiRenderer->onCharPress(codepoint);
+}
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (action == GLFW_RELEASE && key == GLFW_KEY_T && !OpenGLRenderer::chatOpen) {
-		OpenGLRenderer::chatOpen = true;
-		chatInput = "";
+	OpenGLRenderer::guiRenderer->onKeyPress(key, action);
+	if (action == GLFW_RELEASE && key == GLFW_KEY_T && !OpenGLRenderer::guiRenderer->isGuiOpen())
+	{
+		OpenGLRenderer::guiRenderer->displayGui(new GuiChat());
 	}
-	if (OpenGLRenderer::chatOpen && key != GLFW_KEY_LEFT_SHIFT) {
-		if (action == GLFW_RELEASE) return;
-		if (key == GLFW_KEY_BACKSPACE && chatInput.length() > 0) {
-			chatInput = chatInput.substr(0, chatInput.length() - 1);
-		}
-		else {
-			char x = (char)key;
-			if (!iscntrl(x)) {
-				if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS) x = tolower(x);
-				chatInput += x;
-			}
-		}
-	}
-	if (OpenGLRenderer::chatOpen && key == GLFW_KEY_ESCAPE) {
-		Controls::first = true;
-		OpenGLRenderer::chatOpen = false;
-	}
-	if (OpenGLRenderer::chatOpen && key == GLFW_KEY_ENTER) {
-		Controls::first = true;
-		MinecraftSocket::instance->sendPacket(new C01PacketChat(chatInput.c_str()));
-		OpenGLRenderer::chatOpen = false;
-	}
-
-
+}
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	OpenGLRenderer::guiRenderer->onMouseClick(button, action);
 }
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void OpenGLRenderer::start() {
@@ -123,6 +108,7 @@ void OpenGLRenderer::start() {
 	glfwMakeContextCurrent(window);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetCharCallback(window, character_callback);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -309,6 +295,9 @@ void OpenGLRenderer::start() {
 		/* GUI */
 		glUseProgram(guiShader);
 		glUniformMatrix4fv(loc_gui_projMat, 1, false, &projection[0][0]);
+
+		bool chatOpen = guiRenderer->isGuiOpen(GuiChat::GUI_IDENTIFIER);
+
 		float offset = 100;
 		for (int i = chatMessages->size() - 1; i >= 0; i--) {
 			CHATMESSAGE msg = chatMessages->at(i);
@@ -320,11 +309,10 @@ void OpenGLRenderer::start() {
 				if (!chatOpen && height - offset < height / 3) break;
 			}
 		}
-		if (chatOpen) {
-			VboBuilder builder = VboBuilder(2);
-			builder.drawRect(15, 15, width - 30, 25, COLORDATA(64, 64, 64, 128));
-			builder.buildAndRender();
-		}
+
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+		guiRenderer->onRender(xpos, ypos);
 
 		/* Crosshair */
 		glUseProgram(crosshairShader);
@@ -352,10 +340,10 @@ void OpenGLRenderer::start() {
 		roboto.renderTextWithShadow("Debug Information", colorLocation, 25, 25, 1.0, vec3(1.0, 1.0, 1.0));
 		roboto.renderTextWithShadow(" FPS: " + to_string(fps), colorLocation, 25, 40, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
 		roboto.renderTextWithShadow(" XYZ: " + to_string(playerPos.x) + " " + to_string(playerPos.y) + " " + to_string(playerPos.z), colorLocation, 25, 55, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
-
 		if (chatOpen) {
 			string append = current_time % 1000 < 500 ? "|" : "";
-			roboto.renderTextWithShadow(chatInput + append, colorLocation, 20, height - 22, 1.0f, vec3(1, 1, 1));
+			string chatInput = ((GuiChat*)guiRenderer->getCurrentGui())->getInput();
+			roboto.renderTextWithShadow(chatInput + append, colorLocation, 20, OpenGLRenderer::height - 22, 1.0f, vec3(1, 1, 1));
 		}
 		glEnable(GL_DEPTH_TEST);
 
