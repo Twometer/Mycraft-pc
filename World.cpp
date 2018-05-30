@@ -3,6 +3,9 @@
 #include "Chunk.h"
 #include <mutex>
 #include "BlockRegistry.h"
+#include "Settings.h"
+#include "Controls.h"
+#include "OpenGLRenderer.h"
 
 using namespace std;
 
@@ -26,7 +29,7 @@ unsigned char World::getBlock(int x, int y, int z)
 	for (unsigned int i = 0; i < chunkLen; i++) {
 		Chunk* chk = *(chunkArray + i);
 		if (chk != nullptr && chk->x == chunkX && chk->z == chunkZ) {
-			return chk->getBlock(x - (chunkX << 4), y, z - (chunkZ << 4));
+			return chk->getBlock(x & 15, y, z & 15);
 		}
 	}
 	return 0;
@@ -46,10 +49,15 @@ void World::setBlock(int x, int y, int z, unsigned char id)
 }
 
 void World::render(bool transparencyPass) {
+	glm::vec3 pos = OpenGLRenderer::controls->getPosition();
+	int pcx = (int)pos.x >> 4;
+	int pcz = (int)pos.z >> 4;
 	for (unsigned int i = 0; i < chunkLen; i++) {
 		Chunk* chk = *(chunkArray + i);
-		if (chk != nullptr)
-			chk->render(transparencyPass);
+		if (abs(chk->x - pcx) <= Settings::RENDER_DISTANCE && abs(chk->z - pcz) <= Settings::RENDER_DISTANCE) {
+			if (chk != nullptr)
+				chk->render(transparencyPass);
+		}
 	}
 }
 

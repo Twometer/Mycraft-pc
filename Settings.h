@@ -5,4 +5,5 @@ public:
 	static const bool SKYBOX = true;
 	static const bool AMBIENT_OCCLUSION = true;
 	static const int FOV = 90;
+	static const int RENDER_DISTANCE = 10;
 };
