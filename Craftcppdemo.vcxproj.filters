@@ -52,6 +52,18 @@
     <Filter Include="Header Files\Postproc">
       <UniqueIdentifier>{6616f71b-6a57-4c94-90d6-7ec991320823}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{3dd11a7a-d101-4eea-80d2-a8409e8cc0f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{47b00db2-a518-4958-8ba9-ce1bee3c7212}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{88e6f337-d98a-4a0d-9270-7b2a6bb610da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{8527f1ab-5903-4a92-a4e8-7a50d28a8932}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -126,9 +138,6 @@
     <ClInclude Include="lodepng.h">
       <Filter>Header Files\png</Filter>
     </ClInclude>
-    <ClInclude Include="ChatParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Header Files\World</Filter>
     </ClInclude>
@@ -150,9 +159,6 @@
     <ClInclude Include="Skybox.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Settings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RaycastResult.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
@@ -164,9 +170,6 @@
     </ClInclude>
     <ClInclude Include="AABB.h">
       <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="ChatMessage.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C06PlayerPosLook.h">
       <Filter>Header Files\Packets</Filter>
@@ -183,14 +186,26 @@
     <ClInclude Include="CrosshairRenderer.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Title.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ConnectionManager.h">
       <Filter>Header Files\Net</Filter>
     </ClInclude>
     <ClInclude Include="C16Respawn.h">
       <Filter>Header Files\Packets</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatMessage.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatParser.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiRenderer.h">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -260,9 +275,6 @@
     <ClCompile Include="lodepng.cpp">
       <Filter>Source Files\png</Filter>
     </ClCompile>
-    <ClCompile Include="ChatParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Fbo.cpp">
       <Filter>Source Files\Postproc</Filter>
     </ClCompile>
@@ -310,6 +322,12 @@
     </ClCompile>
     <ClCompile Include="ConnectionManager.cpp">
       <Filter>Source Files\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatParser.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiRenderer.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

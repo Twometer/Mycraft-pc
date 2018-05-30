@@ -296,6 +296,7 @@ void OpenGLRenderer::start() {
 
 		Section::resetData();
 
+		/* Post Processing */
 		vec3 playerPos = controls->getPosition();
 		vec3 eyePos = controls->getEyePosition();
 
@@ -305,6 +306,7 @@ void OpenGLRenderer::start() {
 		else if (blockInEyes == 10 || blockInEyes == 11) fluidMode = 2;
 		postProc.doPostProc(fbo.getColorTexture(), fluidModeLocation, fluidMode);
 
+		/* GUI */
 		glUseProgram(guiShader);
 		glUniformMatrix4fv(loc_gui_projMat, 1, false, &projection[0][0]);
 		float offset = 100;
@@ -324,13 +326,14 @@ void OpenGLRenderer::start() {
 			builder.buildAndRender();
 		}
 
+		/* Crosshair */
 		glUseProgram(crosshairShader);
 		vec2 chOffset = vec2(width / 2, height / 2);
 		glUniform2fv(crosshairOffsetLocation, 1, &chOffset[0]);
 		glUniformMatrix4fv(crosshairMatrixLocation, 1, false, &projection[0][0]);
 		crosshairRenderer.render();
 
-
+		/* Font */
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glUseProgram(fontShader);
 		glUniformMatrix4fv(fontMatrixLocation, 1, false, &projection[0][0]);
@@ -356,18 +359,17 @@ void OpenGLRenderer::start() {
 		}
 		glEnable(GL_DEPTH_TEST);
 
+		/* FPS counter */
 		frames++;
-
 		if (current_time - lastReset > 1000) {
 			lastReset = current_time;
 			fps = frames;
 			frames = 0;
 		}
 
-
+		/* Swap buffers */
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-
 	}
 
 	fbo.cleanUp();

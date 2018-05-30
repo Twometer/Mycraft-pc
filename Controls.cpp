@@ -194,15 +194,15 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 	AABB myAABB = AABB(position - glm::vec3(0.33, 0, 0.33), position + glm::vec3(0.33, 1.9, 0.33));
 	vector<AABB> v = OpenGLRenderer::world->getCubes(floor(position.x), floor(position.y), floor(position.z), 6);
 	double yaOrg = velocityVector.y;
-	for (int i = 0; i < v.size(); i++) {
+	for (unsigned int i = 0; i < v.size(); i++) {
 		velocityVector.y = v.at(i).clipYCollide(myAABB, velocityVector.y);
 	}
 	myAABB.move(0, velocityVector.y, 0);
-	for (int i = 0; i < v.size(); i++) {
+	for (unsigned int i = 0; i < v.size(); i++) {
 		velocityVector.x = v.at(i).clipXCollide(myAABB, velocityVector.x);
 	}
 	myAABB.move(velocityVector.x, 0, 0);
-	for (int i = 0; i < v.size(); i++) {
+	for (unsigned int i = 0; i < v.size(); i++) {
 		velocityVector.z = v.at(i).clipZCollide(myAABB, velocityVector.z);
 	}
 	myAABB.move(0, 0, velocityVector.z);
