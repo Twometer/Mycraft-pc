@@ -4,6 +4,8 @@ class BBRenderer
 {
 private:
 	GLuint vao;
+
+
 public:
 	BBRenderer();
 	~BBRenderer();

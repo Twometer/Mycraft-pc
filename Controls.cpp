@@ -151,7 +151,8 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 			sprinting = true;
 		}
 		speed = sprinting ? speedBase * 1.5 : speedBase;
-		if (inFluid) speed *= .4;
+		if (!ctrl_flying && inFluid) speed *= .4;
+		if (ctrl_flying) speed *= 2;
 		if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS) {
 			motionVector += directionMovement * deltaTime * speed;
 		}
@@ -169,7 +170,7 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 		}
 		if (glfwGetKey(win, GLFW_KEY_SPACE) == GLFW_PRESS) {
 			if (isOnGround || (inFluid && ticks_in_water > 0.2) || ctrl_flying) {
-				motionVector += glm::vec3(0, inFluid ? 0.8 : 1.6, 0) * deltaTime * speedBase;
+				motionVector += glm::vec3(0, inFluid ? 0.8 : 1.6, 0) * deltaTime * speedBase * (ctrl_flying ? 2.0f : 1.0f);
 			}
 			if (!ctrl_flyingpr) {
 				ctrl_flyingpr = true;

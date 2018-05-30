@@ -99,6 +99,23 @@ void Font::renderTextWithShadow(string text, GLint loc, GLfloat x, GLfloat y, GL
 	renderText(text, loc, x - 1.0f, y - 1.0f, scale, color);
 }
 
+glm::ivec2 Font::getSize(string text) {
+	int w = 0;
+	int h = 0;
+	std::string::const_iterator c;
+	for (c = text.begin(); c != text.end(); c++)
+	{
+		if (*c == '§') continue;
+		if (c != text.begin() && *(c - 1) == '§') continue;
+
+		Character ch = Characters[*c];
+		w += ch.Size.x + ch.Bearing.x;
+		if (ch.Size.y > h)
+			h = ch.Size.y;
+	}
+	return ivec2(w, h);
+}
+
 void Font::renderText(string text, GLint loc, GLfloat x, GLfloat y, GLfloat scale, vec3 color) {
 	y = OpenGLRenderer::height - y;
 	glUniform3f(loc, color.x, color.y, color.z);

@@ -184,7 +184,7 @@
       <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="C16Respawn.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Net</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -208,13 +208,13 @@ static const GLfloat tgrassvertices_d[] = {
 SectionBuilder::SectionBuilder(Section* chunk)
 {
 	this->chunk = chunk;
-	this->vertices = new GLfloat[100000]; // Three entries per vertex
-	this->colors = new GLfloat[100000]; // Three entries per vertex
-	this->textureCoords = new GLfloat[75000]; // Two entries per vertex
+	this->vertices = new GLfloat[120000]; // Three entries per vertex
+	this->colors = new GLfloat[120000]; // Three entries per vertex
+	this->textureCoords = new GLfloat[90000]; // Two entries per vertex
 
-	this->verticesX = new GLfloat[25000]; // 3
-	this->colorsX = new GLfloat[25000]; // 3
-	this->textureCoordsX = new GLfloat[19000]; // 2
+	this->verticesX = new GLfloat[30000]; // 3
+	this->colorsX = new GLfloat[30000]; // 3
+	this->textureCoordsX = new GLfloat[22800]; // 2
 }
 
 SectionBuilder::~SectionBuilder()

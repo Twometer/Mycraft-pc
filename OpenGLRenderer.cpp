@@ -25,6 +25,7 @@
 #include "IPacket.h"
 #include "C07PlayerDigging.h"
 #include "CrosshairRenderer.h"
+#include "VboBuilder.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -190,7 +191,10 @@ void OpenGLRenderer::start() {
 	GLuint wireframeShader = loader.loadShaders("wireframe");
 	GLint loc_projMatWire = glGetUniformLocation(wireframeShader, "projectionMatrix");
 	GLint loc_mdvwMatWire = glGetUniformLocation(wireframeShader, "modelviewMatrix");
-	GLint offsetLocation = glGetUniformLocation(wireframeShader, "offset");
+	GLint loc_wire_offset = glGetUniformLocation(wireframeShader, "offset");
+
+	GLuint guiShader = loader.loadShaders("gui");
+	GLint loc_gui_projMat = glGetUniformLocation(guiShader, "projection");
 
 	MATRICES matrices;
 	projection = glm::ortho(0.0f, (float)OpenGLRenderer::width, 0.0f, (float)OpenGLRenderer::height);
@@ -270,7 +274,7 @@ void OpenGLRenderer::start() {
 		glUniformMatrix4fv(loc_mdvwMatWire, 1, false, &matrices.modelviewMatrix[0][0]);
 		glUniformMatrix4fv(loc_projMatWire, 1, false, &matrices.projectionMatrix[0][0]);
 		vec3 renderOffset = vec3(result.blockX, result.blockY, result.blockZ);
-		glUniform3fv(offsetLocation, 1, &renderOffset[0]);
+		glUniform3fv(loc_wire_offset, 1, &renderOffset[0]);
 		bbRenderer.render();
 		glEnable(GL_CULL_FACE);
 
@@ -300,6 +304,25 @@ void OpenGLRenderer::start() {
 		else if (blockInEyes == 10 || blockInEyes == 11) fluidMode = 2;
 		postProc.doPostProc(fbo.getColorTexture(), fluidModeLocation, fluidMode);
 
+		glUseProgram(guiShader);
+		glUniformMatrix4fv(loc_gui_projMat, 1, false, &projection[0][0]);
+		float offset = 100;
+		for (int i = chatMessages->size() - 1; i >= 0; i--) {
+			CHATMESSAGE msg = chatMessages->at(i);
+			if (chatOpen || current_time - msg.timeCreated < 10000) {
+				VboBuilder builder = VboBuilder(2);
+				builder.drawRect(15, offset - 7, 350, 25, COLORDATA(64, 64, 64, 128));
+				builder.buildAndRender();
+				offset += 25;
+				if (!chatOpen && height - offset < height / 3) break;
+			}
+		}
+		if (chatOpen) {
+			VboBuilder builder = VboBuilder(2);
+			builder.drawRect(15, 15, width - 30, 25, COLORDATA(64, 64, 64, 128));
+			builder.buildAndRender();
+		}
+
 		glUseProgram(crosshairShader);
 		vec2 chOffset = vec2(width / 2, height / 2);
 		glUniform2fv(crosshairOffsetLocation, 1, &chOffset[0]);
@@ -311,12 +334,11 @@ void OpenGLRenderer::start() {
 		glUseProgram(fontShader);
 		glUniformMatrix4fv(fontMatrixLocation, 1, false, &projection[0][0]);
 
-		float offset = height - 100;
-
+		offset = height - 100;
 		for (int i = chatMessages->size() - 1; i >= 0; i--) {
 			CHATMESSAGE msg = chatMessages->at(i);
 			if (chatOpen || current_time - msg.timeCreated < 10000) {
-				roboto.renderTextWithShadow(*msg.content, colorLocation, 15, 1.0f + offset, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+				roboto.renderTextWithShadow(*msg.content, colorLocation, 25, 1.0f + offset, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
 				offset -= 25;
 				if (!chatOpen && offset < height / 3) break;
 			}
@@ -329,7 +351,7 @@ void OpenGLRenderer::start() {
 
 		if (chatOpen) {
 			string append = current_time % 1000 < 500 ? "|" : "";
-			roboto.renderTextWithShadow(chatInput + append, colorLocation, 15, height - 15, 1.0f, vec3(1, 1, 1));
+			roboto.renderTextWithShadow(chatInput + append, colorLocation, 20, height - 22, 1.0f, vec3(1, 1, 1));
 		}
 		glEnable(GL_DEPTH_TEST);
 

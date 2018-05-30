@@ -23,6 +23,7 @@ private:
 public:
 	Font(const char* name, int size);
 	~Font();
+	glm::ivec2 getSize(std::string text);
 	void renderText(std::string text, GLint loc, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 	void renderTextWithShadow(std::string text, GLint loc, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 };
