@@ -178,7 +178,7 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 			else
 				printf("recv failed with error: %d\n", WSAGetLastError());
 		}
-	} while (iResult > 0);
+	} while (iResult > 0 && !closeRequested);
 
 	client.close();
 }
@@ -299,4 +299,8 @@ char* MinecraftSocket::createVarInt(int i, int* len) {
 	memcpy(r, c, allocated);
 	delete[] c;
 	return r;
+}
+
+void MinecraftSocket::disconnect() {
+	closeRequested = true;
 }

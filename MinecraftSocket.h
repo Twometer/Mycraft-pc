@@ -13,6 +13,7 @@ public:
 	int sendPacket(IPacket* packet);
 	static char* createVarInt(int i, int* len);
 	static bool connected;
+	void disconnect();
 private:
 	SOCKET ConnectSocket;
 	int compressionThreshold = 0;
@@ -21,5 +22,6 @@ private:
 	int receive(SOCKET socket, char* buf, int len);
 	int GetChunkPacketSize(int length, bool skyLight, bool continuous);
 	unsigned int countSetBits(unsigned int n);
+	bool closeRequested;
 };
 

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ConnectionManager.h"
 #include "MinecraftSocket.h"
-#include <thread>
 
 using namespace std;
 
@@ -29,5 +28,11 @@ void ConnectionManager::connect(const char* name, const char * ip, unsigned shor
 	ConnectionManager::name = name;
 	ConnectionManager::ip = ip;
 	ConnectionManager::port = port;
-	thread* t = new thread(&network_thread);
+	network_thread_inst = new thread(&network_thread);
+}
+
+void ConnectionManager::disconnect() {
+	MinecraftSocket::instance->disconnect();
+	network_thread_inst->join();
+	MinecraftSocket::instance = nullptr;
 }
