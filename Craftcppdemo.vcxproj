@@ -175,6 +175,7 @@
     <ClInclude Include="ChatParser.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkExtracted.h" />
+    <ClInclude Include="ConnectionManager.h" />
     <ClInclude Include="CrosshairRenderer.h" />
     <ClInclude Include="Fbo.h" />
     <ClInclude Include="Font.h" />
@@ -187,6 +188,7 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Title.h" />
     <ClInclude Include="VboBuilder.h" />
     <ClInclude Include="World.h" />
     <ClInclude Include="Section.h" />
@@ -220,6 +222,7 @@
     <ClCompile Include="ChatParser.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkExtracted.cpp" />
+    <ClCompile Include="ConnectionManager.cpp" />
     <ClCompile Include="CrosshairRenderer.cpp" />
     <ClCompile Include="Fbo.cpp" />
     <ClCompile Include="Font.cpp" />
@@ -239,7 +242,7 @@
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="SectionBuilder.cpp" />
     <ClCompile Include="ZlibUtils.cpp" />
-    <ClCompile Include="Craftcppdemo.cpp" />
+    <ClCompile Include="Mycraft.cpp" />
     <ClCompile Include="McBuffer.cpp" />
     <ClCompile Include="MinecraftSocket.cpp" />
     <ClCompile Include="stdafx.cpp">

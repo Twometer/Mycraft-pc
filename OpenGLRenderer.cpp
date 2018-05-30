@@ -26,6 +26,7 @@
 #include "C07PlayerDigging.h"
 #include "CrosshairRenderer.h"
 #include "VboBuilder.h"
+#include "Title.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -96,7 +97,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 }
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void OpenGLRenderer::start() {
-	width = 640;
+	width = 854;
 	height = 480;
 	GLFWwindow* window;
 	controls = new Controls();
@@ -112,7 +113,7 @@ void OpenGLRenderer::start() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(width, height, "Mycraft v1.0-beta", NULL, NULL);
+	window = glfwCreateWindow(width, height, GAME_TITLE, NULL, NULL);
 	if (!window)
 	{
 		cout << "Window could not be created" << endl;

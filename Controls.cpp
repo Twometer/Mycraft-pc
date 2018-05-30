@@ -10,7 +10,7 @@
 #include "Settings.h"
 #include "C06PlayerPosLook.h"
 
-glm::vec3 position = glm::vec3(-100, 270, -100);
+glm::vec3 position = glm::vec3(0, 0, 0);
 glm::vec3 velocityVector = glm::vec3(0, 0, 0);
 float yaw = 45.0f;
 float pitch = -15.0f;

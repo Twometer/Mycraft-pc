@@ -183,8 +183,14 @@
     <ClInclude Include="CrosshairRenderer.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="C16Respawn.h">
+    <ClInclude Include="Title.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectionManager.h">
       <Filter>Header Files\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="C16Respawn.h">
+      <Filter>Header Files\Packets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -214,9 +220,6 @@
     </ClCompile>
     <ClCompile Include="TcpClient.cpp">
       <Filter>Source Files\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="Craftcppdemo.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="C01PacketChat.cpp">
       <Filter>Source Files\Packets</Filter>
@@ -301,6 +304,12 @@
     </ClCompile>
     <ClCompile Include="C16Respawn.cpp">
       <Filter>Source Files\Packets</Filter>
+    </ClCompile>
+    <ClCompile Include="Mycraft.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectionManager.cpp">
+      <Filter>Source Files\Net</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
