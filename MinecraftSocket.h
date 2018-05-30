@@ -22,6 +22,6 @@ private:
 	int receive(SOCKET socket, char* buf, int len);
 	int GetChunkPacketSize(int length, bool skyLight, bool continuous);
 	unsigned int countSetBits(unsigned int n);
-	bool closeRequested;
+	bool closeRequested = false;
 };
 

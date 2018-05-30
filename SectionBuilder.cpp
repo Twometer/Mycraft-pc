@@ -5,6 +5,7 @@
 #include "OpenGLRenderer.h"
 #include "BlockRegistry.h"
 #include <iostream>
+#include "Settings.h"
 
 using namespace std;
 
@@ -226,6 +227,7 @@ bool canOcclude(int x, int y, int z) {
 }
 
 bool isOccluded(int x, int y, int z, int vx, int vy, int vz, int f) {
+	if (!Settings::AMBIENT_OCCLUSION) return false;
 	if (vx == 0) vx = -1;
 	if (vy == 0) vy = -1;
 	if (vz == 0) vz = -1;

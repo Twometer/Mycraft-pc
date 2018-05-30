@@ -7,7 +7,7 @@ using namespace std;
 const char* ConnectionManager::ip;
 const char* ConnectionManager::name;
 unsigned short ConnectionManager::port;
-
+thread* ConnectionManager::network_thread_inst;
 ConnectionManager::ConnectionManager()
 {
 }
