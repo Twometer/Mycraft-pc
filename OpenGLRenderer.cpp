@@ -28,6 +28,8 @@
 #include "VboBuilder.h"
 #include "Title.h"
 #include "GuiChat.h"
+#include "GuiPause.h"
+#include "TextureIds.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -70,10 +72,14 @@ void character_callback(GLFWwindow* window, unsigned int codepoint)
 }
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	bool guiOpen = OpenGLRenderer::guiRenderer->isGuiOpen();
 	OpenGLRenderer::guiRenderer->onKeyPress(key, action);
-	if (action == GLFW_RELEASE && key == GLFW_KEY_T && !OpenGLRenderer::guiRenderer->isGuiOpen())
+	if (action == GLFW_RELEASE && !guiOpen)
 	{
-		OpenGLRenderer::guiRenderer->displayGui(new GuiChat());
+		if (key == GLFW_KEY_T)
+			OpenGLRenderer::guiRenderer->displayGui(new GuiChat());
+		else if (key == GLFW_KEY_ESCAPE)
+			OpenGLRenderer::guiRenderer->displayGui(new GuiPause());
 	}
 }
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -136,15 +142,18 @@ void OpenGLRenderer::start() {
 	Loader loader;
 
 	cout << "Loading fonts..." << endl;
-	Font roboto = Font("fonts\\roboto.ttf", 18);
+	Font::roboto = Font("fonts\\roboto.ttf", 18);
 
 	// Creating vertex array
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 
 	// Loading textures
-	GLuint texture = loader.loadTexture("textures\\atlas_blocks.png");
-	GLuint crosshair = loader.loadTexture("textures\\hud\\crosshair.png");
+	GLuint texture = loader.loadTexture("textures\\atlas_blocks.png", false);
+	GLuint crosshair = loader.loadTexture("textures\\hud\\crosshair.png", false);
+	TextureIds::tex_guipause_back = loader.loadTexture("textures\\hud\\back.png", true);
+	TextureIds::tex_guipause_settings = loader.loadTexture("textures\\hud\\settings.png", true);
+	TextureIds::tex_guipause_leave = loader.loadTexture("textures\\hud\\leave.png", true);
 
 	manager = new AsyncVboBuildingManager();
 	manager->initialize();
@@ -182,6 +191,9 @@ void OpenGLRenderer::start() {
 
 	GLuint guiShader = loader.loadShaders("gui");
 	GLint loc_gui_projMat = glGetUniformLocation(guiShader, "projection");
+
+	GLuint guiTexShader = loader.loadShaders("guitex");
+	GLint loc_guit_projMat = glGetUniformLocation(guiTexShader, "projection");
 
 	MATRICES matrices;
 	projection = glm::ortho(0.0f, (float)OpenGLRenderer::width, 0.0f, (float)OpenGLRenderer::height);
@@ -312,7 +324,7 @@ void OpenGLRenderer::start() {
 
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
-		guiRenderer->onRender(xpos, ypos);
+		guiRenderer->onRender(xpos, ypos, FLAT, 0);
 
 		/* Crosshair */
 		glUseProgram(crosshairShader);
@@ -330,22 +342,23 @@ void OpenGLRenderer::start() {
 		for (int i = chatMessages->size() - 1; i >= 0; i--) {
 			CHATMESSAGE msg = chatMessages->at(i);
 			if (chatOpen || current_time - msg.timeCreated < 10000) {
-				roboto.renderTextWithShadow(*msg.content, colorLocation, 25, 1.0f + offset, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+				Font::roboto.renderTextWithShadow(*msg.content, colorLocation, 25, 1.0f + offset, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
 				offset -= 25;
 				if (!chatOpen && offset < height / 3) break;
 			}
 		}
 
+
 		/* Debug Information */
-		roboto.renderTextWithShadow("Debug Information", colorLocation, 25, 25, 1.0, vec3(1.0, 1.0, 1.0));
-		roboto.renderTextWithShadow(" FPS: " + to_string(fps), colorLocation, 25, 40, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
-		roboto.renderTextWithShadow(" XYZ: " + to_string(playerPos.x) + " " + to_string(playerPos.y) + " " + to_string(playerPos.z), colorLocation, 25, 55, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
-		if (chatOpen) {
-			string append = current_time % 1000 < 500 ? "|" : "";
-			string chatInput = ((GuiChat*)guiRenderer->getCurrentGui())->getInput();
-			roboto.renderTextWithShadow(chatInput + append, colorLocation, 20, OpenGLRenderer::height - 22, 1.0f, vec3(1, 1, 1));
-		}
+		Font::roboto.renderTextWithShadow("Debug Information", colorLocation, 25, 25, 1.0, vec3(1.0, 1.0, 1.0));
+		Font::roboto.renderTextWithShadow(" FPS: " + to_string(fps), colorLocation, 25, 40, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+		Font::roboto.renderTextWithShadow(" XYZ: " + to_string(playerPos.x) + " " + to_string(playerPos.y) + " " + to_string(playerPos.z), colorLocation, 25, 55, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+		guiRenderer->onRender(xpos, ypos, FONT, colorLocation);
 		glEnable(GL_DEPTH_TEST);
+
+		glUseProgram(guiTexShader);
+		glUniformMatrix4fv(loc_guit_projMat, 1, false, &projection[0][0]);
+		guiRenderer->onRender(xpos, ypos, TEX, 0);
 
 		/* FPS counter */
 		frames++;

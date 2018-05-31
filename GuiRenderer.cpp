@@ -31,10 +31,10 @@ void GuiRenderer::onCharPress(unsigned int chr)
 		currentGui->onCharPress(chr);
 }
 
-void GuiRenderer::onRender(int mouseX, int mouseY)
+void GuiRenderer::onRender(int mouseX, int mouseY, RENDERPASS pass, int colorLoc)
 {
 	if (currentGui != nullptr)
-		currentGui->onRender(mouseX, mouseY);
+		currentGui->onRender(mouseX, mouseY, pass, colorLoc);
 }
 
 void GuiRenderer::displayGui(Gui* gui)

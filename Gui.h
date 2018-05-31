@@ -1,4 +1,9 @@
 #pragma once
+enum RENDERPASS {
+	FLAT,
+	TEX,
+	FONT
+};
 class Gui
 {
 public:
@@ -8,7 +13,7 @@ public:
 	virtual void onKeyPress(int key, int action);
 	virtual void onCharPress(unsigned int chr);
 	virtual void onLoad();
-	virtual void onRender(int mouseX, int mouseY) = 0;
+	virtual void onRender(int mouseX, int mouseY, RENDERPASS pass, int colorLoc) = 0;
 	virtual int getIdentifier() = 0;
 };
 

@@ -19,7 +19,6 @@ void main(void){
 		colour.b *= 0.2;
 		colour.g *= 0.5;
 	}
-	
 	out_Colour = colour;
 	/*float brightness = (colour.r * 0.2126) + (colour.g * 0.7152) + (colour.b * 0.0722);
 	if(brightness > 0.3){

@@ -182,6 +182,7 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Gui.h" />
     <ClInclude Include="GuiChat.h" />
+    <ClInclude Include="GuiPause.h" />
     <ClInclude Include="GuiRenderer.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="Position.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureIds.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="VboBuilder.h" />
     <ClInclude Include="World.h" />
@@ -232,11 +234,13 @@
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="Gui.cpp" />
     <ClCompile Include="GuiChat.cpp" />
+    <ClCompile Include="GuiPause.cpp" />
     <ClCompile Include="GuiRenderer.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="TextureIds.cpp" />
     <ClCompile Include="VboBuilder.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="Section.cpp" />

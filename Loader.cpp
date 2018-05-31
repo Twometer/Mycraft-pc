@@ -46,7 +46,7 @@ IMAGE Loader::loadImage(const char * imagepath) {
 	return IMAGE(&image->front(), image->size(), width, height);
 }
 
-GLuint Loader::loadTexture(const char* imagepath) {
+GLuint Loader::loadTexture(const char* imagepath, bool smooth) {
 	IMAGE image = loadImage(imagepath);
 	GLuint textureID;
 	glGenTextures(1, &textureID);
@@ -55,8 +55,12 @@ GLuint Loader::loadTexture(const char* imagepath) {
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.data);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	int interpolation_mode = smooth ? GL_LINEAR : GL_NEAREST;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, interpolation_mode);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, interpolation_mode);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	return textureID;
 }
 

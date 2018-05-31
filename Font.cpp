@@ -5,6 +5,8 @@
 using namespace std;
 using namespace glm;
 
+Font Font::roboto;
+
 void loadColor(GLint loc, int x, int y, int z) {
 	glUniform3f(loc, x / (double)255, y / (double)255, z / (double)255);
 }
@@ -25,6 +27,11 @@ string stripColorCodes(string str) {
 		out += c;
 	}
 	return out;
+}
+
+Font::Font()
+{
+
 }
 
 Font::Font(const char* name, int size)

@@ -10,7 +10,7 @@ public:
 	void onMouseClick(int button, int action);
 	void onKeyPress(int key, int action);
 	void onCharPress(unsigned int chr);
-	void onRender(int mouseX, int mouseY);
+	void onRender(int mouseX, int mouseY, RENDERPASS pass, int colorLocation);
 
 	void displayGui(Gui* gui);
 	void closeGui();
@@ -18,4 +18,3 @@ public:
 	bool isGuiOpen(int id);
 	Gui* getCurrentGui();
 };
-

@@ -21,6 +21,8 @@ private:
 	GLuint vao;
 	std::map<GLchar, Character> Characters;
 public:
+	static Font roboto;
+	Font();
 	Font(const char* name, int size);
 	~Font();
 	glm::ivec2 getSize(std::string text);

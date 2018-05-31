@@ -21,7 +21,7 @@ public:
 	Loader();
 	~Loader();
 	IMAGE loadImage(const char* imagepath);
-	GLuint loadTexture(const char * imagepath);
+	GLuint loadTexture(const char * imagepath, bool smooth);
 	GLuint loadShaders(const char * vertex_file_path, const char * fragment_file_path);
 	GLuint loadShaders(const char * shaderName);
 	static GLuint load2dVao(GLfloat * positions, int amount);

@@ -4,6 +4,7 @@
 #include "OpenGLRenderer.h"
 #include "C01PacketChat.h"
 #include <glm/glm.hpp>
+#include "Font.h"
 
 using namespace glm;
 
@@ -35,11 +36,20 @@ void GuiChat::onCharPress(unsigned int chr)
 {
 	chatInput += chr;
 }
-void GuiChat::onRender(int mouseX, int mouseY)
+void GuiChat::onRender(int mouseX, int mouseY, RENDERPASS pass, int colorLocation)
 {
-	VboBuilder builder = VboBuilder(2);
-	builder.drawRect(15, 15, OpenGLRenderer::width - 30, 25, COLORDATA(64, 64, 64, 128));
-	builder.buildAndRender();
+	if (pass == FLAT)
+	{
+		VboBuilder builder = VboBuilder(2);
+		builder.drawRect(15, 15, OpenGLRenderer::width - 30, 25, COLORDATA(64, 64, 64, 128));
+		builder.buildAndRender();
+	}
+	else if (pass == FONT)
+	{
+		string append = clock() % 1000 < 500 ? "|" : "";
+		Font::roboto.renderTextWithShadow(chatInput + append, colorLocation, 20, OpenGLRenderer::height - 22, 1.0f, vec3(1, 1, 1));
+	}
+
 }
 void GuiChat::onLoad()
 {

@@ -15,6 +15,6 @@ public:
 	virtual void onLoad();
 	virtual void onKeyPress(int key, int action);
 	virtual void onCharPress(unsigned int chr);
-	virtual void onRender(int mouseX, int mouseY);
+	virtual void onRender(int mouseX, int mouseY, RENDERPASS pass, int colorLocation);
 };
 
