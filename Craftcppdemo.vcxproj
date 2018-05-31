@@ -241,6 +241,7 @@
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="Raycast.cpp" />
+    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="TextureIds.cpp" />
     <ClCompile Include="VboBuilder.cpp" />

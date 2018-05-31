@@ -1,14 +1,14 @@
 #include "Fbo.h"
 #include "OpenGLRenderer.h"
-
+#include "Settings.h"
 
 Fbo::Fbo() {
 
 }
 Fbo::Fbo(int width, int height, int depthBufferType)
 {
-	this->width = width;
-	this->height = height;
+	this->width = width * Settings::DOWNSCALING;
+	this->height = height * Settings::DOWNSCALING;
 	initializeFrameBuffer(depthBufferType);
 }
 
