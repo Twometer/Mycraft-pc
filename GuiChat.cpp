@@ -17,7 +17,8 @@ GuiChat::~GuiChat()
 {
 }
 
-int GuiChat::getIdentifier() {
+int GuiChat::getIdentifier()
+{
 	return GUI_IDENTIFIER;
 }
 
@@ -41,20 +42,20 @@ void GuiChat::onRender(int mouseX, int mouseY, RENDERPASS pass, int colorLocatio
 	if (pass == FLAT)
 	{
 		VboBuilder builder = VboBuilder(2);
-		builder.drawRect(15, 15, OpenGLRenderer::width - 30, 25, COLORDATA(64, 64, 64, 128));
+		builder.drawRect(10, 10, OpenGLRenderer::width - 20, 25, COLORDATA(0, 0, 0, 128));
 		builder.buildAndRender();
 	}
 	else if (pass == FONT)
 	{
 		string append = clock() % 1000 < 500 ? "|" : "";
-		Font::roboto.renderTextWithShadow(chatInput + append, colorLocation, 20, OpenGLRenderer::height - 22, 1.0f, vec3(1, 1, 1));
+		Font::roboto.renderTextWithShadow(chatInput + append, colorLocation, 15, OpenGLRenderer::height - 17, 1.0f, vec3(1, 1, 1));
 	}
-
 }
 void GuiChat::onLoad()
 {
 	chatInput = "";
 }
-std::string GuiChat::getInput() {
+std::string GuiChat::getInput()
+{
 	return chatInput;
 }

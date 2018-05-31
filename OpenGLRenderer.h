@@ -18,6 +18,7 @@ public:
 	static GuiRenderer* guiRenderer;
 	static vector<CHATMESSAGE>* chatMessages;
 	static void sendPacket(IPacket * packet);
+	static void setCursorVisibility(bool visible);
 	OpenGLRenderer();
 	~OpenGLRenderer();
 	void start();

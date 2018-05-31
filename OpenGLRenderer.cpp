@@ -51,6 +51,8 @@ glm::mat4 projection;
 Fbo fbo;
 
 bool lastPressed;
+
+GLFWwindow* window;
 OpenGLRenderer::OpenGLRenderer()
 {
 	world = new World();
@@ -87,10 +89,19 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	OpenGLRenderer::guiRenderer->onMouseClick(button, action);
 }
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-void OpenGLRenderer::start() {
+
+void OpenGLRenderer::setCursorVisibility(bool visible)
+{
+	if (visible)
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	else
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+}
+void OpenGLRenderer::start()
+{
 	width = 854;
 	height = 480;
-	GLFWwindow* window;
+
 	controls = new Controls();
 	frustum = new Frustum();
 	chatMessages = new vector<CHATMESSAGE>;
@@ -115,6 +126,7 @@ void OpenGLRenderer::start() {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCharCallback(window, character_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -277,7 +289,7 @@ void OpenGLRenderer::start() {
 		bbRenderer.render();
 		glEnable(GL_CULL_FACE);
 
-		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
+		if (!guiRenderer->isGuiOpen() && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
 			if (!lastPressed) {
 				sendPacket(new C07PlayerDigging(START_DESTROY_BLOCK, POSITION(result.blockX, result.blockY, result.blockZ), result.face));
 				sendPacket(new C07PlayerDigging(STOP_DESTROY_BLOCK, POSITION(result.blockX, result.blockY, result.blockZ), result.face));
@@ -315,7 +327,7 @@ void OpenGLRenderer::start() {
 			CHATMESSAGE msg = chatMessages->at(i);
 			if (chatOpen || current_time - msg.timeCreated < 10000) {
 				VboBuilder builder = VboBuilder(2);
-				builder.drawRect(15, offset - 7, 350, 25, COLORDATA(64, 64, 64, 128));
+				builder.drawRect(15, offset - 7, 350, 25, COLORDATA(0, 0, 0, 128));
 				builder.buildAndRender();
 				offset += 25;
 				if (!chatOpen && height - offset < height / 3) break;
@@ -338,12 +350,12 @@ void OpenGLRenderer::start() {
 		glUseProgram(fontShader);
 		glUniformMatrix4fv(fontMatrixLocation, 1, false, &projection[0][0]);
 
-		offset = height - 100;
+		offset = height - 100.0f;
 		for (int i = chatMessages->size() - 1; i >= 0; i--) {
 			CHATMESSAGE msg = chatMessages->at(i);
 			if (chatOpen || current_time - msg.timeCreated < 10000) {
 				Font::roboto.renderTextWithShadow(*msg.content, colorLocation, 25, 1.0f + offset, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
-				offset -= 25;
+				offset -= 25.0f;
 				if (!chatOpen && offset < height / 3) break;
 			}
 		}

@@ -1,6 +1,7 @@
 #include "GuiRenderer.h"
 #include "GLFW/glfw3.h"
 #include "Controls.h"
+#include "OpenGLRenderer.h"
 
 GuiRenderer::GuiRenderer()
 {
@@ -40,12 +41,14 @@ void GuiRenderer::onRender(int mouseX, int mouseY, RENDERPASS pass, int colorLoc
 void GuiRenderer::displayGui(Gui* gui)
 {
 	currentGui = gui;
+	OpenGLRenderer::setCursorVisibility(true);
 }
 
 void GuiRenderer::closeGui()
 {
 	currentGui = nullptr;
 	Controls::first = true;
+	OpenGLRenderer::setCursorVisibility(false);
 }
 
 bool GuiRenderer::isGuiOpen() 

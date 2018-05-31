@@ -219,6 +219,9 @@
     <ClInclude Include="TextureIds.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
+    <ClInclude Include="GuiImageButton.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -352,6 +355,9 @@
     </ClCompile>
     <ClCompile Include="TextureIds.cpp">
       <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiImageButton.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

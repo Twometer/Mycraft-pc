@@ -182,6 +182,7 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Gui.h" />
     <ClInclude Include="GuiChat.h" />
+    <ClInclude Include="GuiImageButton.h" />
     <ClInclude Include="GuiPause.h" />
     <ClInclude Include="GuiRenderer.h" />
     <ClInclude Include="lodepng.h" />
@@ -234,6 +235,7 @@
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="Gui.cpp" />
     <ClCompile Include="GuiChat.cpp" />
+    <ClCompile Include="GuiImageButton.cpp" />
     <ClCompile Include="GuiPause.cpp" />
     <ClCompile Include="GuiRenderer.cpp" />
     <ClCompile Include="lodepng.cpp" />
