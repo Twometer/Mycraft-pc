@@ -48,7 +48,7 @@ void GuiChat::onRender(int mouseX, int mouseY, RENDERPASS pass, int colorLocatio
 	else if (pass == FONT)
 	{
 		string append = clock() % 1000 < 500 ? "|" : "";
-		Font::roboto.renderTextWithShadow(chatInput + append, colorLocation, 15, OpenGLRenderer::height - 17, 1.0f, vec3(1, 1, 1));
+		Font::roboto.renderTextWithShadow(chatInput + append, colorLocation, 15, OpenGLRenderer::height - 16, 1.0f, vec3(1, 1, 1));
 	}
 }
 void GuiChat::onLoad()

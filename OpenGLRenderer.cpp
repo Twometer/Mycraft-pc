@@ -49,6 +49,7 @@ int OpenGLRenderer::height;
 glm::mat4 projection;
 
 Fbo fbo;
+PostProcessing postProc;
 
 bool lastPressed;
 
@@ -154,7 +155,7 @@ void OpenGLRenderer::start()
 	Loader loader;
 
 	cout << "Loading fonts..." << endl;
-	Font::roboto = Font("fonts\\roboto.ttf", 18);
+	Font::roboto = Font("fonts\\Roboto.ttf", 18);
 
 	// Creating vertex array
 	GLuint VertexArrayID;
@@ -178,9 +179,6 @@ void OpenGLRenderer::start()
 	GLuint fontShader = loader.loadShaders("font");
 	GLint fontMatrixLocation = glGetUniformLocation(fontShader, "projection");
 	GLint colorLocation = glGetUniformLocation(fontShader, "textColor");
-
-	GLuint postProcShader = loader.loadShaders("postproc");
-	GLint fluidModeLocation = glGetUniformLocation(postProcShader, "fluidMode");
 
 	GLuint crosshairShader = loader.loadShaders("crosshair");
 	GLint crosshairMatrixLocation = glGetUniformLocation(crosshairShader, "projection");
@@ -224,8 +222,9 @@ void OpenGLRenderer::start()
 	CrosshairRenderer crosshairRenderer = CrosshairRenderer(crosshair);
 	crosshairRenderer.init();
 
-	PostProcessing postProc = PostProcessing(postProcShader);
-	postProc.init();
+	postProc = PostProcessing();
+	postProc.init(loader);
+	postProc.resize(width, height);
 
 	vec3 skyColor = vec3(0.72f, 0.83f, 0.996f);
 
@@ -307,14 +306,8 @@ void OpenGLRenderer::start()
 		Section::resetData();
 
 		/* Post Processing */
-		vec3 playerPos = controls->getPosition();
-		vec3 eyePos = controls->getEyePosition();
 
-		char blockInEyes = world->getBlock(floor(eyePos.x), floor(eyePos.y), floor(eyePos.z));
-		int fluidMode = 0;
-		if (blockInEyes == 8 || blockInEyes == 9) fluidMode = 1;
-		else if (blockInEyes == 10 || blockInEyes == 11) fluidMode = 2;
-		postProc.doPostProc(fbo.getColorTexture(), fluidModeLocation, fluidMode);
+		postProc.doPostProc(fbo.getColorTexture());
 
 		/* GUI */
 		glUseProgram(guiShader);
@@ -327,7 +320,7 @@ void OpenGLRenderer::start()
 			CHATMESSAGE msg = chatMessages->at(i);
 			if (chatOpen || current_time - msg.timeCreated < 10000) {
 				VboBuilder builder = VboBuilder(2);
-				builder.drawRect(15, offset - 7, 350, 25, COLORDATA(0, 0, 0, 128));
+				builder.drawRect(15, offset - 7, 500, 25, COLORDATA(0, 0, 0, 128));
 				builder.buildAndRender();
 				offset += 25;
 				if (!chatOpen && height - offset < height / 3) break;
@@ -350,15 +343,17 @@ void OpenGLRenderer::start()
 		glUseProgram(fontShader);
 		glUniformMatrix4fv(fontMatrixLocation, 1, false, &projection[0][0]);
 
-		offset = height - 100.0f;
+		offset = height - 99.0f;
 		for (int i = chatMessages->size() - 1; i >= 0; i--) {
 			CHATMESSAGE msg = chatMessages->at(i);
 			if (chatOpen || current_time - msg.timeCreated < 10000) {
-				Font::roboto.renderTextWithShadow(*msg.content, colorLocation, 25, 1.0f + offset, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+				Font::roboto.renderTextWithShadow(*msg.content, colorLocation, 22, 1.0f + offset, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
 				offset -= 25.0f;
 				if (!chatOpen && offset < height / 3) break;
 			}
 		}
+
+		vec3 playerPos = controls->getPosition();
 
 
 		/* Debug Information */
@@ -400,4 +395,5 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 	OpenGLRenderer::height = height;
 	projection = glm::ortho(0.0f, (float)width, 0.0f, (float)height);
 	fbo = Fbo(width, height, DEPTH_RENDER_BUFFER);
+	postProc.resize(width, height);
 }

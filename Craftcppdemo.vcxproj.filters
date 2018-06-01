@@ -222,6 +222,9 @@
     <ClInclude Include="GuiImageButton.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="ImageRenderer.h">
+      <Filter>Header Files\Postproc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -361,6 +364,9 @@
     </ClCompile>
     <ClCompile Include="Settings.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageRenderer.cpp">
+      <Filter>Source Files\Postproc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

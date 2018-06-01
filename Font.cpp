@@ -41,9 +41,9 @@ Font::Font(const char* name, int size)
 		cout << "ERROR::FREETYPE: Could not init FreeType Library" << endl;
 
 	FT_Face face;
-	if (FT_New_Face(ft, "fonts/Roboto.ttf", 0, &face))
+	if (FT_New_Face(ft, name, 0, &face))
 		cout << "ERROR::FREETYPE: Failed to load font" << endl;
-	FT_Set_Pixel_Sizes(face, 0, 15);
+	FT_Set_Pixel_Sizes(face, 0, size);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
 

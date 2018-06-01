@@ -185,6 +185,7 @@
     <ClInclude Include="GuiImageButton.h" />
     <ClInclude Include="GuiPause.h" />
     <ClInclude Include="GuiRenderer.h" />
+    <ClInclude Include="ImageRenderer.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="PostProcessing.h" />
@@ -238,6 +239,7 @@
     <ClCompile Include="GuiImageButton.cpp" />
     <ClCompile Include="GuiPause.cpp" />
     <ClCompile Include="GuiRenderer.cpp" />
+    <ClCompile Include="ImageRenderer.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="Raycast.cpp" />
