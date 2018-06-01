@@ -227,7 +227,7 @@ bool canOcclude(int x, int y, int z) {
 }
 
 float getOcclusionFactor(int x, int y, int z, int vx, int vy, int vz, int f) {
-	if (!Settings::AMBIENT_OCCLUSION) return false;
+	if (!Settings::AMBIENT_OCCLUSION) return 1.0f;
 	if (vx == 0) vx = -1;
 	if (vy == 0) vy = -1;
 	if (vz == 0) vz = -1;
