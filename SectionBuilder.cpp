@@ -226,27 +226,36 @@ bool canOcclude(int x, int y, int z) {
 	return block && !BlockRegistry::isPlant(block) && block != 78;
 }
 
-bool isOccluded(int x, int y, int z, int vx, int vy, int vz, int f) {
+float getOcclusionFactor(int x, int y, int z, int vx, int vy, int vz, int f) {
 	if (!Settings::AMBIENT_OCCLUSION) return false;
 	if (vx == 0) vx = -1;
 	if (vy == 0) vy = -1;
 	if (vz == 0) vz = -1;
 
-	if (f == 0)
-		return canOcclude(x + vx, y + vy, z)
-		|| canOcclude(x + vx, y + vy, z + vz)
-		|| canOcclude(x + vx, y, z + vz);
+	if (f == 0) {
+		float oc = 1.0f;
+		if (canOcclude(x + vx, y + vy, z)) oc -= 0.2;
+		if (canOcclude(x + vx, y + vy, z + vz)) oc -= 0.2;
+		if (canOcclude(x + vx, y, z + vz)) oc -= 0.2;
+		return oc;
+	}
 
-	if (f == 1)
-		return canOcclude(x + vx, y + vy, z)
-		|| canOcclude(x, y + vy, z + vz)
-		|| canOcclude(x + vx, y + vy, z + vz);
+	if (f == 1) {
+		float oc = 1.0f;
+		if (canOcclude(x + vx, y + vy, z)) oc -= 0.2;
+		if (canOcclude(x, y + vy, z + vz)) oc -= 0.2;
+		if (canOcclude(x + vx, y + vy, z + vz)) oc -= 0.2;
+		return oc;
+	}
 
-	if (f == 2)
-		return canOcclude(x + vx, y, z + vz)
-		|| canOcclude(x, y + vy, z + vz)
-		|| canOcclude(x + vx, y + vy, z + vz);
-	return false;
+	if (f == 2) {
+		float oc = 1.0f;
+		if (canOcclude(x + vx, y, z + vz)) oc -= 0.2;
+		if (canOcclude(x, y + vy, z + vz)) oc -= 0.2;
+		if (canOcclude(x + vx, y + vy, z + vz)) oc -= 0.2;
+		return oc;
+	}
+	return 1.0f;
 }
 
 void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int texX, int texY, GLfloat col, GLfloat* vertexPtr, GLfloat* texPtr, GLfloat* colorPtr, int* vertexC, int* texC, int * colorC, int f, float ym) {
@@ -256,7 +265,7 @@ void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloa
 		GLfloat vy = *(vertices + i + 1);
 		GLfloat vz = *(vertices + i + 2);
 		vy *= ym;
-		GLfloat colx = ym != 1 ? 1.0f : !isOccluded(x, y, z, (int)vx, (int)vy, (int)vz, f) ? 1.0f : 0.7f;
+		GLfloat colx = ym != 1 ? 1.0f : getOcclusionFactor(x, y, z, (int)vx, (int)vy, (int)vz, f);
 		*(vertexPtr + ((*vertexC)++)) = vx + x;
 		*(vertexPtr + ((*vertexC)++)) = vy + y;
 		*(vertexPtr + ((*vertexC)++)) = vz + z;
