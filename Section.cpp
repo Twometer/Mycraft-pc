@@ -24,7 +24,8 @@ Section::~Section()
 {
 }
 
-void Section::buildVertexData() {
+void Section::buildVertexData()
+{
 	builder = new SectionBuilder(this);
 	builder->build(x << 4, idx << 4, z << 4);
 	this->vertexCount = builder->verticesAlloc;
@@ -32,7 +33,8 @@ void Section::buildVertexData() {
 	state = STATE_SHOULD_UPLOAD;
 }
 
-void Section::uploadVertexData() {
+void Section::uploadVertexData()
+{
 	int vertexCount = builder->verticesAlloc;
 	int colorCount = builder->colorsAlloc;
 	int textureCount = builder->textureCoordsAlloc;
@@ -83,117 +85,161 @@ void Section::uploadVertexData() {
 
 void Section::destroy()
 {
-	delete[] data;
+	state = State::STATE_SHOULD_DELETE;
+}
+
+void Section::check_deletion(bool transparencyPass)
+{
+	if (state == STATE_SHOULD_DELETE)
+	{
+		if(!dataCleared)
+		{
+			delete[] data;
+			dataCleared = true;
+		}
+		if (transparencyPass)
+		{
+			glDeleteBuffers(1, &vertexBufferX);
+			glDeleteBuffers(1, &colorBufferX);
+			glDeleteBuffers(1, &textureBufferX);
+			state = STATE_DELETED;
+			parent->destructionComplete(idx);
+		}
+		else
+		{
+			glDeleteBuffers(1, &vertexBuffer);
+			glDeleteBuffers(1, &colorBuffer);
+			glDeleteBuffers(1, &textureBuffer);
+		}
+	}
 }
 
 int vertexDataBuiltAmount;
-void Section::resetData() {
+
+void Section::resetData()
+{
 	vertexDataBuiltAmount = 0;
 }
-void Section::render(bool transparencyPass, bool inFrustum) {
-	if (state == STATE_SHOULD_BUILD) {
+
+void Section::render(bool transparencyPass, bool inFrustum)
+{
+	check_deletion(transparencyPass);
+	if (state == STATE_SHOULD_BUILD)
+	{
 		state = STATE_AWAITING_BUILD;
 		OpenGLRenderer::manager->schedule(this);
 	}
-	else if (state == STATE_SHOULD_UPLOAD && vertexDataBuiltAmount <= 8) {
+	else if (state == STATE_SHOULD_UPLOAD && vertexDataBuiltAmount <= 8)
+	{
 		vertexDataBuiltAmount++;
 		uploadVertexData();
 		state = STATE_SHOULD_RENDER;
 		continueRender = false;
 	}
-	if ((state == STATE_SHOULD_RENDER || continueRender) && inFrustum) {
-		if (transparencyPass) {
+	if ((state == STATE_SHOULD_RENDER || continueRender) && inFrustum)
+	{
+		if (transparencyPass)
+		{
 			if (vertexCountX <= 0)
 				return;
 			glBindBuffer(GL_ARRAY_BUFFER, vertexBufferX);
 			glVertexAttribPointer(
-				0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-				3,                  // size
-				GL_FLOAT,           // type
-				GL_FALSE,           // normalized?
-				0,                  // stride
-				(void*)0            // array buffer offset
+				0, // attribute 0. No particular reason for 0, but must match the layout in the shader.
+				3, // size
+				GL_FLOAT, // type
+				GL_FALSE, // normalized?
+				0, // stride
+				(void*)0 // array buffer offset
 			);
 			glBindBuffer(GL_ARRAY_BUFFER, colorBufferX);
 			glVertexAttribPointer(
-				1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-				3,                                // size
-				GL_FLOAT,                         // type
-				GL_FALSE,                         // normalized?
-				0,                                // stride
-				(void*)0                          // array buffer offset
+				1, // attribute. No particular reason for 1, but must match the layout in the shader.
+				3, // size
+				GL_FLOAT, // type
+				GL_FALSE, // normalized?
+				0, // stride
+				(void*)0 // array buffer offset
 			);
 			glBindBuffer(GL_ARRAY_BUFFER, textureBufferX);
 			glVertexAttribPointer(
-				2,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-				2,                                // size
-				GL_FLOAT,                         // type
-				GL_FALSE,                         // normalized?
-				0,                                // stride
-				(void*)0                          // array buffer offset
+				2, // attribute. No particular reason for 1, but must match the layout in the shader.
+				2, // size
+				GL_FLOAT, // type
+				GL_FALSE, // normalized?
+				0, // stride
+				(void*)0 // array buffer offset
 			);
 			glDrawArrays(GL_TRIANGLES, 0, vertexCountX);
 		}
-		else {
+		else
+		{
 			if (vertexCount <= 0)
 				return;
 			glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 			glVertexAttribPointer(
-				0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-				3,                  // size
-				GL_FLOAT,           // type
-				GL_FALSE,           // normalized?
-				0,                  // stride
-				(void*)0            // array buffer offset
+				0, // attribute 0. No particular reason for 0, but must match the layout in the shader.
+				3, // size
+				GL_FLOAT, // type
+				GL_FALSE, // normalized?
+				0, // stride
+				(void*)0 // array buffer offset
 			);
 			glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 			glVertexAttribPointer(
-				1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-				3,                                // size
-				GL_FLOAT,                         // type
-				GL_FALSE,                         // normalized?
-				0,                                // stride
-				(void*)0                          // array buffer offset
+				1, // attribute. No particular reason for 1, but must match the layout in the shader.
+				3, // size
+				GL_FLOAT, // type
+				GL_FALSE, // normalized?
+				0, // stride
+				(void*)0 // array buffer offset
 			);
 			glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
 			glVertexAttribPointer(
-				2,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-				2,                                // size
-				GL_FLOAT,                         // type
-				GL_FALSE,                         // normalized?
-				0,                                // stride
-				(void*)0                          // array buffer offset
+				2, // attribute. No particular reason for 1, but must match the layout in the shader.
+				2, // size
+				GL_FLOAT, // type
+				GL_FALSE, // normalized?
+				0, // stride
+				(void*)0 // array buffer offset
 			);
 			glDrawArrays(GL_TRIANGLES, 0, vertexCount);
 		}
 	}
 }
 
-void Section::generate() {
-	for (int x = 0; x < 16; x++) {
-		for (int z = 0; z < 16; z++) {
-			for (int y = 0; y < 16; y += 1) {
+void Section::generate()
+{
+	for (int x = 0; x < 16; x++)
+	{
+		for (int z = 0; z < 16; z++)
+		{
+			for (int y = 0; y < 16; y += 1)
+			{
 				setBlock(x, y, z, 1, false);
 			}
 		}
 	}
 }
 
-void Section::setBlock(int x, int y, int z, unsigned char blockId, bool update) {
+void Section::setBlock(int x, int y, int z, unsigned char blockId, bool update)
+{
 	*getBlockPointer(x, y, z) = blockId;
-	if (update && state != STATE_SHOULD_UPLOAD && state != STATE_AWAITING_BUILD) {
+	if (update && state != STATE_SHOULD_UPLOAD && state != STATE_AWAITING_BUILD)
+	{
 		state = STATE_SHOULD_BUILD;
 		continueRender = true;
 	}
 }
 
-unsigned char Section::getBlock(int x, int y, int z) {
+unsigned char Section::getBlock(int x, int y, int z)
+{
 	unsigned char* ptr = getBlockPointer(x, y, z);
 	if (ptr == nullptr) return 0;
 	return *ptr;
 }
 
-unsigned char* Section::getBlockPointer(int x, int y, int z) {
+unsigned char* Section::getBlockPointer(int x, int y, int z)
+{
 	int idx = (y * 16 + z) * 16 + x;
 	if (idx < 0 || idx > dataLen)
 		return nullptr;

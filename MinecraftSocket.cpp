@@ -137,7 +137,7 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 						int size = buf->readVarInt();
 						if(groundUpContinuous && bitmask == 0)
 						{
-							OpenGLRenderer::world->deleteChunk(chunkX, chunkZ);
+							OpenGLRenderer::world->destroyChunk(chunkX, chunkZ);
 						}
 					}*/
 					if (packetId == 0x23)

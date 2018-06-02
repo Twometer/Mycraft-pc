@@ -7,6 +7,7 @@ class Chunk
 {
 private:
 	Section * * sections;
+	bool deleted;
 public:
 	int x;
 	int z;
@@ -15,7 +16,9 @@ public:
 	void buildVertexData();
 	void uploadVertexData();
 	void render(bool transparencyPass);
+	void check_deletion(bool transparencyPass);
 	void destroy();
+	void destructionComplete(int idx);
 	void initialize(ChunkExtracted* data);
 	Chunk(int x, int z);
 	~Chunk();

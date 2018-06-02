@@ -14,10 +14,20 @@ Chunk::Chunk(int x, int z)
 }
 
 void Chunk::render(bool transparencyPass) {
+	if (deleted) return;
 	for (unsigned int i = 0; i < 16; i++) {
 		Section* sec = *(sections + i);
 		if (sec != nullptr)
 			sec->render(transparencyPass, OpenGLRenderer::frustum->CubeInFrustum((this->x << 4) + 8, (i << 4) + 8, (this->z << 4) + 8, 8));
+	}
+}
+
+void Chunk::check_deletion(bool transparencyPass)
+{
+	for (unsigned int i = 0; i < 16; i++) {
+		Section* sec = *(sections + i);
+		if (sec != nullptr)
+			sec->check_deletion(transparencyPass);
 	}
 }
 
@@ -29,6 +39,18 @@ void Chunk::destroy()
 			sec->destroy();
 	}
 }
+
+void Chunk::destructionComplete(int idx)
+{
+	sections[idx] = nullptr;
+	for (unsigned int i = 0; i < 16; i++) {
+		Section* sec = *(sections + i);
+		if (sec != nullptr)
+			return;
+	}
+	OpenGLRenderer::world->deleteChunk(x, z);
+}
+
 
 void Chunk::buildVertexData() {
 	for (unsigned int i = 0; i < 16; i++) {

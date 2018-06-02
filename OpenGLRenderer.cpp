@@ -55,6 +55,8 @@ PostProcessing postProc;
 bool lastPressed;
 
 GLFWwindow* window;
+
+bool show_debug = false;
 OpenGLRenderer::OpenGLRenderer()
 {
 	world = new World();
@@ -84,6 +86,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			OpenGLRenderer::guiRenderer->displayGui(new GuiChat());
 		else if (key == GLFW_KEY_ESCAPE)
 			OpenGLRenderer::guiRenderer->displayGui(new GuiPause());
+		else if (key == GLFW_KEY_F3)
+			show_debug = !show_debug;
 	}
 }
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -364,9 +368,11 @@ void OpenGLRenderer::start()
 
 
 		/* Debug Information */
-		Font::roboto.renderTextWithShadow("Debug Information", colorLocation, 25, 25, 1.0, vec3(1.0, 1.0, 1.0));
-		Font::roboto.renderTextWithShadow(" FPS: " + to_string(fps), colorLocation, 25, 40, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
-		Font::roboto.renderTextWithShadow(" XYZ: " + to_string(playerPos.x) + " " + to_string(playerPos.y) + " " + to_string(playerPos.z), colorLocation, 25, 55, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+		if (show_debug) {
+			Font::roboto.renderTextWithShadow("Debug Information", colorLocation, 25, 25, 1.0, vec3(1.0, 1.0, 1.0));
+			Font::roboto.renderTextWithShadow(" FPS: " + to_string(fps), colorLocation, 25, 43, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+			Font::roboto.renderTextWithShadow(" XYZ: " + to_string(playerPos.x) + " " + to_string(playerPos.y) + " " + to_string(playerPos.z), colorLocation, 25, 61, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+		}
 		guiRenderer->onRender(xpos, ypos, FONT, colorLocation);
 		glEnable(GL_DEPTH_TEST);
 

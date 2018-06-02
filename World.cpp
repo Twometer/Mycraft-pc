@@ -54,8 +54,11 @@ void World::render(bool transparencyPass) {
 	int pcz = (int)pos.z >> 4;
 	for (unsigned int i = 0; i < chunkLen; i++) {
 		Chunk* chk = *(chunkArray + i);
-		if (chk != nullptr && abs(chk->x - pcx) <= Settings::RENDER_DISTANCE && abs(chk->z - pcz) <= Settings::RENDER_DISTANCE) {
-			chk->render(transparencyPass);
+		if (chk != nullptr) {
+			if (abs(chk->x - pcx) <= Settings::RENDER_DISTANCE && abs(chk->z - pcz) <= Settings::RENDER_DISTANCE)
+				chk->render(transparencyPass);
+			else
+				chk->check_deletion(transparencyPass);
 		}
 	}
 }
@@ -67,7 +70,7 @@ void World::addChunk(Chunk *chk) {
 	mtx.unlock();
 }
 
-void World::deleteChunk(int x, int z)
+void World::destroyChunk(int x, int z)
 {
 	for (unsigned int i = 0; i < chunkLen; i++)
 	{
@@ -75,6 +78,18 @@ void World::deleteChunk(int x, int z)
 		if (chk != nullptr && chk->x == x && chk->z == z)
 		{
 			chk->destroy();
+			return;
+		}
+	}
+}
+
+void World::deleteChunk(int x, int z)
+{
+	for (unsigned int i = 0; i < chunkLen; i++)
+	{
+		Chunk* chk = chunkArray[i];
+		if (chk != nullptr && chk->x == x && chk->z == z)
+		{
 			chunkArray[i] = nullptr;
 			delete chk;
 		}
