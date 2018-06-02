@@ -37,6 +37,7 @@ public:
 	unsigned char* getBlockPointer(int x, int y, int z);
 	void buildVertexData();
 	void uploadVertexData();
+	void destroy();
 	void render(bool transparencyPass, bool inFrustum);
 	static void resetData();
 	Section(Chunk* parent, int x, int idx, int z);

@@ -15,6 +15,7 @@ public:
 	void buildVertexData();
 	void uploadVertexData();
 	void render(bool transparencyPass);
+	void destroy();
 	void initialize(ChunkExtracted* data);
 	Chunk(int x, int z);
 	~Chunk();

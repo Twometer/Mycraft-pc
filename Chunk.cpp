@@ -21,6 +21,15 @@ void Chunk::render(bool transparencyPass) {
 	}
 }
 
+void Chunk::destroy()
+{
+	for (unsigned int i = 0; i < 16; i++) {
+		Section* sec = *(sections + i);
+		if (sec != nullptr)
+			sec->destroy();
+	}
+}
+
 void Chunk::buildVertexData() {
 	for (unsigned int i = 0; i < 16; i++) {
 		Section* sec = *(sections + i);

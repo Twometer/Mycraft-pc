@@ -81,6 +81,11 @@ void Section::uploadVertexData() {
 	delete builder;
 }
 
+void Section::destroy()
+{
+	delete[] data;
+}
+
 int vertexDataBuiltAmount;
 void Section::resetData() {
 	vertexDataBuiltAmount = 0;

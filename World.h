@@ -12,6 +12,7 @@ public:
 	void setBlock(int x, int y, int z, unsigned char id);
 	void render(bool transparencyPass);
 	void addChunk(Chunk* chk);
+	void deleteChunk(int x, int z);
 	vector<AABB> getCubes(int x, int y, int z, int range);
 	World();
 	~World();

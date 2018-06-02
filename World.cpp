@@ -54,9 +54,8 @@ void World::render(bool transparencyPass) {
 	int pcz = (int)pos.z >> 4;
 	for (unsigned int i = 0; i < chunkLen; i++) {
 		Chunk* chk = *(chunkArray + i);
-		if (abs(chk->x - pcx) <= Settings::RENDER_DISTANCE && abs(chk->z - pcz) <= Settings::RENDER_DISTANCE) {
-			if (chk != nullptr)
-				chk->render(transparencyPass);
+		if (chk != nullptr && abs(chk->x - pcx) <= Settings::RENDER_DISTANCE && abs(chk->z - pcz) <= Settings::RENDER_DISTANCE) {
+			chk->render(transparencyPass);
 		}
 	}
 }
@@ -66,6 +65,20 @@ void World::addChunk(Chunk *chk) {
 	*(chunkArray + chunkLen) = chk;
 	chunkLen++;
 	mtx.unlock();
+}
+
+void World::deleteChunk(int x, int z)
+{
+	for (unsigned int i = 0; i < chunkLen; i++)
+	{
+		Chunk* chk = chunkArray[i];
+		if (chk != nullptr && chk->x == x && chk->z == z)
+		{
+			chk->destroy();
+			chunkArray[i] = nullptr;
+			delete chk;
+		}
+	}
 }
 
 vector<AABB> World::getCubes(int xx, int xy, int xz, int r) {
