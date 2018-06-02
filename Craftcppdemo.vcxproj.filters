@@ -225,6 +225,9 @@
     <ClInclude Include="ImageRenderer.h">
       <Filter>Header Files\Postproc</Filter>
     </ClInclude>
+    <ClInclude Include="GuiRespawn.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -367,6 +370,9 @@
     </ClCompile>
     <ClCompile Include="ImageRenderer.cpp">
       <Filter>Source Files\Postproc</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiRespawn.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

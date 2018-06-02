@@ -13,6 +13,7 @@ public:
 	virtual void onKeyPress(int key, int action);
 	virtual void onCharPress(unsigned int chr);
 	virtual void onLoad();
+	virtual bool mayClose();
 	virtual void onRender(int mouseX, int mouseY, RENDERPASS pass, int colorLoc) = 0;
 	virtual int getIdentifier() = 0;
 };

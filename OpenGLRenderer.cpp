@@ -30,6 +30,7 @@
 #include "GuiChat.h"
 #include "GuiPause.h"
 #include "TextureIds.h"
+#include "GuiRespawn.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -98,6 +99,10 @@ void OpenGLRenderer::setCursorVisibility(bool visible)
 	else
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
+void OpenGLRenderer::onKilled()
+{
+	guiRenderer->displayGui(new GuiRespawn());
+}
 void OpenGLRenderer::start()
 {
 	width = 854;
@@ -116,7 +121,7 @@ void OpenGLRenderer::start()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(width, height, GAME_TITLE, NULL, NULL);
+	window = glfwCreateWindow(width, height, GAME_TITLE, nullptr, nullptr);
 	if (!window)
 	{
 		cout << "Window could not be created" << endl;
@@ -156,6 +161,7 @@ void OpenGLRenderer::start()
 
 	cout << "Loading fonts..." << endl;
 	Font::roboto = Font("fonts\\Roboto.ttf", 18);
+	Font::robotoTitle = Font("fonts\\Roboto.ttf", 36);
 
 	// Creating vertex array
 	GLuint VertexArrayID;
@@ -167,6 +173,7 @@ void OpenGLRenderer::start()
 	TextureIds::tex_guipause_back = loader.loadTexture("textures\\hud\\back.png", true);
 	TextureIds::tex_guipause_settings = loader.loadTexture("textures\\hud\\settings.png", true);
 	TextureIds::tex_guipause_leave = loader.loadTexture("textures\\hud\\leave.png", true);
+	TextureIds::tex_guirespawn_respawn = loader.loadTexture("textures\\hud\\respawn.png", true);
 
 	manager = new AsyncVboBuildingManager();
 	manager->initialize();

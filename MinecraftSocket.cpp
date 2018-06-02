@@ -115,7 +115,7 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 					if (packetId == 0x06) {
 						float health = buf->readFloat();
 						if (health <= 0.1) {
-							sendPacket(new C16Respawn());
+							OpenGLRenderer::onKilled();
 						}
 					}
 					if (packetId == 0x08) {

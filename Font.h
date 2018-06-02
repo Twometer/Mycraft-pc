@@ -22,6 +22,7 @@ private:
 	std::map<GLchar, Character> Characters;
 public:
 	static Font roboto;
+	static Font robotoTitle;
 	Font();
 	Font(const char* name, int size);
 	~Font();

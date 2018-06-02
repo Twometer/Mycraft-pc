@@ -19,6 +19,7 @@ public:
 	static vector<CHATMESSAGE>* chatMessages;
 	static void sendPacket(IPacket * packet);
 	static void setCursorVisibility(bool visible);
+	static void onKilled();
 	OpenGLRenderer();
 	~OpenGLRenderer();
 	void start();

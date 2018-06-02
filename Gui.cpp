@@ -27,3 +27,8 @@ void Gui::onLoad()
 {
 
 }
+
+bool Gui::mayClose()
+{
+	return true;
+}

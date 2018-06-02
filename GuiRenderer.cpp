@@ -20,7 +20,7 @@ void GuiRenderer::onMouseClick(int button, int action)
 
 void GuiRenderer::onKeyPress(int key, int action)
 {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE && currentGui != nullptr && currentGui->mayClose())
 		closeGui();
 	if (currentGui != nullptr)
 		currentGui->onKeyPress(key, action);

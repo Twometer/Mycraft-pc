@@ -6,6 +6,7 @@ using namespace std;
 using namespace glm;
 
 Font Font::roboto;
+Font Font::robotoTitle;
 
 void loadColor(GLint loc, int x, int y, int z) {
 	glUniform3f(loc, x / (double)255, y / (double)255, z / (double)255);
