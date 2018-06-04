@@ -96,6 +96,18 @@ void World::deleteChunk(int x, int z)
 	}
 }
 
+void World::reload()
+{
+	for (unsigned int i = 0; i < chunkLen; i++)
+	{
+		Chunk* chk = chunkArray[i];
+		if (chk != nullptr)
+		{
+			chk->reload();
+		}
+	}
+}
+
 vector<AABB> World::getCubes(int xx, int xy, int xz, int r) {
 	vector<AABB> cubes = vector<AABB>();
 	for (int x = -r; x < r; x++)

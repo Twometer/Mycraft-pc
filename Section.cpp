@@ -92,7 +92,7 @@ void Section::check_deletion(bool transparencyPass)
 {
 	if (state == STATE_SHOULD_DELETE)
 	{
-		if(!dataCleared)
+		if (!dataCleared)
 		{
 			delete[] data;
 			dataCleared = true;
@@ -207,6 +207,15 @@ void Section::render(bool transparencyPass, bool inFrustum)
 	}
 }
 
+void Section::reload()
+{
+	if (state != STATE_SHOULD_UPLOAD && state != STATE_AWAITING_BUILD)
+	{
+		state = STATE_SHOULD_BUILD;
+		continueRender = true;
+	}
+}
+
 void Section::generate()
 {
 	for (int x = 0; x < 16; x++)
@@ -224,11 +233,7 @@ void Section::generate()
 void Section::setBlock(int x, int y, int z, unsigned char blockId, bool update)
 {
 	*getBlockPointer(x, y, z) = blockId;
-	if (update && state != STATE_SHOULD_UPLOAD && state != STATE_AWAITING_BUILD)
-	{
-		state = STATE_SHOULD_BUILD;
-		continueRender = true;
-	}
+	if (update) reload();
 }
 
 unsigned char Section::getBlock(int x, int y, int z)

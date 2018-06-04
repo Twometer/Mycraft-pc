@@ -12,4 +12,5 @@ void main(void){
 	}else{
 		out_Colour = vec4(0.0);
 	}
+	out_Colour.a = 1.0;
 }

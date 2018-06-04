@@ -125,6 +125,15 @@ void Chunk::initialize(ChunkExtracted* data) {
 	}
 }
 
+void Chunk::reload()
+{
+	for (unsigned int i = 0; i < 16; i++) {
+		Section* sec = *(sections + i);
+		if (sec != nullptr)
+			sec->reload();
+	}
+}
+
 Chunk::~Chunk()
 {
 }

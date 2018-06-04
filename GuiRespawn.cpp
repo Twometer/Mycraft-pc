@@ -7,7 +7,7 @@
 
 GuiRespawn::GuiRespawn()
 {
-	respawnButton.setCallback([=] {
+	respawnButton.set_callback([=] {
 		OpenGLRenderer::sendPacket(new C16Respawn());
 		OpenGLRenderer::guiRenderer->closeGui();
 	});
@@ -42,8 +42,8 @@ void GuiRespawn::onRender(int mouseX, int mouseY, RENDERPASS pass, int colorLoc)
 		Font::robotoTitle.renderTextWithShadow("You died!", colorLoc, wid / 2.0f - Font::robotoTitle.getSize("You died!").x / 2.0f - 10, y - 50, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 	}
 
-	respawnButton.drawAt(x, y, gui_width / 2, gui_height, mouseX, mouseY, colorLoc, pass);
-	exitButton.drawAt(x + gui_width / 2, y, gui_width / 2, gui_height, mouseX, mouseY, colorLoc, pass);
+	respawnButton.draw_at(x, y, gui_width / 2, gui_height, mouseX, mouseY, colorLoc, pass);
+	exitButton.draw_at(x + gui_width / 2, y, gui_width / 2, gui_height, mouseX, mouseY, colorLoc, pass);
 }
 
 int GuiRespawn::getIdentifier()

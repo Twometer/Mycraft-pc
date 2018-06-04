@@ -145,8 +145,7 @@ void OpenGLRenderer::start()
 		return;
 	}
 
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
+	glClearColor(0.72f, 0.83f, 0.996f, 0.0f);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -173,11 +172,18 @@ void OpenGLRenderer::start()
 
 	// Loading textures
 	GLuint texture = loader.loadTexture("textures\\atlas_blocks.png", false);
-	GLuint crosshair = loader.loadTexture("textures\\hud\\crosshair.png", false);
-	TextureIds::tex_guipause_back = loader.loadTexture("textures\\hud\\back.png", true);
-	TextureIds::tex_guipause_settings = loader.loadTexture("textures\\hud\\settings.png", true);
-	TextureIds::tex_guipause_leave = loader.loadTexture("textures\\hud\\leave.png", true);
-	TextureIds::tex_guirespawn_respawn = loader.loadTexture("textures\\hud\\respawn.png", true);
+	GLuint crosshair = loader.loadTexture("textures\\hud\\common\\crosshair.png", false);
+	TextureIds::tex_guipause_back = loader.loadTexture("textures\\hud\\common\\back.png", true);
+	TextureIds::tex_guipause_settings = loader.loadTexture("textures\\hud\\common\\settings.png", true);
+	TextureIds::tex_guipause_leave = loader.loadTexture("textures\\hud\\common\\leave.png", true);
+	TextureIds::tex_guirespawn_respawn = loader.loadTexture("textures\\hud\\common\\respawn.png", true);
+	TextureIds::tex_guisettings_advanced_water = loader.loadTexture("textures\\hud\\settings\\advanced_water.png", true);
+	TextureIds::tex_guisettings_ambient_occlusion = loader.loadTexture("textures\\hud\\settings\\ambient_occlusion.png", true);
+	TextureIds::tex_guisettings_bloom = loader.loadTexture("textures\\hud\\settings\\bloom.png", true);
+	TextureIds::tex_guisettings_downscaling = loader.loadTexture("textures\\hud\\settings\\downscaling.png", true);
+	TextureIds::tex_guisettings_fov = loader.loadTexture("textures\\hud\\settings\\fov.png", true);
+	TextureIds::tex_guisettings_render_distance = loader.loadTexture("textures\\hud\\settings\\render_distance.png", true);
+	TextureIds::tex_guisettings_skybox = loader.loadTexture("textures\\hud\\settings\\skybox.png", true);
 
 	manager = new AsyncVboBuildingManager();
 	manager->initialize();

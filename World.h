@@ -14,6 +14,7 @@ public:
 	void addChunk(Chunk* chk);
 	void destroyChunk(int x, int z);
 	void deleteChunk(int x, int z);
+	void reload();
 	vector<AABB> getCubes(int x, int y, int z, int range);
 	World();
 	~World();

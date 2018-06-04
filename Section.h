@@ -43,6 +43,7 @@ public:
 	void destroy();
 	void check_deletion(bool transparencyPass);
 	void render(bool transparencyPass, bool inFrustum);
+	void reload();
 	static void resetData();
 	Section(Chunk* parent, int x, int idx, int z);
 	~Section();

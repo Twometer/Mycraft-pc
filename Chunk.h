@@ -20,6 +20,7 @@ public:
 	void destroy();
 	void destructionComplete(int idx);
 	void initialize(ChunkExtracted* data);
+	void reload();
 	Chunk(int x, int z);
 	~Chunk();
 };

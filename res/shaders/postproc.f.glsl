@@ -19,5 +19,6 @@ void main(void){
 		colour.b *= 0.2;
 		colour.g *= 0.5;
 	}
+	colour.a = 1.0;
 	out_Colour = colour;
 }

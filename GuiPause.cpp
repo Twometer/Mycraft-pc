@@ -2,18 +2,19 @@
 #include "VboBuilder.h"
 #include "OpenGLRenderer.h"
 #include "Font.h"
+#include "GuiSettings.h"
 
 GuiPause::GuiPause()
 {
-	backButton.setCallback([=] {
+	backButton.set_callback([=] {
 		OpenGLRenderer::guiRenderer->closeGui();
 	});
 
-	settingsButton.setCallback([=] {
-
+	settingsButton.set_callback([=] {
+		OpenGLRenderer::guiRenderer->displayGui(new GuiSettings());
 	});
 
-	exitButton.setCallback([=] {
+	exitButton.set_callback([=] {
 
 	});
 }
@@ -42,9 +43,9 @@ void GuiPause::onRender(int mx, int my, RENDERPASS pass, int colorLoc)
 		builder.buildAndRender();
 	}
 
-	backButton.drawAt(x, y, gui_width / 3, gui_height, mx, my, colorLoc, pass);
-	settingsButton.drawAt(x + gui_width / 3, y, gui_width / 3, gui_height, mx, my, colorLoc, pass);
-	exitButton.drawAt(x + gui_width / 3 * 2, y, gui_width / 3, gui_height, mx, my, colorLoc, pass);
+	backButton.draw_at(x, y, gui_width / 3, gui_height, mx, my, colorLoc, pass);
+	settingsButton.draw_at(x + gui_width / 3, y, gui_width / 3, gui_height, mx, my, colorLoc, pass);
+	exitButton.draw_at(x + gui_width / 3 * 2, y, gui_width / 3, gui_height, mx, my, colorLoc, pass);
 }
 
 void GuiPause::onMouseClick(int btn, int a)

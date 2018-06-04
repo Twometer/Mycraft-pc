@@ -186,6 +186,7 @@
     <ClInclude Include="GuiPause.h" />
     <ClInclude Include="GuiRenderer.h" />
     <ClInclude Include="GuiRespawn.h" />
+    <ClInclude Include="GuiSettings.h" />
     <ClInclude Include="ImageRenderer.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="Position.h" />
@@ -241,6 +242,7 @@
     <ClCompile Include="GuiPause.cpp" />
     <ClCompile Include="GuiRenderer.cpp" />
     <ClCompile Include="GuiRespawn.cpp" />
+    <ClCompile Include="GuiSettings.cpp" />
     <ClCompile Include="ImageRenderer.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
