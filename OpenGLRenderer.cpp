@@ -145,7 +145,7 @@ void OpenGLRenderer::start()
 		return;
 	}
 
-	glClearColor(0.72f, 0.83f, 0.996f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 
 	glEnable(GL_DEPTH_TEST);

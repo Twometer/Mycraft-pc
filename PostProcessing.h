@@ -14,18 +14,26 @@ private:
 	GLuint shader_vgauss;
 	GLint shader_vgauss_loc;
 
+	GLuint shader_bright;
+	GLuint shader_mix;
+
 	GLuint vao;
 	void loadToVao(GLfloat* positions);
 	void start();
 	void stop();
 
-	GLuint apply_fluid(GLuint colorTex, bool toFbo);
-	GLuint apply_hgauss(GLuint colorTex, bool toFbo);
-	GLuint apply_vgauss(GLuint colorTex, bool toFbo);
+	void apply_fluid(GLuint colorTex, Fbo* fbo);
+	void apply_hgauss(GLuint colorTex, Fbo* fbo);
+	void apply_vgauss(GLuint colorTex, Fbo* fbo);
+	void apply_bright(GLuint colorTex, Fbo* fbo);
+	void apply_mix(GLuint colorTex, GLuint colorTex2 , Fbo* fbo);
 
 	Fbo fbo1;
 	Fbo fbo2;
 	Fbo fbo3;
+
+	Fbo fboDS1;
+	Fbo fboDS2;
 
 	int curWidth;
 	int curHeight;
