@@ -10,6 +10,11 @@ VboBuilder::VboBuilder(int dimen)
 
 VboBuilder::~VboBuilder()
 {
+	vertices.clear();
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vertexBuffer);
+	if (hasColor) glDeleteBuffers(1, &colorBuffer);
+	if (hasTexture) glDeleteBuffers(1, &textureBuffer);
 }
 
 void VboBuilder::vertex3(int x, int y, int z)
@@ -68,14 +73,13 @@ void VboBuilder::build()
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	GLuint vertexBuffer;
+	
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), &vertices.front(), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
 
 	if (hasColor) {
-		GLuint colorBuffer;
 		glGenBuffers(1, &colorBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * colors.size(), &colors.front(), GL_STATIC_DRAW);
@@ -83,7 +87,6 @@ void VboBuilder::build()
 	}
 
 	if (hasTexture) {
-		GLuint textureBuffer;
 		glGenBuffers(1, &textureBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * texVertices.size(), &texVertices.front(), GL_STATIC_DRAW);

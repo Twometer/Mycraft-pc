@@ -26,6 +26,10 @@ Section::~Section()
 
 void Section::buildVertexData()
 {
+	if (builder != nullptr)
+	{
+		delete builder;
+	}
 	builder = new SectionBuilder(this);
 	builder->build(x << 4, idx << 4, z << 4);
 	this->vertexCount = builder->verticesAlloc;
@@ -35,6 +39,13 @@ void Section::buildVertexData()
 
 void Section::uploadVertexData()
 {
+	glDeleteBuffers(1, &vertexBuffer);
+	glDeleteBuffers(1, &colorBuffer);
+	glDeleteBuffers(1, &textureBuffer);
+	glDeleteBuffers(1, &vertexBufferX);
+	glDeleteBuffers(1, &colorBufferX);
+	glDeleteBuffers(1, &textureBufferX);
+
 	int vertexCount = builder->verticesAlloc;
 	int colorCount = builder->colorsAlloc;
 	int textureCount = builder->textureCoordsAlloc;
@@ -81,6 +92,7 @@ void Section::uploadVertexData()
 	this->vertexBufferX = vertexbufferX;
 	this->textureBufferX = texturebufferX;
 	delete builder;
+	builder = nullptr;
 }
 
 void Section::destroy()

@@ -336,9 +336,10 @@ void OpenGLRenderer::start()
 		for (int i = chatMessages->size() - 1; i >= 0; i--) {
 			CHATMESSAGE msg = chatMessages->at(i);
 			if (chatOpen || current_time - msg.timeCreated < 10000) {
-				VboBuilder builder = VboBuilder(2);
-				builder.drawRect(15, offset - 7, 500, 25, COLORDATA(0, 0, 0, 128));
-				builder.buildAndRender();
+				VboBuilder* builder = new VboBuilder(2);
+				builder->drawRect(15, offset - 7, 500, 25, COLORDATA(0, 0, 0, 128));
+				builder->buildAndRender();
+				delete builder;
 				offset += 25;
 				if (!chatOpen && height - offset < height / 3) break;
 			}

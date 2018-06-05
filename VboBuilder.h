@@ -28,6 +28,10 @@ private:
 	std::vector<GLfloat> vertices;
 	std::vector<GLfloat> colors;
 	std::vector<GLfloat> texVertices;
+	GLuint vertexBuffer;
+	GLuint textureBuffer;
+	GLuint colorBuffer;
+
 	bool hasColor;
 	bool hasTexture;
 public:
