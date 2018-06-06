@@ -31,6 +31,7 @@
 #include "GuiPause.h"
 #include "TextureIds.h"
 #include "GuiRespawn.h"
+#include "ShadowMapRenderer.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -243,6 +244,8 @@ void OpenGLRenderer::start()
 	postProc.init(loader);
 	postProc.resize(width, height);
 
+	ShadowMapRenderer shadowMapRenderer(loader);
+
 	vec3 skyColor = vec3(0.72f, 0.83f, 0.996f);
 
 	glUniform3f(skyColorLocation, skyColor.x, skyColor.y, skyColor.z);
@@ -304,6 +307,8 @@ void OpenGLRenderer::start()
 		glUniform3fv(loc_wire_offset, 1, &renderOffset[0]);
 		bbRenderer.render();
 		glEnable(GL_CULL_FACE);
+
+		shadowMapRenderer.render();
 
 		if (!guiRenderer->isGuiOpen() && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
 			if (!lastPressed) {
@@ -386,6 +391,11 @@ void OpenGLRenderer::start()
 		glUseProgram(guiTexShader);
 		glUniformMatrix4fv(loc_guit_projMat, 1, false, &projection[0][0]);
 		guiRenderer->onRender(xpos, ypos, TEX, 0);
+
+		glBindTexture(GL_TEXTURE_2D, shadowMapRenderer.get_shadow_map());
+		VboBuilder builder = VboBuilder(2);
+		builder.drawRect(0, 0, 640, 480, COLORDATA(255, 255, 255, 255), true);
+		builder.buildAndRender();
 
 		/* FPS counter */
 		frames++;

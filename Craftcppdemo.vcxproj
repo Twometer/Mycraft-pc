@@ -194,6 +194,9 @@
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="RaycastResult.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="ShadowBox.h" />
+    <ClInclude Include="ShadowFrameBuffer.h" />
+    <ClInclude Include="ShadowMapRenderer.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureIds.h" />
@@ -248,6 +251,9 @@
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="ShadowBox.cpp" />
+    <ClCompile Include="ShadowFrameBuffer.cpp" />
+    <ClCompile Include="ShadowMapRenderer.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="TextureIds.cpp" />
     <ClCompile Include="VboBuilder.cpp" />

@@ -64,6 +64,12 @@
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{8527f1ab-5903-4a92-a4e8-7a50d28a8932}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Shadows">
+      <UniqueIdentifier>{53611d98-eb62-45b2-a138-039196b666f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Shadows">
+      <UniqueIdentifier>{7c3d7c2c-e0b0-4f47-a6fb-5339f1e140a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -231,6 +237,15 @@
     <ClInclude Include="GuiSettings.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="ShadowFrameBuffer.h">
+      <Filter>Header Files\Shadows</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowBox.h">
+      <Filter>Header Files\Shadows</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMapRenderer.h">
+      <Filter>Header Files\Shadows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -379,6 +394,15 @@
     </ClCompile>
     <ClCompile Include="GuiSettings.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowFrameBuffer.cpp">
+      <Filter>Source Files\Shadows</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowBox.cpp">
+      <Filter>Source Files\Shadows</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMapRenderer.cpp">
+      <Filter>Source Files\Shadows</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

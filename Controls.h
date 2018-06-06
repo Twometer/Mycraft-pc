@@ -13,6 +13,8 @@ class Controls
 
 public:
 	static bool first;
+	static float near_plane;
+	static float far_plane;
 	Controls();
 	~Controls();
 	MATRICES computeMatrices(GLFWwindow* win);

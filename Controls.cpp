@@ -36,6 +36,9 @@ bool ctrl_flying;
 bool ctrl_flyingpr;
 float ctrl_flyinglast;
 
+float Controls::far_plane = 2000.0f;
+float Controls::near_plane = 0.1f;
+
 Controls::Controls()
 {
 }
@@ -233,7 +236,7 @@ MATRICES Controls::computeMatrices(GLFWwindow* win) {
 
 	float add = fovDiff * sprintTicks;
 
-	glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(Settings::FOV + (add)), (float)OpenGLRenderer::width / (float)OpenGLRenderer::height, 0.1f, 2000.0f);
+	glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(Settings::FOV + (add)), (float)OpenGLRenderer::width / (float)OpenGLRenderer::height, near_plane, far_plane);
 	glm::mat4 ViewMatrix = glm::lookAt(
 		eyePosition,           // Camera is here
 		eyePosition + direction, // and looks here : at the same position, plus "direction"
