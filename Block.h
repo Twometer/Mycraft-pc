@@ -1,15 +1,21 @@
 #pragma once
 #include "Texture.h"
+enum RendererType {
+	Fluid,
+	Transparent,
+	Plant,
+	Solid
+};
+
 class Block
 {
 public:
 	char id;
-	bool isFluid;
+	RendererType rendererType;
 	TEXTURE topTex;
 	TEXTURE sideTex;
 	TEXTURE bottomTex;
 
-	Block(char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, bool fluid);
+	Block(char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, RendererType rendererType);
 	~Block();
 };
-

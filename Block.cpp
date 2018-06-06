@@ -2,13 +2,13 @@
 
 
 
-Block::Block(char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, bool fluid)
+Block::Block(char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, RendererType rendererType)
 {
 	this->id = id;
 	this->topTex = topTex;
 	this->sideTex = sideTex;
 	this->bottomTex = bottomTex;
-	this->isFluid = fluid;
+	this->rendererType = rendererType;
 }
 
 

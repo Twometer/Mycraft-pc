@@ -9,8 +9,8 @@ private:
 	static Block** registry;
 	static void registerBlock(unsigned char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex);
 	static void registerBlock(unsigned char id, TEXTURE allTex);
-	static void registerBlock(unsigned char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, bool fluid);
-	static void registerBlock(unsigned char id, TEXTURE allTex, bool fluid);
+	static void registerBlock(unsigned char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, RendererType type);
+	static void registerBlock(unsigned char id, TEXTURE allTex, RendererType type);
 public:
 	BlockRegistry();
 	~BlockRegistry();
