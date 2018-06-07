@@ -193,6 +193,14 @@ void OpenGLRenderer::start()
 	GLint mvMatrixLocation = glGetUniformLocation(simpleShader, "mvMatrix");
 	GLint prMatrixLocation = glGetUniformLocation(simpleShader, "prMatrix");
 	GLint skyColorLocation = glGetUniformLocation(simpleShader, "skyColor");
+	GLint toShadowMapSpaceLocation = glGetUniformLocation(simpleShader, "toShadowMapSpace");
+	GLint texSamplerLocation = glGetUniformLocation(simpleShader, "texSampler");
+	GLint shadowMapLocation = glGetUniformLocation(simpleShader, "shadowMap");
+
+	glUseProgram(simpleShader);
+	glUniform1i(texSamplerLocation, 0);
+	glUniform1i(shadowMapLocation, 1);
+	glUseProgram(0);
 
 	GLuint fontShader = loader.loadShaders("font");
 	GLint fontMatrixLocation = glGetUniformLocation(fontShader, "projection");
@@ -253,6 +261,13 @@ void OpenGLRenderer::start()
 	{
 		int current_time = clock();
 
+		/* Shadow Map */
+		glBindVertexArray(VertexArrayID);
+		glEnableVertexAttribArray(0);
+		shadowMapRenderer.render();
+		glDisableVertexAttribArray(0);
+
+		/* World renderer */
 		fbo.bindFrameBuffer();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -261,16 +276,19 @@ void OpenGLRenderer::start()
 		matrices = controls->computeMatrices(window);
 		glUniformMatrix4fv(mvMatrixLocation, 1, false, &matrices.modelviewMatrix[0][0]);
 		glUniformMatrix4fv(prMatrixLocation, 1, false, &matrices.projectionMatrix[0][0]);
-
-
+		glUniformMatrix4fv(toShadowMapSpaceLocation, 1, false, &shadowMapRenderer.get_to_shadow_map_space_matrix()[0][0]);
+		
 		glBindVertexArray(VertexArrayID);
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, shadowMapRenderer.get_shadow_map());
 
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
-		world->render(false); // Render pass 1: Solid and transparent blocks
+		world->render(false, false); // Render pass 1: Solid and transparent blocks
 
 		if (Settings::ADVANCED_WATER) {
 			glUseProgram(waterShader);
@@ -280,7 +298,7 @@ void OpenGLRenderer::start()
 			glUniform3f(skyColorLocationW, skyColor.x, skyColor.y, skyColor.z);
 		}
 		glDisable(GL_CULL_FACE);
-		world->render(true); // Render pass 2: Translucent blocks (water, etc.)
+		world->render(true, false); // Render pass 2: Translucent blocks (water, etc.)
 		glEnable(GL_CULL_FACE);
 
 		glDisableVertexAttribArray(2);
@@ -319,12 +337,6 @@ void OpenGLRenderer::start()
 		else lastPressed = false;
 
 		fbo.unbindFrameBuffer();
-
-		/* Shadow Map */
-		glBindVertexArray(VertexArrayID);
-		glEnableVertexAttribArray(0);
-		shadowMapRenderer.render();
-		glDisableVertexAttribArray(0);
 
 		glDisable(GL_DEPTH_TEST);
 
@@ -392,6 +404,7 @@ void OpenGLRenderer::start()
 		guiRenderer->onRender(xpos, ypos, FONT, colorLocation);
 		glEnable(GL_DEPTH_TEST);
 
+		/* Textured GUIs */
 		glUseProgram(guiTexShader);
 		glUniformMatrix4fv(loc_guit_projMat, 1, false, &projection[0][0]);
 		guiRenderer->onRender(xpos, ypos, TEX, 0);

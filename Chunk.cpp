@@ -13,12 +13,12 @@ Chunk::Chunk(int x, int z)
 	for (int i = 0; i < 16; i++) *(sections + i) = nullptr;
 }
 
-void Chunk::render(bool transparencyPass) {
+void Chunk::render(bool transparencyPass, bool ignoreFrustum) {
 	if (deleted) return;
 	for (unsigned int i = 0; i < 16; i++) {
 		Section* sec = *(sections + i);
 		if (sec != nullptr)
-			sec->render(transparencyPass, OpenGLRenderer::frustum->CubeInFrustum((this->x << 4) + 8, (i << 4) + 8, (this->z << 4) + 8, 8));
+			sec->render(transparencyPass, ignoreFrustum || OpenGLRenderer::frustum->CubeInFrustum((this->x << 4) + 8, (i << 4) + 8, (this->z << 4) + 8, 8));
 	}
 }
 

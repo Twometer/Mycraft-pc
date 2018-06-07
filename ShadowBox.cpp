@@ -36,7 +36,7 @@ vec4** ShadowBox::calculate_frustum_vertices(mat4 rotation, vec3 forward, vec3 c
 vec4* ShadowBox::calculate_light_space_frustum_corner(vec3 startPoint, vec3 direction, float width)
 {
 	vec3 point = startPoint + (direction * width);
-	vec4 point4 = lightViewMatrix * vec4(point, 1.0f);
+	vec4 point4 = lightViewMatrix * vec4(point, 1.f);
 	return new vec4(point4);
 }
 
@@ -45,7 +45,7 @@ mat4 ShadowBox::calculate_camera_rot_matrix()
 	mat4 rotation = mat4(1.0f);
 	vec2 camRotation = OpenGLRenderer::controls->getRotation();
 	rotation = rotate(rotation, radians(-camRotation.x), vec3(0, 1, 0));
-	rotate(rotation, radians(-camRotation.y), vec3(1, 0, 0));
+	rotation = rotate(rotation, radians(-camRotation.y), vec3(1, 0, 0));
 	return rotation;
 }
 
@@ -83,6 +83,7 @@ void ShadowBox::update()
 
 	mat4 rotation = calculate_camera_rot_matrix();
 	vec3 forwardVec = rotation * forward;
+	
 	vec3 toFar = forwardVec * shadowDistance;
 	vec3 toNear = forwardVec * Controls::near_plane;
 	vec3 centerNear = toNear + camera_pos;
@@ -104,12 +105,24 @@ void ShadowBox::update()
 			first = false;
 			continue;
 		}
-		if (point.x > maxX) maxX = point.x;
-		else if (point.x < minX) minX = point.x;
-		if (point.y > maxY) maxY = point.y;
-		else if (point.y < minY) minY = point.y;
-		if (point.z > maxZ) maxZ = point.z;
-		else if (point.z < minZ) minZ = point.z;
+		if (point.x > maxX) {
+			maxX = point.x;
+		}
+		else if (point.x < minX) {
+			minX = point.x;
+		}
+		if (point.y > maxY) {
+			maxY = point.y;
+		}
+		else if (point.y < minY) {
+			minY = point.y;
+		}
+		if (point.z > maxZ) {
+			maxZ = point.z;
+		}
+		else if (point.z < minZ) {
+			minZ = point.z;
+		}
 	}
 	delete[] points;
 	maxZ += offset;

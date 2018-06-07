@@ -48,7 +48,7 @@ void World::setBlock(int x, int y, int z, unsigned char id)
 	}
 }
 
-void World::render(bool transparencyPass) {
+void World::render(bool transparencyPass, bool ignoreFrustum) {
 	glm::vec3 pos = OpenGLRenderer::controls->getPosition();
 	int pcx = (int)pos.x >> 4;
 	int pcz = (int)pos.z >> 4;
@@ -56,9 +56,7 @@ void World::render(bool transparencyPass) {
 		Chunk* chk = *(chunkArray + i);
 		if (chk != nullptr) {
 			if (abs(chk->x - pcx) <= Settings::RENDER_DISTANCE && abs(chk->z - pcz) <= Settings::RENDER_DISTANCE)
-				chk->render(transparencyPass);
-			else
-				chk->check_deletion(transparencyPass);
+				chk->render(transparencyPass, ignoreFrustum);
 		}
 	}
 }

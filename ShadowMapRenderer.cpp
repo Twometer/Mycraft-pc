@@ -27,7 +27,7 @@ void ShadowMapRenderer::update_light_view_matrix(vec3 direction, vec3 center)
 	center *= -1;
 	lightViewMatrix = mat4(1.0f); // Create identity matrix
 	float pitch = acos(length(vec2(direction.x, direction.z)));
-	lightViewMatrix = rotate(lightViewMatrix, radians(pitch), vec3(1, 0, 0));
+	lightViewMatrix = rotate(lightViewMatrix, pitch, vec3(1, 0, 0));
 	float yaw = degrees(atan((float)direction.x / direction.z));
 	yaw = direction.z > 0 ? yaw - 180 : yaw;
 	lightViewMatrix = rotate(lightViewMatrix, -radians(yaw), vec3(0, 1, 0));
@@ -72,7 +72,7 @@ void ShadowMapRenderer::render()
 	vec3 sunPosition = vec3(1000000, 1500000, -1000000);
 	vec3 lightDirection = -sunPosition;
 	prepare(lightDirection);
-	OpenGLRenderer::world->render(false);
+	OpenGLRenderer::world->render(false, true);
 	finish();
 }
 

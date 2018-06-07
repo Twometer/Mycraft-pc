@@ -10,7 +10,7 @@ public:
 	int chunkLen;
 	unsigned char getBlock(int x, int y, int z);
 	void setBlock(int x, int y, int z, unsigned char id);
-	void render(bool transparencyPass);
+	void render(bool transparencyPass, bool ignoreFrustum);
 	void addChunk(Chunk* chk);
 	void destroyChunk(int x, int z);
 	void deleteChunk(int x, int z);

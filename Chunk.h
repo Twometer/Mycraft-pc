@@ -15,7 +15,7 @@ public:
 	void setBlock(int x, int y, int z, unsigned char id, bool updateSection);
 	void buildVertexData();
 	void uploadVertexData();
-	void render(bool transparencyPass);
+	void render(bool transparencyPass, bool ignoreFrustum);
 	void check_deletion(bool transparencyPass);
 	void destroy();
 	void destructionComplete(int idx);

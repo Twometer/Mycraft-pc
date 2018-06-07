@@ -10,15 +10,23 @@ out vec2 UV;
 
 out float visibility;
 
+out vec4 shadowCoords;
+
 uniform mat4 mvMatrix;
 uniform mat4 prMatrix;
+uniform mat4 toShadowMapSpace;
 
 const float density = 0.015;
 const float gradient = 1.25;
 
 void main(){
-	vec4 positionRelativeToCam = mvMatrix * vec4(vertexPosition_modelspace, 1.0);
-    gl_Position = prMatrix * positionRelativeToCam;
+	
+
+	vec4 vertexPosition = vec4(vertexPosition_modelspace, 1.0);
+	vec4 positionRelativeToCam = mvMatrix * vertexPosition;
+	vec4 worldPos = prMatrix * positionRelativeToCam;
+	shadowCoords = toShadowMapSpace * vertexPosition;
+    gl_Position = worldPos;
 	
 	fragmentColor = vertexColor;
 	UV = vertexUV;
