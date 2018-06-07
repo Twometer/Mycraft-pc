@@ -59,7 +59,7 @@ void ShadowBox::calculate_widths_and_heights()
 
 float ShadowBox::get_aspect_ratio()
 {
-	return (float)OpenGLRenderer::width / OpenGLRenderer::height;
+	return (float)OpenGLRenderer::width / (float)OpenGLRenderer::height;
 }
 
 ShadowBox::ShadowBox()

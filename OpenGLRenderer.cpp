@@ -308,8 +308,6 @@ void OpenGLRenderer::start()
 		bbRenderer.render();
 		glEnable(GL_CULL_FACE);
 
-		shadowMapRenderer.render();
-
 		if (!guiRenderer->isGuiOpen() && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
 			if (!lastPressed) {
 				sendPacket(new C07PlayerDigging(START_DESTROY_BLOCK, POSITION(result.blockX, result.blockY, result.blockZ), result.face));
@@ -321,6 +319,12 @@ void OpenGLRenderer::start()
 		else lastPressed = false;
 
 		fbo.unbindFrameBuffer();
+
+		/* Shadow Map */
+		glBindVertexArray(VertexArrayID);
+		glEnableVertexAttribArray(0);
+		shadowMapRenderer.render();
+		glDisableVertexAttribArray(0);
 
 		glDisable(GL_DEPTH_TEST);
 
