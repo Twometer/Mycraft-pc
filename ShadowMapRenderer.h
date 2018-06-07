@@ -10,12 +10,12 @@ private:
 	ShadowBox shadowBox;
 	ShadowFrameBuffer shadowFbo;
 	GLuint shadowShader;
-	glm::mat4 projectionMatrix;
-	glm::mat4 lightViewMatrix;
-	glm::mat4 projectionViewMatrix;
+	glm::mat4 projectionMatrix = glm::mat4(1.0f);
+	glm::mat4 lightViewMatrix = glm::mat4(1.0f);
+	glm::mat4 projectionViewMatrix = glm::mat4(1.0f);
 	glm::mat4 offset;
 
-	static const int SHADOW_MAP_SIZE = 20148;
+	static const int SHADOW_MAP_SIZE = 2048;
 	void prepare(glm::vec3 lightDirection);
 	void finish();
 	void update_light_view_matrix(glm::vec3 direction, glm::vec3 center);

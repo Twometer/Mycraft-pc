@@ -12,8 +12,7 @@ void ShadowMapRenderer::prepare(vec3 lightDirection)
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glUseProgram(shadowShader);
-	mat4 mvpMatrix = projectionViewMatrix * mat4(1.0f);
-	glUniformMatrix4fv(shadowShaderLoc, 1, false, &mvpMatrix[0][0]);
+	glUniformMatrix4fv(shadowShaderLoc, 1, false, &projectionViewMatrix[0][0]);
 }
 
 void ShadowMapRenderer::finish()
@@ -28,11 +27,12 @@ void ShadowMapRenderer::update_light_view_matrix(vec3 direction, vec3 center)
 	center *= -1;
 	lightViewMatrix = mat4(1.0f); // Create identity matrix
 	float pitch = acos(length(vec2(direction.x, direction.z)));
-	rotate(lightViewMatrix, radians(pitch), vec3(1, 0, 0));
+	lightViewMatrix = rotate(lightViewMatrix, radians(pitch), vec3(1, 0, 0));
 	float yaw = degrees(atan((float)direction.x / direction.z));
 	yaw = direction.z > 0 ? yaw - 180 : yaw;
-	rotate(lightViewMatrix, -radians(yaw), vec3(0, 1, 0));
-	translate(lightViewMatrix, center);
+	lightViewMatrix = rotate(lightViewMatrix, -radians(yaw), vec3(0, 1, 0));
+	lightViewMatrix = translate(lightViewMatrix, center);
+	shadowBox.set_light_view_matrix(lightViewMatrix);
 }
 
 void ShadowMapRenderer::update_ortho_projection_matrix(float width, float height, float length)
@@ -47,8 +47,8 @@ void ShadowMapRenderer::update_ortho_projection_matrix(float width, float height
 mat4 ShadowMapRenderer::create_offset()
 {
 	mat4 offset = mat4(1.0f);
-	translate(offset, vec3(0.5f, 0.5f, 0.5f));
-	scale(offset, vec3(0.5f, 0.5f, 0.5f));
+	offset = translate(offset, vec3(0.5f, 0.5f, 0.5f));
+	offset = scale(offset, vec3(0.5f, 0.5f, 0.5f));
 	return offset;
 }
 

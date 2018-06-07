@@ -42,9 +42,9 @@ vec4* ShadowBox::calculate_light_space_frustum_corner(vec3 startPoint, vec3 dire
 
 mat4 ShadowBox::calculate_camera_rot_matrix()
 {
-	mat4 rotation = mat4();
+	mat4 rotation = mat4(1.0f);
 	vec2 camRotation = OpenGLRenderer::controls->getRotation();
-	rotate(rotation, radians(-camRotation.x), vec3(0, 1, 0));
+	rotation = rotate(rotation, radians(-camRotation.x), vec3(0, 1, 0));
 	rotate(rotation, radians(-camRotation.y), vec3(1, 0, 0));
 	return rotation;
 }
@@ -54,7 +54,7 @@ void ShadowBox::calculate_widths_and_heights()
 	farWidth = shadowDistance * tan(radians(Settings::FOV));
 	nearWidth = Controls::near_plane * tan(radians(Settings::FOV));
 	farHeight = farWidth / get_aspect_ratio();
-	farHeight = nearWidth / get_aspect_ratio();
+	nearHeight = nearWidth / get_aspect_ratio();
 }
 
 float ShadowBox::get_aspect_ratio()
@@ -109,10 +109,15 @@ void ShadowBox::update()
 		if (point.y > maxY) maxY = point.y;
 		else if (point.y < minY) minY = point.y;
 		if (point.z > maxZ) maxZ = point.z;
-		else if (point.z > minZ) minZ = point.z;
+		else if (point.z < minZ) minZ = point.z;
 	}
 	delete[] points;
 	maxZ += offset;
+}
+
+void ShadowBox::set_light_view_matrix(glm::mat4 mat)
+{
+	lightViewMatrix = mat;
 }
 
 vec3 ShadowBox::get_center()

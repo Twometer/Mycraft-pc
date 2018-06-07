@@ -25,6 +25,7 @@ public:
 	ShadowBox(glm::mat4 lightViewMatrix);
 	~ShadowBox();
 	void update();
+	void set_light_view_matrix(glm::mat4 mat);
 	glm::vec3 get_center();
 	float get_width();
 	float get_height();
