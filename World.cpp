@@ -43,7 +43,7 @@ void World::setBlock(int x, int y, int z, unsigned char id)
 	for (unsigned int i = 0; i < chunkLen; i++) {
 		Chunk* chk = *(chunkArray + i);
 		if (chk != nullptr && chk->x == chunkX && chk->z == chunkZ) {
-			chk->setBlock(x - (chunkX << 4), y, z - (chunkZ << 4), id, true);
+			chk->setBlock(x & 15, y, z & 15, id, true);
 		}
 	}
 }

@@ -58,6 +58,7 @@ ShadowMapRenderer::ShadowMapRenderer(Loader loader)
 	shadowFbo = ShadowFrameBuffer(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
 	shadowShader = loader.loadShaders("shadow");
 	shadowShaderLoc = glGetUniformLocation(shadowShader, "mvpMatrix");
+
 	offset = create_offset();
 }
 

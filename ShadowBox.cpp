@@ -44,16 +44,16 @@ mat4 ShadowBox::calculate_camera_rot_matrix()
 {
 	mat4 rotation = mat4(1.0f);
 	vec2 camRotation = OpenGLRenderer::controls->getRotation();
+	rotation = rotate(rotation, radians(-(camRotation.y - 90)), vec3(1, 0, 0));
 	rotation = rotate(rotation, radians(-camRotation.x), vec3(0, 1, 0));
-	rotation = rotate(rotation, radians(-camRotation.y), vec3(1, 0, 0));
 	return rotation;
 }
 
 void ShadowBox::calculate_widths_and_heights()
 {
-	farWidth = shadowDistance * tan(radians(Settings::FOV));
-	nearWidth = Controls::near_plane * tan(radians(Settings::FOV));
+	farWidth = tan(radians(Settings::FOV)) * shadowDistance;
 	farHeight = farWidth / get_aspect_ratio();
+	nearWidth = tan(radians(Settings::FOV)) * Controls::near_plane;
 	nearHeight = nearWidth / get_aspect_ratio();
 }
 
@@ -83,7 +83,7 @@ void ShadowBox::update()
 
 	mat4 rotation = calculate_camera_rot_matrix();
 	vec3 forwardVec = rotation * forward;
-	
+
 	vec3 toFar = forwardVec * shadowDistance;
 	vec3 toNear = forwardVec * Controls::near_plane;
 	vec3 centerNear = toNear + camera_pos;

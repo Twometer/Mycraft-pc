@@ -9,6 +9,8 @@ Chunk::Chunk(int x, int z)
 {
 	this->x = x;
 	this->z = z;
+	this->worldX = x << 4;
+	this->worldZ = z << 4;
 	this->sections = new Section*[16];
 	for (int i = 0; i < 16; i++) *(sections + i) = nullptr;
 }
@@ -18,7 +20,7 @@ void Chunk::render(bool transparencyPass, bool ignoreFrustum) {
 	for (unsigned int i = 0; i < 16; i++) {
 		Section* sec = *(sections + i);
 		if (sec != nullptr)
-			sec->render(transparencyPass, ignoreFrustum || OpenGLRenderer::frustum->CubeInFrustum((this->x << 4) + 8, (i << 4) + 8, (this->z << 4) + 8, 8));
+			sec->render(transparencyPass, ignoreFrustum || OpenGLRenderer::frustum->CubeInFrustum(worldX + 8, (i << 4) + 8, worldZ + 8, 8));
 	}
 }
 

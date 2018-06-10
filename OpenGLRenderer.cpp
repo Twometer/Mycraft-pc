@@ -260,11 +260,14 @@ void OpenGLRenderer::start()
 	while (!glfwWindowShouldClose(window))
 	{
 		int current_time = clock();
-
 		/* Shadow Map */
 		glBindVertexArray(VertexArrayID);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
 		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(2);
 		shadowMapRenderer.render();
+		glDisableVertexAttribArray(2);
 		glDisableVertexAttribArray(0);
 
 		/* World renderer */
@@ -408,11 +411,6 @@ void OpenGLRenderer::start()
 		glUseProgram(guiTexShader);
 		glUniformMatrix4fv(loc_guit_projMat, 1, false, &projection[0][0]);
 		guiRenderer->onRender(xpos, ypos, TEX, 0);
-
-		glBindTexture(GL_TEXTURE_2D, shadowMapRenderer.get_shadow_map());
-		VboBuilder builder = VboBuilder(2);
-		builder.drawRect(0, 0, 640, 480, COLORDATA(255, 255, 255, 255), true);
-		builder.buildAndRender();
 
 		/* FPS counter */
 		frames++;

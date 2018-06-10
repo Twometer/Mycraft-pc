@@ -15,7 +15,7 @@ private:
 	glm::mat4 projectionViewMatrix = glm::mat4(1.0f);
 	glm::mat4 offset;
 
-	static const int SHADOW_MAP_SIZE = 2048;
+	static const int SHADOW_MAP_SIZE = 2048 * 2;
 	void prepare(glm::vec3 lightDirection);
 	void finish();
 	void update_light_view_matrix(glm::vec3 direction, glm::vec3 center);
