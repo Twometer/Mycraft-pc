@@ -189,17 +189,17 @@ void OpenGLRenderer::start()
 	manager = new AsyncVboBuildingManager();
 	manager->initialize();
 
-	GLuint simpleShader = loader.loadShaders("simple");
-	GLint mvMatrixLocation = glGetUniformLocation(simpleShader, "mvMatrix");
-	GLint prMatrixLocation = glGetUniformLocation(simpleShader, "prMatrix");
-	GLint skyColorLocation = glGetUniformLocation(simpleShader, "skyColor");
-	GLint toShadowMapSpaceLocation = glGetUniformLocation(simpleShader, "toShadowMapSpace");
-	GLint texSamplerLocation = glGetUniformLocation(simpleShader, "texSampler");
-	GLint shadowMapLocation = glGetUniformLocation(simpleShader, "shadowMap");
+	GLuint terrainShader = loader.loadShaders(Settings::SHADOWS ? "terrain.shadow" : "terrain");
+	GLint mvMatrixLocation = glGetUniformLocation(terrainShader, "mvMatrix");
+	GLint prMatrixLocation = glGetUniformLocation(terrainShader, "prMatrix");
+	GLint skyColorLocation = glGetUniformLocation(terrainShader, "skyColor");
+	GLint toShadowMapSpaceLocation = glGetUniformLocation(terrainShader, "toShadowMapSpace");
+	GLint texSamplerLocation = glGetUniformLocation(terrainShader, "texSampler");
+	GLint shadowMapLocation = glGetUniformLocation(terrainShader, "shadowMap");
 
-	glUseProgram(simpleShader);
+	glUseProgram(terrainShader);
 	glUniform1i(texSamplerLocation, 0);
-	glUniform1i(shadowMapLocation, 1);
+	if (Settings::SHADOWS) glUniform1i(shadowMapLocation, 1);
 	glUseProgram(0);
 
 	GLuint fontShader = loader.loadShaders("font");
@@ -260,32 +260,37 @@ void OpenGLRenderer::start()
 	while (!glfwWindowShouldClose(window))
 	{
 		int current_time = clock();
-		/* Shadow Map */
-		glBindVertexArray(VertexArrayID);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(2);
-		shadowMapRenderer.render();
-		glDisableVertexAttribArray(2);
-		glDisableVertexAttribArray(0);
+		if (Settings::SHADOWS) {
+			/* Shadow Map */
+			glBindVertexArray(VertexArrayID);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, texture);
+			glEnableVertexAttribArray(0);
+			glEnableVertexAttribArray(2);
+			shadowMapRenderer.render();
+			glDisableVertexAttribArray(2);
+			glDisableVertexAttribArray(0);
+		}
 
 		/* World renderer */
 		fbo.bindFrameBuffer();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(simpleShader);
+		glUseProgram(terrainShader);
 
 		matrices = controls->computeMatrices(window);
 		glUniformMatrix4fv(mvMatrixLocation, 1, false, &matrices.modelviewMatrix[0][0]);
 		glUniformMatrix4fv(prMatrixLocation, 1, false, &matrices.projectionMatrix[0][0]);
-		glUniformMatrix4fv(toShadowMapSpaceLocation, 1, false, &shadowMapRenderer.get_to_shadow_map_space_matrix()[0][0]);
-		
+		if (Settings::SHADOWS)
+			glUniformMatrix4fv(toShadowMapSpaceLocation, 1, false, &shadowMapRenderer.get_to_shadow_map_space_matrix()[0][0]);
+
 		glBindVertexArray(VertexArrayID);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, shadowMapRenderer.get_shadow_map());
+		if (Settings::SHADOWS) {
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, shadowMapRenderer.get_shadow_map());
+		}
 
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
@@ -428,7 +433,7 @@ void OpenGLRenderer::start()
 	fbo.cleanUp();
 
 	glDeleteVertexArrays(1, &VertexArrayID);
-	glDeleteProgram(simpleShader);
+	glDeleteProgram(terrainShader);
 	glfwTerminate();
 	return;
 }

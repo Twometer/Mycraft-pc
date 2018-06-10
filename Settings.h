@@ -8,4 +8,5 @@ public:
 	static int RENDER_DISTANCE;
 	static float DOWNSCALING;
 	static bool BLOOM;
+	static bool SHADOWS;
 };
