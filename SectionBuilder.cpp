@@ -19,12 +19,12 @@ static const GLfloat vertices_negative_x[] = {
 };
 
 static const GLfloat tvertices_negative_x[] = {
-	1.0f, 1.0f,
 	0.0f, 1.0f,
-	0.0f, 0.0f,
 	1.0f, 1.0f,
-	0.0f, 0.0f,
-	1.0f, 0.0f
+	1.0f, 0.0f,
+	0.0f, 1.0f,
+	1.0f, 0.0f,
+	0.0f, 0.0f
 };
 
 static const GLfloat vertices_negative_y[] = {
@@ -37,12 +37,12 @@ static const GLfloat vertices_negative_y[] = {
 };
 
 static const GLfloat tvertices_negative_y[] = {
-	1.0f, 1.0f,
-	0.0f, 0.0f,
-	1.0f, 0.0f,
-	1.0f, 1.0f,
 	0.0f, 1.0f,
-	0.0f, 0.0f
+	1.0f, 0.0f,
+	0.0f, 0.0f,
+	0.0f, 1.0f,
+	1.0f, 1.0f,
+	1.0f, 0.0f
 };
 
 static const GLfloat vertices_negative_z[] = {
@@ -55,12 +55,12 @@ static const GLfloat vertices_negative_z[] = {
 };
 
 static const GLfloat tvertices_negative_z[] = {
-	1.0f, 0.0f,
-	0.0f, 1.0f,
 	0.0f, 0.0f,
-	1.0f, 0.0f,
 	1.0f, 1.0f,
-	0.0f, 1.0f
+	1.0f, 0.0f,
+	0.0f, 0.0f,
+	0.0f, 1.0f,
+	1.0f, 1.0f
 };
 
 static const GLfloat vertices_positive_x[] = {
@@ -73,12 +73,12 @@ static const GLfloat vertices_positive_x[] = {
 };
 
 static const GLfloat tvertices_positive_x[] = {
-	0.0f, 1.0f,
-	1.0f, 0.0f,
 	1.0f, 1.0f,
-	1.0f, 0.0f,
+	0.0f, 0.0f,
 	0.0f, 1.0f,
 	0.0f, 0.0f,
+	1.0f, 1.0f,
+	1.0f, 0.0f,
 };
 
 static const GLfloat vertices_positive_y[] = {
@@ -91,12 +91,12 @@ static const GLfloat vertices_positive_y[] = {
 };
 
 static const GLfloat tvertices_positive_y[] = {
-	1.0f, 1.0f,
+	0.0f, 1.0f,
+	0.0f, 0.0f,
 	1.0f, 0.0f,
-	0.0f, 0.0f,
-	1.0f, 1.0f,
-	0.0f, 0.0f,
-	0.0f, 1.0f
+	0.0f, 1.0f,
+	1.0f, 0.0f,
+	1.0f, 1.0f
 };
 
 
@@ -110,12 +110,12 @@ static const GLfloat vertices_positive_z[] = {
 };
 
 static const GLfloat tvertices_positive_z[] = {
-	1.0f, 0.0f,
-	1.0f, 1.0f,
-	0.0f, 1.0f,
 	0.0f, 0.0f,
+	0.0f, 1.0f,
+	1.0f, 1.0f,
 	1.0f, 0.0f,
-	0.0f, 1.0f
+	0.0f, 0.0f,
+	1.0f, 1.0f
 };
 
 static const GLfloat grassvertices_a[] = {
