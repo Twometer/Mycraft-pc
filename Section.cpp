@@ -181,7 +181,7 @@ void Section::render(bool transparencyPass, bool inFrustum)
 				0, // stride
 				(void*)0 // array buffer offset
 			);
-			glDrawArrays(GL_TRIANGLES, 0, vertexCountX);
+			glDrawArrays(GL_TRIANGLES, 0, vertexCountX / 3);
 		}
 		else
 		{
@@ -214,7 +214,7 @@ void Section::render(bool transparencyPass, bool inFrustum)
 				0, // stride
 				(void*)0 // array buffer offset
 			);
-			glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+			glDrawArrays(GL_TRIANGLES, 0, vertexCount / 3);
 		}
 	}
 }
