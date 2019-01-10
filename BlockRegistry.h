@@ -18,6 +18,7 @@ public:
 	static bool isFluid(unsigned char id);
 	static bool isTransparent(unsigned char id);
 	static bool isPlant(unsigned char id);
+	static bool isSlab(unsigned char id);
 	static Block* getBlock(unsigned char id);
 };
 

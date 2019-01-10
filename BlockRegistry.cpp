@@ -51,12 +51,13 @@ void BlockRegistry::initialize() {
 	registerBlock(40, TEXTURE(10, 7), Plant); // Red Mushroom
 	registerBlock(41, TEXTURE(3, 5)); // Gold Block
 	registerBlock(42, TEXTURE(3, 6)); // Iron Block
+	registerBlock(44, TEXTURE(14, 10),TEXTURE(13, 10), TEXTURE(29, 7), Slab); // Stone slab
 	registerBlock(45, TEXTURE(15, 0)); // Bricks
 	registerBlock(46, TEXTURE(18, 10), TEXTURE(17, 10), TEXTURE(16, 10)); // TNT
 	registerBlock(47, TEXTURE(29, 7), TEXTURE(12, 0), TEXTURE(29, 7)); // Bookshelf
 	registerBlock(48, TEXTURE(4, 1)); // Mossy Stone
 	registerBlock(49, TEXTURE(19, 7)); // Obsidian
-	registerBlock(50, TEXTURE(19, 10)); // Torch
+	registerBlock(50, TEXTURE(19, 10), Plant); // Torch
 	registerBlock(51, TEXTURE(15, 3), Plant); // Fire
 	registerBlock(52, TEXTURE(4, 7)); // Spawner
 	registerBlock(56, TEXTURE(29, 1)); // Diamond Ore
@@ -80,11 +81,12 @@ void BlockRegistry::initialize() {
 	registerBlock(121, TEXTURE(10, 3)); // Endstone
 	registerBlock(123, TEXTURE(2, 9)); // Redstone Lamp (off)
 	registerBlock(124, TEXTURE(3, 9)); // Redstone Lamp (on)
+	registerBlock(126, TEXTURE(29, 7), Slab); // Wood slab
 	registerBlock(129, TEXTURE(3, 3)); // Emerald Ore
 	registerBlock(133, TEXTURE(2, 3)); // Emerald Block
 	registerBlock(137, TEXTURE(8, 1)); // Command Block
-	registerBlock(141, TEXTURE(26, 0)); // Carrots
-	registerBlock(142, TEXTURE(3, 8)); // Potatoes
+	registerBlock(141, TEXTURE(26, 0), Plant); // Carrots
+	registerBlock(142, TEXTURE(3, 8), Plant); // Potatoes
 	registerBlock(152, TEXTURE(29, 8)); // Redstone block
 	registerBlock(153, TEXTURE(20, 8)); // Quartz Ore 
 	registerBlock(155, TEXTURE(19, 8)); // Quartz Block
@@ -118,6 +120,13 @@ bool BlockRegistry::isPlant(unsigned char id) {
 	Block* block = *(registry + id);
 	if (block == nullptr) return false;
 	return block->rendererType == Plant;
+}
+
+bool BlockRegistry::isSlab(unsigned char id) {
+	if (id == 0) return false;
+	Block* block = *(registry + id);
+	if (block == nullptr) return false;
+	return block->rendererType == Slab;
 }
 
 Block* BlockRegistry::getBlock(unsigned char id) {

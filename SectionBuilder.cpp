@@ -258,7 +258,7 @@ float getOcclusionFactor(int x, int y, int z, int vx, int vy, int vz, int f) {
 	return 1.0f;
 }
 
-void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int texX, int texY, GLfloat col, GLfloat* vertexPtr, GLfloat* texPtr, GLfloat* colorPtr, int* vertexC, int* texC, int * colorC, int f, float ym) {
+void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int texX, int texY, GLfloat col, GLfloat* vertexPtr, GLfloat* texPtr, GLfloat* colorPtr, int* vertexC, int* texC, int * colorC, int f, float ym, bool half) {
 
 	for (int i = 0; i < 18; i += 3) {
 		GLfloat vx = *(vertices + i);
@@ -267,7 +267,11 @@ void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloa
 		vy *= ym;
 		GLfloat colx = ym != 1 ? 1.0f : getOcclusionFactor(x, y, z, (int)vx, (int)vy, (int)vz, f);
 		*(vertexPtr + ((*vertexC)++)) = vx + x;
-		*(vertexPtr + ((*vertexC)++)) = vy + y;
+		if (half && vy == 1.0f)
+			*(vertexPtr + ((*vertexC)++)) = 0.5f + y;
+		else
+			*(vertexPtr + ((*vertexC)++)) = vy + y;
+		
 		*(vertexPtr + ((*vertexC)++)) = vz + z;
 		*(colorPtr + ((*colorC)++)) = colx * col;
 		*(colorPtr + ((*colorC)++)) = colx * col;
@@ -278,7 +282,10 @@ void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloa
 
 	for (int i = 0; i < 12; i += 2) {
 		*(texPtr + ((*texC)++)) = (*(textures + i)) * d + texX * d;
-		*(texPtr + ((*texC)++)) = (*(textures + i + 1)) * d + texY * d;
+		if(half && f != 1)
+			*(texPtr + ((*texC)++)) = ((*(textures + i + 1)) * 0.5f * d + texY * d);
+		else
+			*(texPtr + ((*texC)++)) = (*(textures + i + 1)) * d + texY * d;
 	}
 }
 
@@ -308,26 +315,27 @@ void SectionBuilder::build(int xo, int yo, int zo) {
 					int bx = block->sideTex.x;
 					int by = block->sideTex.y;
 					float ym = blockId == 78 ? 0.1f : 1.0f;
-					if (BlockRegistry::isPlant(blockId)) {
-						drawDisplacedVertices(tgrassvertices_a, grassvertices_a, absX, absY, absZ, bx, by, 1.0f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 0, ym);
-						drawDisplacedVertices(tgrassvertices_b, grassvertices_b, absX, absY, absZ, bx, by, 1.0f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 0, ym);
-						drawDisplacedVertices(tgrassvertices_c, grassvertices_c, absX, absY, absZ, bx, by, 1.0f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 0, ym);
-						drawDisplacedVertices(tgrassvertices_d, grassvertices_d, absX, absY, absZ, bx, by, 1.0f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 0, ym);
+					bool half = block->rendererType == Slab;
+					if (block->rendererType == Plant) {
+						drawDisplacedVertices(tgrassvertices_a, grassvertices_a, absX, absY, absZ, bx, by, 1.0f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 0, ym, half);
+						drawDisplacedVertices(tgrassvertices_b, grassvertices_b, absX, absY, absZ, bx, by, 1.0f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 0, ym, half);
+						drawDisplacedVertices(tgrassvertices_c, grassvertices_c, absX, absY, absZ, bx, by, 1.0f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 0, ym, half);
+						drawDisplacedVertices(tgrassvertices_d, grassvertices_d, absX, absY, absZ, bx, by, 1.0f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 0, ym, half);
 					}
 					else {
-						if (getBlock(blockId, x + 1, y, z) == 0) drawDisplacedVertices(tvertices_positive_x, vertices_positive_x, absX, absY, absZ, bx, by, 0.75f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 0, ym);
-						if (getBlock(blockId, x - 1, y, z) == 0) drawDisplacedVertices(tvertices_negative_x, vertices_negative_x, absX, absY, absZ, bx, by, 0.75f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 0, ym);
+						if (getBlock(blockId, x + 1, y, z) == 0) drawDisplacedVertices(tvertices_positive_x, vertices_positive_x, absX, absY, absZ, bx, by, 0.75f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 0, ym, half);
+						if (getBlock(blockId, x - 1, y, z) == 0) drawDisplacedVertices(tvertices_negative_x, vertices_negative_x, absX, absY, absZ, bx, by, 0.75f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 0, ym, half);
 
-						if (getBlock(blockId, x, y, z + 1) == 0) drawDisplacedVertices(tvertices_positive_z, vertices_positive_z, absX, absY, absZ, bx, by, 0.65f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 2, ym);
-						if (getBlock(blockId, x, y, z - 1) == 0) drawDisplacedVertices(tvertices_negative_z, vertices_negative_z, absX, absY, absZ, bx, by, 0.65f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 2, ym);
+						if (getBlock(blockId, x, y, z + 1) == 0) drawDisplacedVertices(tvertices_positive_z, vertices_positive_z, absX, absY, absZ, bx, by, 0.65f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 2, ym, half);
+						if (getBlock(blockId, x, y, z - 1) == 0) drawDisplacedVertices(tvertices_negative_z, vertices_negative_z, absX, absY, absZ, bx, by, 0.65f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 2, ym, half);
 
 						bx = block->topTex.x;
 						by = block->topTex.y;
-						if (getBlock(blockId, x, y + 1, z) == 0) drawDisplacedVertices(tvertices_positive_y, vertices_positive_y, absX, absY, absZ, bx, by, 1.00f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 1, ym);
+						if (getBlock(blockId, x, y + 1, z) == 0) drawDisplacedVertices(tvertices_positive_y, vertices_positive_y, absX, absY, absZ, bx, by, 1.00f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 1, ym, half);
 
 						bx = block->bottomTex.x;
 						by = block->bottomTex.y;
-						if (getBlock(blockId, x, y - 1, z) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by, 0.60f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 1, ym);
+						if (getBlock(blockId, x, y - 1, z) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by, 0.60f, vertexPtr, texPtr, colorPtr, vertexC, texC, colorC, 1, ym, half);
 					}
 				}
 			}
@@ -339,7 +347,7 @@ unsigned char SectionBuilder::getBlock(unsigned char me, int x, int y, int z) {
 	unsigned char id = 0;
 	if (x < 0 || y < 0 || z < 0 || x > 15 || y > 15 || z > 15) id = OpenGLRenderer::world->getBlock(xo + x, yo + y, zo + z);
 	else id = chunk->getBlock(x, y, z);
-	if ((!BlockRegistry::isFluid(me) && BlockRegistry::isFluid(id)) || BlockRegistry::isTransparent(me) || BlockRegistry::isTransparent(id))
+	if ((!BlockRegistry::isFluid(me) && BlockRegistry::isFluid(id)) || BlockRegistry::isTransparent(me) || BlockRegistry::isTransparent(id) || BlockRegistry::isSlab(id))
 		return 0;
 	else return id;
 }

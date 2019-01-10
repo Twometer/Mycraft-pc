@@ -23,8 +23,8 @@ private:
 	void stop();
 
 	void apply_fluid(GLuint colorTex, Fbo* fbo);
-	void apply_hgauss(GLuint colorTex, Fbo* fbo);
-	void apply_vgauss(GLuint colorTex, Fbo* fbo);
+	void apply_hgauss(GLuint colorTex, Fbo* fbo, float intensity);
+	void apply_vgauss(GLuint colorTex, Fbo* fbo, float intensity);
 	void apply_bright(GLuint colorTex, Fbo* fbo);
 	void apply_mix(GLuint colorTex, GLuint colorTex2 , Fbo* fbo);
 

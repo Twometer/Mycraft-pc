@@ -39,22 +39,35 @@ void PostProcessing::stop() {
 void PostProcessing::doPostProc(GLuint worldTexture) {
 	start();
 	bool gui = OpenGLRenderer::guiRenderer->isGuiOpen();
+
 	if (gui) {
 		apply_fluid(worldTexture, &fbo1);
-		apply_hgauss(fbo1.getColorTexture(), &fboDS1);
-		apply_vgauss(fboDS1.getColorTexture(), nullptr);
-	}else
+		apply_hgauss(fbo1.getColorTexture(), &fboDS1, 5);
+		apply_vgauss(fboDS1.getColorTexture(), nullptr, 5);
+	}
+	else
 	{
-		if(Settings::BLOOM)
+		if (Settings::BLOOM)
 		{
 			apply_fluid(worldTexture, &fbo1);
 			apply_bright(fbo1.getColorTexture(), &fbo2);
-			apply_hgauss(fbo2.getColorTexture(), &fboDS1);
-			apply_vgauss(fboDS1.getColorTexture(), &fboDS2);
+			apply_hgauss(fbo2.getColorTexture(), &fboDS1, 5);
+			apply_vgauss(fboDS1.getColorTexture(), &fboDS2, 5);
 			apply_mix(fbo1.getColorTexture(), fboDS2.getColorTexture(), nullptr);
-		}else
+		}
+		else
 		{
-			apply_fluid(worldTexture, nullptr);
+			
+			vec3 eyePos = OpenGLRenderer::controls->getEyePosition();
+			char blockInEyes = OpenGLRenderer::world->getBlock(floor(eyePos.x), floor(eyePos.y), floor(eyePos.z));
+			if (blockInEyes == 8 || blockInEyes == 9) {
+				apply_fluid(worldTexture, &fbo1);
+				apply_hgauss(fbo1.getColorTexture(), &fbo2, 2);
+				apply_vgauss(fbo2.getColorTexture(), nullptr, 2);
+			}else
+			{
+				apply_fluid(worldTexture, nullptr);
+			}
 		}
 	}
 	stop();
@@ -77,10 +90,10 @@ void PostProcessing::apply_fluid(GLuint colortex, Fbo* fbo)
 	if (fbo != nullptr) fbo->unbindFrameBuffer();
 }
 
-void PostProcessing::apply_hgauss(GLuint colortex, Fbo* fbo)
+void PostProcessing::apply_hgauss(GLuint colortex, Fbo* fbo, float intensity)
 {
 	glUseProgram(shader_hgauss);
-	glUniform1f(shader_hgauss_loc, curWidth / 5);
+	glUniform1f(shader_hgauss_loc, curWidth / intensity);
 	if (fbo != nullptr) fbo->bindFrameBuffer();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colortex);
@@ -89,10 +102,10 @@ void PostProcessing::apply_hgauss(GLuint colortex, Fbo* fbo)
 	if (fbo != nullptr) fbo->unbindFrameBuffer();
 }
 
-void PostProcessing::apply_vgauss(GLuint colortex, Fbo* fbo)
+void PostProcessing::apply_vgauss(GLuint colortex, Fbo* fbo, float intensity)
 {
 	glUseProgram(shader_vgauss);
-	glUniform1f(shader_vgauss_loc, curHeight / 5);
+	glUniform1f(shader_vgauss_loc, curHeight / intensity);
 	if (fbo != nullptr) fbo->bindFrameBuffer();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colortex);

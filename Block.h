@@ -4,7 +4,8 @@ enum RendererType {
 	Fluid,
 	Transparent,
 	Plant,
-	Solid
+	Solid,
+	Slab
 };
 
 class Block

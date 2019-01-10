@@ -115,8 +115,13 @@ vector<AABB> World::getCubes(int xx, int xy, int xz, int r) {
 			for (int z = -r; z < r; z++)
 			{
 				unsigned char bid = getBlock(xx + x, xy + y, xz + z);
+				float blockHeight = 1.0f;
+				if (bid == 78)
+					blockHeight = 0.1f;
+				else if (bid != 0 && BlockRegistry::getBlock(bid)->rendererType == Slab)
+					blockHeight = 0.5f;
 				if (bid > 0 && bid != 8 && bid != 9 && bid != 31 && bid != 175 && bid != 10 && bid != 11 && !BlockRegistry::isPlant(bid)) {
-					cubes.push_back(AABB(glm::vec3(xx + x, xy + y, xz + z), glm::vec3(xx + x, xy + y, xz + z)).expand(1.0, bid == 78 ? 0.1 : 1.0, 1.0));
+					cubes.push_back(AABB(glm::vec3(xx + x, xy + y, xz + z), glm::vec3(xx + x, xy + y, xz + z)).expand(1.0, blockHeight, 1.0));
 				}
 			}
 		}

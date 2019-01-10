@@ -38,12 +38,16 @@ Font::Font()
 Font::Font(const char* name, int size)
 {
 	FT_Library ft;
-	if (FT_Init_FreeType(&ft))
+	if (FT_Init_FreeType(&ft)) {
 		cout << "ERROR::FREETYPE: Could not init FreeType Library" << endl;
+		return;
+	}
 
 	FT_Face face;
-	if (FT_New_Face(ft, name, 0, &face))
-		cout << "ERROR::FREETYPE: Failed to load font" << endl;
+	if (FT_New_Face(ft, name, 0, &face)) {
+		cout << "ERROR::FREETYPE: Failed to load font " << name << endl;
+		return;
+	}
 	FT_Set_Pixel_Sizes(face, 0, size);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
