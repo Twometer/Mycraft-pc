@@ -36,7 +36,7 @@ void PostProcessing::stop() {
 }
 
 
-void PostProcessing::doPostProc(GLuint worldTexture) {
+void PostProcessing::doPostProc(GLuint worldTexture, GLuint highlightTexture) {
 	start();
 	bool gui = OpenGLRenderer::guiRenderer->isGuiOpen();
 
@@ -50,21 +50,20 @@ void PostProcessing::doPostProc(GLuint worldTexture) {
 		if (Settings::BLOOM)
 		{
 			apply_fluid(worldTexture, &fbo1);
-			apply_bright(fbo1.getColorTexture(), &fbo2);
-			apply_hgauss(fbo2.getColorTexture(), &fboDS1, 5);
+			apply_hgauss(highlightTexture, &fboDS1, 5);
 			apply_vgauss(fboDS1.getColorTexture(), &fboDS2, 5);
 			apply_mix(fbo1.getColorTexture(), fboDS2.getColorTexture(), nullptr);
 		}
 		else
 		{
-			
 			vec3 eyePos = OpenGLRenderer::controls->getEyePosition();
 			char blockInEyes = OpenGLRenderer::world->getBlock(floor(eyePos.x), floor(eyePos.y), floor(eyePos.z));
 			if (blockInEyes == 8 || blockInEyes == 9) {
 				apply_fluid(worldTexture, &fbo1);
 				apply_hgauss(fbo1.getColorTexture(), &fbo2, 2);
 				apply_vgauss(fbo2.getColorTexture(), nullptr, 2);
-			}else
+			}
+			else
 			{
 				apply_fluid(worldTexture, nullptr);
 			}

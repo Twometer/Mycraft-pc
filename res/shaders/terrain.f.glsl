@@ -18,5 +18,5 @@ void main()
 	}
 	
 	color = textureColor * vec4(fragmentColor, 1.0);
-	color = mix(vec4(0.72, 0.83, 0.996, 1.0), color, visibility);
+	color = mix(vec4(skyColor, 1.0), color, visibility);
 }

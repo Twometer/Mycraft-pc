@@ -65,12 +65,19 @@ void BlockRegistry::initialize() {
 	registerBlock(58, TEXTURE(13, 1), TEXTURE(11, 1), TEXTURE(29, 7)); // Crafting Table
 	registerBlock(59, TEXTURE(3, 11), Plant); // Wheat
 	registerBlock(60, TEXTURE(11, 3), TEXTURE(30, 1), TEXTURE(30, 1)); // Farmland
+	registerBlock(61, TEXTURE(31, 3), TEXTURE(28, 3), TEXTURE(31, 3)); // Furnace
+	registerBlock(62, TEXTURE(31, 3), TEXTURE(29, 3), TEXTURE(31, 3)); // Burning furnace
 	registerBlock(73, TEXTURE(4, 9)); // Redstone Ore
 	registerBlock(74, TEXTURE(4, 9)); // Glowing Redstone Ore
+	registerBlock(75, TEXTURE(5, 9), Plant); // Redstone torch off
+	registerBlock(76, TEXTURE(6, 9), Plant); // Redstone torch on
 	registerBlock(78, TEXTURE(30, 9), Transparent); // Snow
 	registerBlock(79, TEXTURE(0, 6), Fluid); // Ice
 	registerBlock(80, TEXTURE(30, 9)); // Snow
+	registerBlock(87, TEXTURE(13, 7)); // Netherrack
 	registerBlock(89, TEXTURE(2, 5)); // Glowstone
+	registerBlock(90, TEXTURE(31, 7)); // Nether Portal
+	registerBlock(91, TEXTURE(12, 8), TEXTURE(8, 8), TEXTURE(12, 8)); // Jack'o'lantern
 	registerBlock(97, TEXTURE(2, 10)); // Stone Monster egg
 	registerBlock(98, TEXTURE(3, 10)); // Stone Bricks
 	registerBlock(103, TEXTURE(3, 7), TEXTURE(0, 7), TEXTURE(3, 7)); // Melon

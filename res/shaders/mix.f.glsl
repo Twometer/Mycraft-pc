@@ -8,5 +8,5 @@ uniform sampler2D highlightTexture;
 void main(void){
 	vec4 sceneColour = texture(colourTexture, textureCoords);
 	vec4 highlightColour = texture(highlightTexture, textureCoords);
-	out_Colour = sceneColour + highlightColour * 0.5;
+	out_Colour = sceneColour + highlightColour;
 }

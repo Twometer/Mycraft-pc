@@ -51,6 +51,7 @@ int OpenGLRenderer::height;
 glm::mat4 projection;
 
 Fbo fbo;
+Fbo highlightFbo;
 PostProcessing postProc;
 
 bool lastPressed;
@@ -173,6 +174,7 @@ void OpenGLRenderer::start()
 
 	// Loading textures
 	GLuint texture = loader.loadTexture("textures\\atlas_blocks.png", false);
+	GLuint textureHighlights = loader.loadTexture("textures\\atlas_blocks_highlight.png", false);
 	GLuint crosshair = loader.loadTexture("textures\\hud\\common\\crosshair.png", false);
 	TextureIds::tex_guipause_back = loader.loadTexture("textures\\hud\\common\\back.png", true);
 	TextureIds::tex_guipause_settings = loader.loadTexture("textures\\hud\\common\\settings.png", true);
@@ -245,6 +247,7 @@ void OpenGLRenderer::start()
 	int lastReset = clock();
 
 	fbo = Fbo(width, height, DEPTH_RENDER_BUFFER);
+	highlightFbo = Fbo(width, height, DEPTH_RENDER_BUFFER);
 	CrosshairRenderer crosshairRenderer = CrosshairRenderer(crosshair);
 	crosshairRenderer.init();
 
@@ -256,7 +259,6 @@ void OpenGLRenderer::start()
 
 	vec3 skyColor = vec3(0.72f, 0.83f, 0.996f);
 
-	glUniform3f(skyColorLocation, skyColor.x, skyColor.y, skyColor.z);
 	while (!glfwWindowShouldClose(window))
 	{
 		int current_time = clock();
@@ -296,7 +298,32 @@ void OpenGLRenderer::start()
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
+		glUniform3f(skyColorLocation, skyColor.x, skyColor.y, skyColor.z);
 		world->render(false, false); // Render pass 1: Solid and transparent blocks
+
+		if (Settings::BLOOM) {
+			highlightFbo.bindFrameBuffer();
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glBindTexture(GL_TEXTURE_2D, textureHighlights);
+			glUniform3f(skyColorLocation, 0.0f, 0.0f, 0.0f);
+			world->render(false, false);
+			if (Settings::ADVANCED_WATER) {
+				glUseProgram(waterShader);
+				glUniform1i(timeLocation, current_time);
+				glUniformMatrix4fv(mvMatrixLocationW, 1, false, &matrices.modelviewMatrix[0][0]);
+				glUniformMatrix4fv(prMatrixLocationW, 1, false, &matrices.projectionMatrix[0][0]);
+				glUniform3f(skyColorLocationW, 0.0f, 0.0f, 0.0f);
+			}
+
+			glDisable(GL_CULL_FACE);
+			world->render(true, false); // Render pass 2: Translucent blocks (water, etc.)
+			glEnable(GL_CULL_FACE);
+			highlightFbo.unbindFrameBuffer();
+			fbo.bindFrameBuffer();
+			glBindTexture(GL_TEXTURE_2D, texture);
+			glClearColor(0.72f, 0.83f, 0.996f, 0.0f);
+		}
 
 		if (Settings::ADVANCED_WATER) {
 			glUseProgram(waterShader);
@@ -305,6 +332,7 @@ void OpenGLRenderer::start()
 			glUniformMatrix4fv(prMatrixLocationW, 1, false, &matrices.projectionMatrix[0][0]);
 			glUniform3f(skyColorLocationW, skyColor.x, skyColor.y, skyColor.z);
 		}
+
 		glDisable(GL_CULL_FACE);
 		world->render(true, false); // Render pass 2: Translucent blocks (water, etc.)
 		glEnable(GL_CULL_FACE);
@@ -353,7 +381,7 @@ void OpenGLRenderer::start()
 
 		/* Post Processing */
 
-		postProc.doPostProc(fbo.getColorTexture());
+		postProc.doPostProc(fbo.getColorTexture(), highlightFbo.getColorTexture());
 
 		/* GUI */
 		glUseProgram(guiShader);
@@ -431,6 +459,7 @@ void OpenGLRenderer::start()
 	}
 
 	fbo.cleanUp();
+	highlightFbo.cleanUp();
 
 	glDeleteVertexArrays(1, &VertexArrayID);
 	glDeleteProgram(terrainShader);
@@ -445,5 +474,6 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 	OpenGLRenderer::height = height;
 	projection = glm::ortho(0.0f, (float)width, 0.0f, (float)height);
 	fbo = Fbo(width, height, DEPTH_RENDER_BUFFER);
+	highlightFbo = Fbo(width, height, DEPTH_RENDER_BUFFER);
 	postProc.resize(width, height);
 }

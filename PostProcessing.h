@@ -35,10 +35,13 @@ private:
 	Fbo fboDS1;
 	Fbo fboDS2;
 
+	Fbo fboDS3;
+	Fbo fboDS4;
+
 	int curWidth;
 	int curHeight;
 public:
-	void doPostProc(GLuint colorTex);
+	void doPostProc(GLuint colorTex, GLuint highlightTex);
 	void init(Loader loader);
 	void resize(int width, int height);
 	PostProcessing();
