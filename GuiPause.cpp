@@ -15,7 +15,7 @@ GuiPause::GuiPause()
 	});
 
 	exitButton.set_callback([=] {
-
+		OpenGLRenderer::shouldClose = true;
 	});
 }
 

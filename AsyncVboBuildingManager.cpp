@@ -40,6 +40,7 @@ void AsyncVboBuildingManager::workerThread() {
 		Section* sec;
 		if (sectionQueue->try_pop(sec)) {
 			sec->buildVertexData();
+			this_thread::sleep_for(chrono::milliseconds(10));
 		}
 		else {
 			this_thread::sleep_for(chrono::milliseconds(20));

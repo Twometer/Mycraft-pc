@@ -1,11 +1,11 @@
 #pragma once
 #include "Texture.h"
+
 enum RendererType {
 	Fluid,
 	Transparent,
 	Plant,
-	Solid,
-	Slab
+	Solid
 };
 
 class Block
@@ -16,7 +16,20 @@ public:
 	TEXTURE topTex;
 	TEXTURE sideTex;
 	TEXTURE bottomTex;
+	float blockHeight;
+	bool canOcclude = true;
 
-	Block(char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, RendererType rendererType);
+	Block(char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, RendererType rendererType, float blockHeight);
 	~Block();
+
+	bool isTransparent() const
+	{
+		return rendererType == Plant || rendererType == Transparent;
+	}
+
+	Block* disableOcclusion()
+	{
+		canOcclude = false;
+		return this;
+	}
 };

@@ -8,10 +8,12 @@ enum FACE {
 	ZNEG,
 	NO_RESULT
 };
+
 struct RAYCAST_RESULT {
 	int blockX;
 	int blockY;
 	int blockZ;
 	FACE face;
+	unsigned char blockId;
 };
 

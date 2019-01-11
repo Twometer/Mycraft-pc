@@ -32,6 +32,7 @@
 #include "TextureIds.h"
 #include "GuiRespawn.h"
 #include "ShadowMapRenderer.h"
+#include "BlockRegistry.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -45,6 +46,7 @@ World* OpenGLRenderer::world;
 Frustum* OpenGLRenderer::frustum;
 Controls* OpenGLRenderer::controls;
 vector<CHATMESSAGE>* OpenGLRenderer::chatMessages;
+bool OpenGLRenderer::shouldClose;
 
 int OpenGLRenderer::width;
 int OpenGLRenderer::height;
@@ -226,6 +228,7 @@ void OpenGLRenderer::start()
 	GLint loc_projMatWire = glGetUniformLocation(wireframeShader, "projectionMatrix");
 	GLint loc_mdvwMatWire = glGetUniformLocation(wireframeShader, "modelviewMatrix");
 	GLint loc_wire_offset = glGetUniformLocation(wireframeShader, "offset");
+	GLint loc_wire_height = glGetUniformLocation(wireframeShader, "height");
 
 	GLuint guiShader = loader.loadShaders("gui");
 	GLint loc_gui_projMat = glGetUniformLocation(guiShader, "projection");
@@ -259,7 +262,7 @@ void OpenGLRenderer::start()
 
 	vec3 skyColor = vec3(0.72f, 0.83f, 0.996f);
 
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window) && !shouldClose)
 	{
 		int current_time = clock();
 		if (Settings::SHADOWS) {
@@ -358,7 +361,12 @@ void OpenGLRenderer::start()
 		glUniformMatrix4fv(loc_mdvwMatWire, 1, false, &matrices.modelviewMatrix[0][0]);
 		glUniformMatrix4fv(loc_projMatWire, 1, false, &matrices.projectionMatrix[0][0]);
 		vec3 renderOffset = vec3(result.blockX, result.blockY, result.blockZ);
+		Block* block = BlockRegistry::getBlock(result.blockId);
 		glUniform3fv(loc_wire_offset, 1, &renderOffset[0]);
+		if (block == nullptr)
+			glUniform1f(loc_wire_height, 1.0f);
+		else
+			glUniform1f(loc_wire_height, block->blockHeight);
 		bbRenderer.render();
 		glEnable(GL_CULL_FACE);
 

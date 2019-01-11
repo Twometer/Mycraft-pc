@@ -2,6 +2,8 @@
 #include <vector>
 #include "GLFW/glfw3.h"
 #include "Section.h"
+class Block;
+
 class SectionBuilder
 {
 private:
@@ -14,7 +16,7 @@ private:
 	int y;
 	int z;
 	int xo, yo, zo;
-	unsigned char getBlock(unsigned char, int x, int y, int z);
+	unsigned char getBlock(Block* block, int x, int y, int z);
 public:
 	GLfloat * vertices;
 	int verticesAlloc;
@@ -34,7 +36,7 @@ public:
 	GLfloat * textureCoordsX;
 	int textureCoordsAllocX;
 
-	void drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int tX, int tY, GLfloat color, GLfloat* vertexPtr, GLfloat* texPtr, GLfloat* colorPtr, int* vertexC, int* texC, int * colorC, int f, float ym, bool half);
+	void drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int tX, int tY, GLfloat color, GLfloat* vertexPtr, GLfloat* texPtr, GLfloat* colorPtr, int* vertexC, int* texC, int * colorC, int f, float ym);
 	void build(int xoff, int yoff, int zoff);
 	SectionBuilder(Section* chunk);
 	~SectionBuilder();

@@ -128,18 +128,19 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 						char flags = buf->readByte();
 						OpenGLRenderer::controls->setPosition(x, y, z);
 					}
-					/*if (packetId == 0x21)
+					if (packetId == 0x21)
 					{
 						int chunkX = buf->readInt();
 						int chunkZ = buf->readInt();
 						bool groundUpContinuous = buf->readByte() == 0x01;
 						short bitmask = buf->readShort();
-						int size = buf->readVarInt();
+						//int size = buf->readVarInt();
 						if(groundUpContinuous && bitmask == 0)
 						{
 							OpenGLRenderer::world->destroyChunk(chunkX, chunkZ);
+							cout << "Server: Delete chunk " << chunkX << "/" << chunkZ << endl;
 						}
-					}*/
+					}
 					if (packetId == 0x23)
 					{
 						uint64_t pos = buf->readUlong();

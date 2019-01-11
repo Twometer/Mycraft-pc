@@ -49,10 +49,19 @@ void PostProcessing::doPostProc(GLuint worldTexture, GLuint highlightTexture) {
 	{
 		if (Settings::BLOOM)
 		{
+			Fbo* fboToUse = &fbo1;
 			apply_fluid(worldTexture, &fbo1);
+			vec3 eyePos = OpenGLRenderer::controls->getEyePosition();
+			char blockInEyes = OpenGLRenderer::world->getBlock(floor(eyePos.x), floor(eyePos.y), floor(eyePos.z));
+			if (blockInEyes == 8 || blockInEyes == 9) {
+				apply_fluid(fbo1.getColorTexture(), &fbo2);
+				apply_hgauss(fbo2.getColorTexture(), &fbo1, 2);
+				apply_vgauss(fbo1.getColorTexture(), &fbo2, 2);
+				fboToUse = &fbo2;
+			}
 			apply_hgauss(highlightTexture, &fboDS1, 5);
 			apply_vgauss(fboDS1.getColorTexture(), &fboDS2, 5);
-			apply_mix(fbo1.getColorTexture(), fboDS2.getColorTexture(), nullptr);
+			apply_mix(fboToUse->getColorTexture(), fboDS2.getColorTexture(), nullptr);
 		}
 		else
 		{

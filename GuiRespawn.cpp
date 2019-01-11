@@ -11,6 +11,9 @@ GuiRespawn::GuiRespawn()
 		OpenGLRenderer::sendPacket(new C16Respawn());
 		OpenGLRenderer::guiRenderer->closeGui();
 	});
+	exitButton.set_callback([=] {
+		OpenGLRenderer::shouldClose = true;
+	});
 }
 
 

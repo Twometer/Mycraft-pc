@@ -16,6 +16,7 @@ public:
 	static Frustum* frustum;
 	static World* world;
 	static GuiRenderer* guiRenderer;
+	static bool shouldClose;
 	static vector<CHATMESSAGE>* chatMessages;
 	static void sendPacket(IPacket * packet);
 	static void setCursorVisibility(bool visible);

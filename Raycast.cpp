@@ -37,7 +37,8 @@ RAYCAST_RESULT Raycast::cast(float yaw, float pitch) {
 		int fy = (int)floor(pos.y);
 		int fz = (int)floor(pos.z);
 		unsigned char bid = world.getBlock(fx, fy, fz);
-		if (bid > 0 && !BlockRegistry::isFluid(bid)) {
+		Block* block = BlockRegistry::getBlock(bid);
+		if (bid != 0 && block->rendererType != Fluid) {
 			float xd = round(pos.x - fx);
 			float yd = round(pos.y - fy);
 			float zd = round(pos.z - fz);
@@ -62,6 +63,7 @@ RAYCAST_RESULT Raycast::cast(float yaw, float pitch) {
 			result.blockX = fx;
 			result.blockY = fy;
 			result.blockZ = fz;
+			result.blockId = bid;
 			break;
 		}
 	}

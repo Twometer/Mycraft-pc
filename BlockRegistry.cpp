@@ -3,13 +3,11 @@
 Block** BlockRegistry::registry;
 
 BlockRegistry::BlockRegistry()
-{
-}
+= default;
 
 
 BlockRegistry::~BlockRegistry()
-{
-}
+= default;
 
 void BlockRegistry::initialize() {
 	registry = new Block*[255];
@@ -51,7 +49,7 @@ void BlockRegistry::initialize() {
 	registerBlock(40, TEXTURE(10, 7), Plant); // Red Mushroom
 	registerBlock(41, TEXTURE(3, 5)); // Gold Block
 	registerBlock(42, TEXTURE(3, 6)); // Iron Block
-	registerBlock(44, TEXTURE(14, 10),TEXTURE(13, 10), TEXTURE(29, 7), Slab); // Stone slab
+	registerBlock(44, TEXTURE(14, 10), TEXTURE(13, 10), TEXTURE(29, 7), Transparent, 0.5f); // Stone slab
 	registerBlock(45, TEXTURE(15, 0)); // Bricks
 	registerBlock(46, TEXTURE(18, 10), TEXTURE(17, 10), TEXTURE(16, 10)); // TNT
 	registerBlock(47, TEXTURE(29, 7), TEXTURE(12, 0), TEXTURE(29, 7)); // Bookshelf
@@ -64,14 +62,14 @@ void BlockRegistry::initialize() {
 	registerBlock(57, TEXTURE(28, 1)); // Diamond Block
 	registerBlock(58, TEXTURE(13, 1), TEXTURE(11, 1), TEXTURE(29, 7)); // Crafting Table
 	registerBlock(59, TEXTURE(3, 11), Plant); // Wheat
-	registerBlock(60, TEXTURE(11, 3), TEXTURE(30, 1), TEXTURE(30, 1)); // Farmland
+	registerBlock(60, TEXTURE(11, 3), TEXTURE(30, 1), TEXTURE(30, 1), Transparent, 0.95); // Farmland
 	registerBlock(61, TEXTURE(31, 3), TEXTURE(28, 3), TEXTURE(31, 3)); // Furnace
 	registerBlock(62, TEXTURE(31, 3), TEXTURE(29, 3), TEXTURE(31, 3)); // Burning furnace
 	registerBlock(73, TEXTURE(4, 9)); // Redstone Ore
 	registerBlock(74, TEXTURE(4, 9)); // Glowing Redstone Ore
 	registerBlock(75, TEXTURE(5, 9), Plant); // Redstone torch off
 	registerBlock(76, TEXTURE(6, 9), Plant); // Redstone torch on
-	registerBlock(78, TEXTURE(30, 9), Transparent); // Snow
+	registerBlock(78, TEXTURE(30, 9), Transparent, 0.1f)->disableOcclusion(); // Snow
 	registerBlock(79, TEXTURE(0, 6), Fluid); // Ice
 	registerBlock(80, TEXTURE(30, 9)); // Snow
 	registerBlock(87, TEXTURE(13, 7)); // Netherrack
@@ -82,13 +80,13 @@ void BlockRegistry::initialize() {
 	registerBlock(98, TEXTURE(3, 10)); // Stone Bricks
 	registerBlock(103, TEXTURE(3, 7), TEXTURE(0, 7), TEXTURE(3, 7)); // Melon
 	registerBlock(110, TEXTURE(12, 7), TEXTURE(11, 7), TEXTURE(30, 1)); // Mycelium
-	registerBlock(111, TEXTURE(25, 10), Transparent); // Lily pad
+	registerBlock(111, TEXTURE(25, 10), Plant); // Lily pad
 	registerBlock(112, TEXTURE(14, 7)); // Nether bricks
 	registerBlock(115, TEXTURE(17, 7), Plant); // Nether wart
 	registerBlock(121, TEXTURE(10, 3)); // Endstone
 	registerBlock(123, TEXTURE(2, 9)); // Redstone Lamp (off)
 	registerBlock(124, TEXTURE(3, 9)); // Redstone Lamp (on)
-	registerBlock(126, TEXTURE(29, 7), Slab); // Wood slab
+	registerBlock(126, TEXTURE(29, 7), Transparent, 0.5f); // Wood slab
 	registerBlock(129, TEXTURE(3, 3)); // Emerald Ore
 	registerBlock(133, TEXTURE(2, 3)); // Emerald Block
 	registerBlock(137, TEXTURE(8, 1)); // Command Block
@@ -108,52 +106,32 @@ void BlockRegistry::initialize() {
 	registerBlock(172, TEXTURE(10, 5)); // Hay bale
 }
 
-bool BlockRegistry::isTransparent(unsigned char id) {
-	if (id == 0) return false;
-	Block* block = *(registry + id);
-	if (block == nullptr) return false;
-	return block->rendererType == Transparent || block->rendererType == Plant;
-}
-
-bool BlockRegistry::isFluid(unsigned char id) {
-	if (id == 0) return false;
-	Block* block = *(registry + id);
-	if (block == nullptr) return false;
-	return block->rendererType == Fluid;
-}
-
-bool BlockRegistry::isPlant(unsigned char id) {
-	if (id == 0) return false;
-	Block* block = *(registry + id);
-	if (block == nullptr) return false;
-	return block->rendererType == Plant;
-}
-
-bool BlockRegistry::isSlab(unsigned char id) {
-	if (id == 0) return false;
-	Block* block = *(registry + id);
-	if (block == nullptr) return false;
-	return block->rendererType == Slab;
-}
-
 Block* BlockRegistry::getBlock(unsigned char id) {
-	if (id == 0) return false;
+	if (id == 0) return nullptr;
 	Block* block = *(registry + id);
 	if (block == nullptr) return registry[0];
 	return block;
 }
 
-void BlockRegistry::registerBlock(unsigned char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, RendererType type) {
-	registry[id] = new Block(id, topTex, sideTex, bottomTex, type);
+Block* BlockRegistry::registerBlock(unsigned char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, RendererType type, float blockHeight ) {
+	Block* b = new Block(id, topTex, sideTex, bottomTex, type, blockHeight);
+	registry[id] = b;
+	return b;
 }
 
-void BlockRegistry::registerBlock(unsigned char id, TEXTURE tex, RendererType type) {
-	registry[id] = new Block(id, tex, tex, tex, type);
+Block* BlockRegistry::registerBlock(unsigned char id, TEXTURE tex, RendererType type, float blockHeight ) {
+	Block* b = new Block(id, tex, tex, tex, type, blockHeight);
+	registry[id] = b;
+	return b;
 }
-void BlockRegistry::registerBlock(unsigned char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex) {
-	registry[id] = new Block(id, topTex, sideTex, bottomTex, RendererType::Solid);
+Block* BlockRegistry::registerBlock(unsigned char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, float blockHeight ) {
+	Block* b = new Block(id, topTex, sideTex, bottomTex, Solid, blockHeight);
+	registry[id] = b;
+	return b;
 }
 
-void BlockRegistry::registerBlock(unsigned char id, TEXTURE tex) {
-	registry[id] = new Block(id, tex, tex, tex, RendererType::Solid);
+Block* BlockRegistry::registerBlock(unsigned char id, TEXTURE tex, float blockHeight ) {
+	Block* b = new Block(id, tex, tex, tex, Solid, blockHeight);
+	registry[id] = b;
+	return b;
 }
