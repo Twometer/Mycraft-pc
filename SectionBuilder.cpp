@@ -259,7 +259,7 @@ float getOcclusionFactor(int x, int y, int z, int vx, int vy, int vz, int f) {
 	return 1.0f;
 }
 
-void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int texX, int texY, GLfloat col, GLfloat* vertexPtr, GLfloat* texPtr, GLfloat* colorPtr, int* vertexC, int* texC, int * colorC, int f, float ym) {
+void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int texX, int texY, GLfloat col, GLfloat* vertexPtr, GLfloat* texPtr, GLfloat* colorPtr, int* vertexCtr, int* texCtr, int * colorCtr, int f, float ym) {
 
 	for (int i = 0; i < 18; i += 3) {
 		GLfloat vx = *(vertices + i);
@@ -267,25 +267,33 @@ void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloa
 		GLfloat vz = *(vertices + i + 2);
 		vy *= ym;
 		GLfloat colx = ym != 1 ? 1.0f : getOcclusionFactor(x, y, z, (int)vx, (int)vy, (int)vz, f);
-		if (*vertexC + 6 > 120000)
+		if (*vertexCtr + 6 > 120000)
 			return;
-		*(vertexPtr + ((*vertexC)++)) = vx + x;
-		*(vertexPtr + ((*vertexC)++)) = vy + y;
-		*(vertexPtr + ((*vertexC)++)) = vz + z;
+		*(vertexPtr + *vertexCtr) = vx + x;
+		(*vertexCtr)++;
+		*(vertexPtr + *vertexCtr) = vy + y;
+		(*vertexCtr)++;
+		*(vertexPtr + *vertexCtr) = vz + z;
+		(*vertexCtr)++;
 
-		*(colorPtr + ((*colorC)++)) = colx * col;
-		*(colorPtr + ((*colorC)++)) = colx * col;
-		*(colorPtr + ((*colorC)++)) = colx * col;
+		*(colorPtr + *colorCtr) = colx * col;
+		(*colorCtr)++;
+		*(colorPtr + *colorCtr) = colx * col;
+		(*colorCtr)++;
+		*(colorPtr + *colorCtr) = colx * col;
+		(*colorCtr)++;
 	}
 
 	GLfloat d = 0.03125;
 
 	for (int i = 0; i < 12; i += 2) {
-		*(texPtr + ((*texC)++)) = (*(textures + i)) * d + texX * d;
+		*(texPtr + *texCtr) = (*(textures + i)) * d + texX * d;
+		(*texCtr)++;
 		if (ym != 1.0f && f != 1)
-			*(texPtr + ((*texC)++)) = ((*(textures + i + 1)) * ym * d + texY * d);
+			*(texPtr + *texCtr) = ((*(textures + i + 1)) * ym * d + texY * d);
 		else
-			*(texPtr + ((*texC)++)) = (*(textures + i + 1)) * d + texY * d;
+			*(texPtr + *texCtr) = (*(textures + i + 1)) * d + texY * d;
+		(*texCtr)++;
 	}
 }
 
@@ -352,5 +360,5 @@ unsigned char SectionBuilder::getBlock(Block* me, int x, int y, int z) {
 	Block* other = BlockRegistry::getBlock(id);
 	if ((!me->rendererType == Fluid && other->rendererType == Fluid) || me->isTransparent() || other->isTransparent())
 		return 0;
-	else return id;
+	return id;
 }
