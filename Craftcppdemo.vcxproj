@@ -203,6 +203,7 @@
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureIds.h" />
+    <ClInclude Include="Textures.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Vbo.h" />
     <ClInclude Include="VboBuilder.h" />

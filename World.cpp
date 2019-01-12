@@ -21,6 +21,20 @@ World::~World()
 {
 }
 
+unsigned char World::getMeta(int x, int y, int z)
+{
+	if (y < 0 || y > 255) return 0;
+	int chunkX = x >> 4;
+	int chunkZ = z >> 4;
+	for (unsigned int i = 0; i < chunkLen; i++) {
+		Chunk* chk = *(chunkArray + i);
+		if (chk != nullptr && chk->x == chunkX && chk->z == chunkZ) {
+			return chk->getMeta(x & 15, y, z & 15);
+		}
+	}
+	return 0;
+}
+
 unsigned char World::getBlock(int x, int y, int z)
 {
 	if (y < 0 || y > 255) return 0;
@@ -119,8 +133,9 @@ vector<AABB> World::getCubes(int xx, int xy, int xz, int r) {
 					continue;
 				Block* block = BlockRegistry::getBlock(bid);
 				float blockHeight = block->blockHeight;
+				float yo = block->getYOffset(getMeta(xx + x, xy + y, xz + z));
 				if (bid != 8 && bid != 9 && bid != 31 && bid != 175 && bid != 10 && bid != 11 && block->rendererType != Plant) {
-					cubes.push_back(AABB(glm::vec3(xx + x, xy + y, xz + z), glm::vec3(xx + x, xy + y, xz + z)).expand(1.0, blockHeight, 1.0));
+					cubes.push_back(AABB(glm::vec3(xx + x, xy + y + yo, xz + z), glm::vec3(xx + x, xy + y + yo, xz + z)).expand(1.0, blockHeight, 1.0));
 				}
 			}
 		}

@@ -83,6 +83,18 @@ void Chunk::setBlock(int x, int y, int z, unsigned char id, bool updateSection) 
 	sec->setBlock(x, y - (sectionIdx << 4), z, id, updateSection);
 }
 
+unsigned char Chunk::getMeta(int x, int y, int z) {
+	if (x < 0 || y < 0 || z < 0 || x > 15 || y > 255 || z > 15) {
+		printf("Tried to retrieve meta outside the bounds %d %d %d", x, y, z);
+		return 0;
+	}
+	int sectionIdx = y >> 4;
+	Section* sec = *(sections + sectionIdx);
+	if (sec == nullptr)
+		return 0;
+	return sec->getMeta(x, y - (sectionIdx << 4), z);
+}
+
 unsigned char Chunk::getBlock(int x, int y, int z) {
 	if (x < 0 || y < 0 || z < 0 || x > 15 || y > 255 || z > 15) {
 		printf("Tried to retrieve block outside the bounds %d %d %d", x ,y ,z);
@@ -114,13 +126,17 @@ void Chunk::initialize(ChunkExtracted* data) {
 				{
 					for (int x = 0; x < 16; x++)
 					{
-						unsigned char b = (unsigned char)(((data->storage[idx + 1] & 255) << 8 | data->storage[idx] & 255) >> 4);
+						unsigned short raw = ((data->storage[idx + 1] & 255) << 8 | data->storage[idx] & 255);
+						unsigned char b = raw >> 4;
+						unsigned char meta = raw & 15;
 						if (b != 0)
 						{
 							sec->setBlock(x, y, z, b, false);
 							if (!sec->hasFluid && BlockRegistry::getBlock(b)->rendererType == Fluid) {
 								sec->hasFluid = true;
 							}
+							if (meta != 0)
+								sec->setMeta(x, y, z, meta);
 						}
 						idx += 2;
 					}

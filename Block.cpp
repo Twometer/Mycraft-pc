@@ -2,12 +2,10 @@
 
 
 
-Block::Block(char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, RendererType rendererType, float blockHeight)
+Block::Block(char id, TEXTURES textures, RendererType rendererType, float blockHeight)
 {
 	this->id = id;
-	this->topTex = topTex;
-	this->sideTex = sideTex;
-	this->bottomTex = bottomTex;
+	this->textures = textures;
 	this->rendererType = rendererType;
 	this->blockHeight = blockHeight;
 }

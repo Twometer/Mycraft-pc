@@ -38,6 +38,8 @@ void BlockRegistry::initialize() {
 	registerBlock(23, TEXTURE(20, 7), TEXTURE(1, 2), TEXTURE(2, 10)); // Dispenser
 	registerBlock(24, TEXTURE(21, 9), TEXTURE(19, 9), TEXTURE(17, 9)); // Sandstone
 	registerBlock(25, TEXTURE(8, 6), TEXTURE(7, 6), TEXTURE(7, 6)); // Sandstone
+	registerBlock(27, TEXTURE(26, 8), Flat, 0.1)->disableOcclusion(); // Golden Rail
+	registerBlock(28, TEXTURE(24, 8), Flat, 0.1)->disableOcclusion(); // Detector rail
 	registerBlock(30, TEXTURE(27, 10), Plant); // Cobweb
 	registerBlock(31, TEXTURE(15, 10), Plant); // Tall grass
 	registerBlock(32, TEXTURE(17, 1), Plant); // Dead bush
@@ -49,7 +51,18 @@ void BlockRegistry::initialize() {
 	registerBlock(40, TEXTURE(10, 7), Plant); // Red Mushroom
 	registerBlock(41, TEXTURE(3, 5)); // Gold Block
 	registerBlock(42, TEXTURE(3, 6)); // Iron Block
-	registerBlock(44, TEXTURE(14, 10), TEXTURE(13, 10), TEXTURE(29, 7), Transparent, 0.5f); // Stone slab
+
+	registerBlock(44, TEXTURE(14, 10), TEXTURE(13, 10), TEXTURE(14, 10), Transparent, 0.5f)
+		->setSpecialBlock(Slab)
+		->enableStateMap()
+		->setState(1, TEXTURES(TEXTURE(21, 9), TEXTURE(19, 9), TEXTURE(17, 9)))
+		->setState(2, TEXTURES(29, 7))
+		->setState(3, TEXTURES(3, 1))
+		->setState(4, TEXTURES(15, 0))
+		->setState(5, TEXTURES(3, 10))
+		->setState(6, TEXTURES(14, 7))
+		->setState(7, TEXTURES(19, 8)); // Stone slab
+
 	registerBlock(45, TEXTURE(15, 0)); // Bricks
 	registerBlock(46, TEXTURE(18, 10), TEXTURE(17, 10), TEXTURE(16, 10)); // TNT
 	registerBlock(47, TEXTURE(29, 7), TEXTURE(12, 0), TEXTURE(29, 7)); // Bookshelf
@@ -80,7 +93,7 @@ void BlockRegistry::initialize() {
 	registerBlock(98, TEXTURE(3, 10)); // Stone Bricks
 	registerBlock(103, TEXTURE(3, 7), TEXTURE(0, 7), TEXTURE(3, 7)); // Melon
 	registerBlock(110, TEXTURE(12, 7), TEXTURE(11, 7), TEXTURE(30, 1)); // Mycelium
-	registerBlock(111, TEXTURE(25, 10), Plant); // Lily pad
+	registerBlock(111, TEXTURE(25, 10), Flat); // Lily pad
 	registerBlock(112, TEXTURE(14, 7)); // Nether bricks
 	registerBlock(115, TEXTURE(17, 7), Plant); // Nether wart
 	registerBlock(121, TEXTURE(10, 3)); // Endstone
@@ -113,25 +126,25 @@ Block* BlockRegistry::getBlock(unsigned char id) {
 	return block;
 }
 
-Block* BlockRegistry::registerBlock(unsigned char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, RendererType type, float blockHeight ) {
-	Block* b = new Block(id, topTex, sideTex, bottomTex, type, blockHeight);
+Block* BlockRegistry::registerBlock(unsigned char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, RendererType type, float blockHeight) {
+	Block* b = new Block(id, TEXTURES(topTex, sideTex, bottomTex), type, blockHeight);
 	registry[id] = b;
 	return b;
 }
 
-Block* BlockRegistry::registerBlock(unsigned char id, TEXTURE tex, RendererType type, float blockHeight ) {
-	Block* b = new Block(id, tex, tex, tex, type, blockHeight);
+Block* BlockRegistry::registerBlock(unsigned char id, TEXTURE tex, RendererType type, float blockHeight) {
+	Block* b = new Block(id, TEXTURES(tex), type, blockHeight);
 	registry[id] = b;
 	return b;
 }
-Block* BlockRegistry::registerBlock(unsigned char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, float blockHeight ) {
-	Block* b = new Block(id, topTex, sideTex, bottomTex, Solid, blockHeight);
+Block* BlockRegistry::registerBlock(unsigned char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, float blockHeight) {
+	Block* b = new Block(id, TEXTURES(topTex, sideTex, bottomTex), Solid, blockHeight);
 	registry[id] = b;
 	return b;
 }
 
-Block* BlockRegistry::registerBlock(unsigned char id, TEXTURE tex, float blockHeight ) {
-	Block* b = new Block(id, tex, tex, tex, Solid, blockHeight);
+Block* BlockRegistry::registerBlock(unsigned char id, TEXTURE tex, float blockHeight) {
+	Block* b = new Block(id, TEXTURES(tex), Solid, blockHeight);
 	registry[id] = b;
 	return b;
 }

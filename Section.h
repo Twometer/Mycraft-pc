@@ -9,6 +9,7 @@ class Section
 private:
 	Chunk* parent;
 	unsigned char* data;
+	unsigned char* meta;
 	int x;
 	int idx;
 	int z;
@@ -33,9 +34,11 @@ public:
 
 	bool hasFluid;
 
-	void setBlock(int x, int y, int z, unsigned char id, bool update);;
+	void setMeta(int x, int y, int z, unsigned char meta);
+	unsigned char getMeta(int x, int y, int z);
+	void setBlock(int x, int y, int z, unsigned char id, bool update);
 	unsigned char getBlock(int x, int y, int z);
-	unsigned char* getBlockPointer(int x, int y, int z);
+	unsigned char* getBlockPointer(unsigned char* blockPtr, int x, int y, int z);
 	void buildVertexData();
 	void uploadVertexData();
 	void destroy();

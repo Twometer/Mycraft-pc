@@ -13,6 +13,7 @@ Section::Section(Chunk* parent, int x, int idx, int z)
 {
 	dataLen = 16 * 16 * 16;
 	data = new unsigned char[dataLen]();
+	meta = new unsigned char[dataLen]();
 	this->parent = parent;
 	this->x = x;
 	this->idx = idx;
@@ -200,20 +201,32 @@ void Section::reload()
 	}
 }
 
+void Section::setMeta(int x, int y, int z, unsigned char meta)
+{
+	*getBlockPointer(this->meta, x, y, z) = meta;
+}
+
+unsigned char Section::getMeta(int x, int y, int z)
+{
+	unsigned char* ptr = getBlockPointer(this->meta, x, y, z);
+	if (ptr == nullptr) return 0;
+	return *ptr;
+}
+
 void Section::setBlock(int x, int y, int z, unsigned char blockId, bool update)
 {
-	*getBlockPointer(x, y, z) = blockId;
+	*getBlockPointer(data, x, y, z) = blockId;
 	if (update) reload();
 }
 
 unsigned char Section::getBlock(int x, int y, int z)
 {
-	unsigned char* ptr = getBlockPointer(x, y, z);
+	unsigned char* ptr = getBlockPointer(data, x, y, z);
 	if (ptr == nullptr) return 0;
 	return *ptr;
 }
 
-unsigned char* Section::getBlockPointer(int x, int y, int z)
+unsigned char* Section::getBlockPointer(unsigned char* data, int x, int y, int z)
 {
 	int idx = (y * 16 + z) * 16 + x;
 	if (idx < 0 || idx > dataLen)

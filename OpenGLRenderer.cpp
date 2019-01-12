@@ -444,6 +444,10 @@ void OpenGLRenderer::start()
 			Font::roboto.renderTextWithShadow("Debug Information", colorLocation, 25, 25, 1.0, vec3(1.0, 1.0, 1.0));
 			Font::roboto.renderTextWithShadow(" FPS: " + to_string(fps), colorLocation, 25, 43, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
 			Font::roboto.renderTextWithShadow(" XYZ: " + to_string(playerPos.x) + " " + to_string(playerPos.y) + " " + to_string(playerPos.z), colorLocation, 25, 61, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+			uint8_t bid = world->getBlock(result.blockX, result.blockY, result.blockZ);
+			if (bid != 0) {
+				Font::roboto.renderTextWithShadow("Looking at : " + to_string(bid) + ":" + to_string(world->getMeta(result.blockX, result.blockY, result.blockZ)), colorLocation, 25, 81, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+			}
 		}
 		guiRenderer->onRender(xpos, ypos, FONT, colorLocation);
 		glEnable(GL_DEPTH_TEST);

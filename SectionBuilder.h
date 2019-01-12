@@ -21,26 +21,8 @@ private:
 public:
 	Mesh* regularMesh;
 	Mesh* transparentMesh;
-	/*GLfloat * vertices;
-	int verticesAlloc;
-	std::vector<GLfloat>* verticesVector ;
 
-	GLfloat * colors;
-	int colorsAlloc;
-
-	GLfloat * textureCoords;
-	int textureCoordsAlloc;
-
-	GLfloat * verticesX;
-	int verticesAllocX;
-
-	GLfloat * colorsX;
-	int colorsAllocX;
-
-	GLfloat * textureCoordsX;
-	int textureCoordsAllocX;*/
-
-	void drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int tX, int tY, GLfloat col, Mesh* mesh, int face, float height);
+	void drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int tX, int tY, GLfloat col, Mesh* mesh, int face, float height, float yOffset);
 	void build(int xoff, int yoff, int zoff);
 	SectionBuilder(Section* chunk);
 	~SectionBuilder();

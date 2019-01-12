@@ -9,6 +9,7 @@ public:
 	Chunk** chunkArray;
 	int chunkLen;
 	unsigned char getBlock(int x, int y, int z);
+	unsigned char getMeta(int x, int y, int z);
 	void setBlock(int x, int y, int z, unsigned char id);
 	void render(bool transparencyPass, bool ignoreFrustum);
 	void addChunk(Chunk* chk);
