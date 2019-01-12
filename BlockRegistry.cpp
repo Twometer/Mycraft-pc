@@ -157,7 +157,12 @@ void BlockRegistry::initialize() {
 	registerBlock(90, TEXTURE(31, 7)); // Nether Portal
 	registerBlock(91, TEXTURE(12, 8), TEXTURE(8, 8), TEXTURE(12, 8)); // Jack'o'lantern
 	registerBlock(97, TEXTURE(2, 10)); // Stone Monster egg
-	registerBlock(98, TEXTURE(3, 10)); // Stone Bricks
+	registerBlock(98)
+		->setTextureHandler((new StatefulTextureHandler(TEXTURES(3, 10)))
+			->setState(1, TEXTURES(6, 10))
+			->setState(2, TEXTURES(5, 10))
+			->setState(3, TEXTURES(4, 10))
+		); // Stone Bricks
 	registerBlock(103, TEXTURE(3, 7), TEXTURE(0, 7), TEXTURE(3, 7)); // Melon
 	registerBlock(106, TEXTURE(24, 10), FlatSide)
 		->disableCollision()
@@ -170,7 +175,15 @@ void BlockRegistry::initialize() {
 	registerBlock(121, TEXTURE(10, 3)); // Endstone
 	registerBlock(123, TEXTURE(2, 9)); // Redstone Lamp (off)
 	registerBlock(124, TEXTURE(3, 9)); // Redstone Lamp (on)
-	registerBlock(126, TEXTURE(29, 7), Transparent, 0.5f); // Wood slab
+	registerBlock(126, TEXTURE(29, 7), Transparent, 0.5f)
+		->setSpecialBlock(Slab)
+		->setTextureHandler((new StatefulTextureHandler(TEXTURES(29, 7)))
+			->setState(1, TEXTURES(30, 7))
+			->setState(2, TEXTURES(27, 7))
+			->setState(3, TEXTURES(28, 7))
+			->setState(4, TEXTURES(25, 7))
+			->setState(5, TEXTURES(26, 7))
+		); // Wood slab
 	registerBlock(129, TEXTURE(3, 3)); // Emerald Ore
 	registerBlock(133, TEXTURE(2, 3)); // Emerald Block
 	registerBlock(137, TEXTURE(8, 1)); // Command Block
