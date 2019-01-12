@@ -1,14 +1,14 @@
 #pragma once
-#include "Texture.h"
-#include "Textures.h"
-#include <map>
+#include "TextureHandler.h"
+#include "VertexHandler.h"
 
 enum RendererType {
 	Fluid,
 	Transparent,
 	Plant,
 	Solid,
-	Flat
+	Flat,
+	FlatSide
 };
 
 enum SpecialBlock {
@@ -19,33 +19,34 @@ enum SpecialBlock {
 class Block
 {
 public:
-	char id;
-	RendererType rendererType;
-	SpecialBlock specialBlock;
+	unsigned char id;
 
-	TEXTURES textures;
-	std::map<int, TEXTURES> stateMap;
-	bool useStateMap = false;
+	RendererType rendererType;
+	SpecialBlock specialBlock = None;
+
+	TextureHandler* textureHandler;
+	VertexHandler* vertexHandler;
 
 	float blockHeight;
 	float yOffset;
 	bool canOcclude = true;
+	bool canCollide = true;
 
+	Block(char id, RendererType rendererType, float blockHeight);
 	Block(char id, TEXTURES textures, RendererType rendererType, float blockHeight);
 	~Block();
 
-	TEXTURES getTextures(int meta) {
-		return useStateMap ? stateMap[meta] : textures;
+	TEXTURES* getTextures(int meta) {
+		return textureHandler->getTextures(meta);
 	}
 
-	Block* enableStateMap() {
-		useStateMap = true;
-		setState(0, textures);
+	Block* setTextureHandler(TextureHandler* handler) {
+		this->textureHandler = handler;
 		return this;
 	}
 
-	Block* setState(int meta, TEXTURES textures) {
-		stateMap.insert(std::pair<int, TEXTURES>(meta, textures));
+	Block* setVertexHandler(VertexHandler* handler) {
+		vertexHandler = handler;
 		return this;
 	}
 
@@ -60,7 +61,13 @@ public:
 
 	bool isTransparent() const
 	{
-		return rendererType == Plant || rendererType == Transparent || rendererType == Flat;
+		return rendererType == Plant || rendererType == Transparent || rendererType == Flat || rendererType == FlatSide;
+	}
+
+	Block* disableCollision()
+	{
+		canCollide = false;
+		return this;
 	}
 
 	Block* disableOcclusion()

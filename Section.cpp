@@ -231,5 +231,7 @@ unsigned char* Section::getBlockPointer(unsigned char* data, int x, int y, int z
 	int idx = (y * 16 + z) * 16 + x;
 	if (idx < 0 || idx > dataLen)
 		return nullptr;
+	if (data == nullptr)
+		return nullptr;
 	return data + idx;
 }

@@ -216,11 +216,41 @@ static const GLfloat tflatvertices[] = {
 	1.0f, 1.0f
 };
 
+static const GLfloat vertices_flat_side[] = {
+	0.05f, 0.0f, 0.05f, // Pos x
+	0.05f, 1.0f, 0.95f,
+	0.05f, 0.0f, 0.95f,
+	0.05f, 1.0f, 0.95f, // Pos x
+	0.05f, 0.0f, 0.05f,
+	0.05f, 1.0f, 0.05f,
+	0.05f, 0.0f, 0.05f, // Neg x
+	0.05f, 0.0f, 0.95f,
+	0.05f, 1.0f, 0.95f,
+	0.05f, 0.0f, 0.05f, // Neg x
+	0.05f, 1.0f, 0.95f,
+	0.05f, 1.0f, 0.05f
+};
+
+static const GLfloat tvertices_flat_side[] = {
+	1.0f, 1.0f,
+	0.0f, 0.0f,
+	0.0f, 1.0f,
+	0.0f, 0.0f,
+	1.0f, 1.0f,
+	1.0f, 0.0f,
+	0.0f, 1.0f,
+	1.0f, 1.0f,
+	1.0f, 0.0f,
+	0.0f, 1.0f,
+	1.0f, 0.0f,
+	0.0f, 0.0f
+};
+
 SectionBuilder::SectionBuilder(Section* chunk)
 {
 	this->chunk = chunk;
 	this->regularMesh = new Mesh(120000);
-	if(chunk->hasFluid)
+	if (chunk->hasFluid)
 		this->transparentMesh = new Mesh(30000);
 }
 
@@ -269,22 +299,29 @@ float getOcclusionFactor(int x, int y, int z, int vx, int vy, int vz, int f) {
 	return 1.0f;
 }
 
-void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int texX, int texY, GLfloat col, Mesh* target, int face, float height, float yOffset) {
+void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int texX, int texY, GLfloat col, Mesh* target, int face, float height, float yOffset, int meta, VertexHandler* vertexHandler, RendererType r) {
 
-	for (int i = 0; i < 18; i += 3) {
+	int totalV = r == FlatSide ? 36 : 18;
+	int totalT = r == FlatSide ? 24 : 12;
+	for (int i = 0; i < totalV; i += 3) {
 		GLfloat vx = *(vertices + i);
 		GLfloat vy = *(vertices + i + 1);
 		GLfloat vz = *(vertices + i + 2);
 		vy *= height;
 		GLfloat occlusionModifier = height != 1 ? 1.0f : getOcclusionFactor(x, y, z, (int)vx, (int)vy, (int)vz, face);
+		if (vertexHandler == nullptr)
+			target->addVertex(vx + x, vy + y + yOffset, vz + z);
+		else {
+			glm::vec3 v = vertexHandler->process(meta, vx, vy, vz);
+			target->addVertex(v.x + x, v.y + y + yOffset, v.z + z);
+		}
 
-		target->addVertex(vx + x, vy + y + yOffset, vz + z);
 		target->addColor(occlusionModifier * col, occlusionModifier * col, occlusionModifier * col);
 	}
 
 	GLfloat d = 0.03125;
 
-	for (int i = 0; i < 12; i += 2) {
+	for (int i = 0; i < totalT; i += 2) {
 		target->addTexture(textures[i] * d + texX * d, face != 1 ? textures[i + 1] * height * d + texY * d : textures[i + 1] * d + texY * d);
 	}
 }
@@ -308,37 +345,44 @@ void SectionBuilder::build(int xo, int yo, int zo) {
 				float yo = block->getYOffset(meta);
 				if (block->specialBlock == Slab && meta > 7)
 					meta -= 8;
-				TEXTURES textures = block->getTextures(meta);
+				TEXTURES textures = *block->getTextures(meta);
 
 				const bool isTransparent = block->rendererType == Fluid;
 				Mesh* mesh = isTransparent ? transparentMesh : regularMesh;
-				
+
 				int bx = textures.side.x;
 				int by = textures.side.y;
 				float ym = block->blockHeight;
-				
-				if (block->rendererType == Plant) {
-					drawDisplacedVertices(tgrassvertices_a, grassvertices_a, absX, absY, absZ, bx, by, 1.0f, mesh, 0, ym, yo);
-					drawDisplacedVertices(tgrassvertices_b, grassvertices_b, absX, absY, absZ, bx, by, 1.0f, mesh, 0, ym, yo);
-					drawDisplacedVertices(tgrassvertices_c, grassvertices_c, absX, absY, absZ, bx, by, 1.0f, mesh, 0, ym, yo);
-					drawDisplacedVertices(tgrassvertices_d, grassvertices_d, absX, absY, absZ, bx, by, 1.0f, mesh, 0, ym, yo);
-				}
-				else if (block->rendererType == Flat) {
-					drawDisplacedVertices(tflatvertices, flatvertices, absX, absY, absZ, bx, by, 1.0f, mesh, 1, ym, yo);
-				}else {
-					if (getBlock(block, x + 1, y, z) == 0) drawDisplacedVertices(tvertices_positive_x, vertices_positive_x, absX, absY, absZ, bx, by, 0.75f, mesh, 0, ym, yo);
-					if (getBlock(block, x - 1, y, z) == 0) drawDisplacedVertices(tvertices_negative_x, vertices_negative_x, absX, absY, absZ, bx, by, 0.75f, mesh, 0, ym, yo);
+				VertexHandler* vertexHandler = block->vertexHandler;
 
-					if (getBlock(block, x, y, z + 1) == 0) drawDisplacedVertices(tvertices_positive_z, vertices_positive_z, absX, absY, absZ, bx, by, 0.65f, mesh, 2, ym, yo);
-					if (getBlock(block, x, y, z - 1) == 0) drawDisplacedVertices(tvertices_negative_z, vertices_negative_z, absX, absY, absZ, bx, by, 0.65f, mesh, 2, ym, yo);
+				RendererType rendererType = block->rendererType;
+
+				if (rendererType == Plant) {
+					drawDisplacedVertices(tgrassvertices_a, grassvertices_a, absX, absY, absZ, bx, by, 1.0f, mesh, 0, ym, yo, meta, vertexHandler, rendererType);
+					drawDisplacedVertices(tgrassvertices_b, grassvertices_b, absX, absY, absZ, bx, by, 1.0f, mesh, 0, ym, yo, meta, vertexHandler, rendererType);
+					drawDisplacedVertices(tgrassvertices_c, grassvertices_c, absX, absY, absZ, bx, by, 1.0f, mesh, 0, ym, yo, meta, vertexHandler, rendererType);
+					drawDisplacedVertices(tgrassvertices_d, grassvertices_d, absX, absY, absZ, bx, by, 1.0f, mesh, 0, ym, yo, meta, vertexHandler, rendererType);
+				}
+				else if (rendererType == Flat) {
+					drawDisplacedVertices(tflatvertices, flatvertices, absX, absY, absZ, bx, by, 1.0f, mesh, 1, ym, yo, meta, vertexHandler, rendererType);
+				}
+				else if (rendererType  == FlatSide) {
+					drawDisplacedVertices(tvertices_flat_side, vertices_flat_side, absX, absY, absZ, bx, by, 1.0f, mesh, 1, ym, yo, meta, vertexHandler, rendererType);
+				}
+				else {
+					if (getBlock(block, x + 1, y, z) == 0) drawDisplacedVertices(tvertices_positive_x, vertices_positive_x, absX, absY, absZ, bx, by, 0.75f, mesh, 0, ym, yo, meta, vertexHandler, rendererType);
+					if (getBlock(block, x - 1, y, z) == 0) drawDisplacedVertices(tvertices_negative_x, vertices_negative_x, absX, absY, absZ, bx, by, 0.75f, mesh, 0, ym, yo, meta, vertexHandler, rendererType);
+
+					if (getBlock(block, x, y, z + 1) == 0) drawDisplacedVertices(tvertices_positive_z, vertices_positive_z, absX, absY, absZ, bx, by, 0.65f, mesh, 2, ym, yo, meta, vertexHandler, rendererType);
+					if (getBlock(block, x, y, z - 1) == 0) drawDisplacedVertices(tvertices_negative_z, vertices_negative_z, absX, absY, absZ, bx, by, 0.65f, mesh, 2, ym, yo, meta, vertexHandler, rendererType);
 
 					bx = textures.top.x;
 					by = textures.top.y;
-					if (getBlock(block, x, y + 1, z) == 0) drawDisplacedVertices(tvertices_positive_y, vertices_positive_y, absX, absY, absZ, bx, by, 1.00f, mesh, 1, ym, yo);
+					if (getBlock(block, x, y + 1, z) == 0) drawDisplacedVertices(tvertices_positive_y, vertices_positive_y, absX, absY, absZ, bx, by, 1.00f, mesh, 1, ym, yo, meta, vertexHandler, rendererType);
 
 					bx = textures.bottom.x;
 					by = textures.bottom.y;
-					if (getBlock(block, x, y - 1, z) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by, 0.60f, mesh, 1, ym, yo);
+					if (getBlock(block, x, y - 1, z) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by, 0.60f, mesh, 1, ym, yo, meta, vertexHandler, rendererType);
 				}
 			}
 		}

@@ -7,6 +7,7 @@ class BlockRegistry
 {
 private:
 	static Block** registry;
+	static Block* registerBlock(unsigned char id, RendererType rendererType = Solid, float blockHeight = 1.0f);
 	static Block* registerBlock(unsigned char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, float blockHeight = 1.0f);
 	static Block* registerBlock(unsigned char id, TEXTURE allTex, float blockHeight = 1.0f);
 	static Block* registerBlock(unsigned char id, TEXTURE topTex, TEXTURE sideTex, TEXTURE bottomTex, RendererType type, float blockHeight = 1.0f);

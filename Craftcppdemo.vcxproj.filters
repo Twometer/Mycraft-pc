@@ -70,6 +70,12 @@
     <Filter Include="Header Files\Shadows">
       <UniqueIdentifier>{7c3d7c2c-e0b0-4f47-a6fb-5339f1e140a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\VertexHandlers">
+      <UniqueIdentifier>{6f5312f7-9051-4d6c-9549-3a31c476a250}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\TextureHandlers">
+      <UniqueIdentifier>{352f7b1e-b894-42c1-9a37-6b1d57c909c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -255,6 +261,36 @@
     <ClInclude Include="Textures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextureHandler.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="LaddersVertexHandler.h">
+      <Filter>Header Files\VertexHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="PoweredRailsVertexHandler.h">
+      <Filter>Header Files\VertexHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="RailsVertexHandler.h">
+      <Filter>Header Files\VertexHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexHandler.h">
+      <Filter>Header Files\VertexHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="VinesVertexHandler.h">
+      <Filter>Header Files\VertexHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="StatefulTextureHandler.h">
+      <Filter>Header Files\TextureHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="RailsTextureHandler.h">
+      <Filter>Header Files\TextureHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="PoweredRailsTextureHandler.h">
+      <Filter>Header Files\TextureHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultTextureHandler.h">
+      <Filter>Header Files\TextureHandlers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -418,6 +454,9 @@
     </ClCompile>
     <ClCompile Include="VboBuilder.cpp">
       <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureHandler.cpp">
+      <Filter>Source Files\World</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
