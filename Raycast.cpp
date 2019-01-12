@@ -31,7 +31,7 @@ RAYCAST_RESULT Raycast::cast(float yaw, float pitch) {
 
 	FACE face = NO_RESULT;
 
-	for (int i = 0; i <= range * (1 / precision) * 2; i++) {
+	for (int i = 0; i <= range * (1 / precision); i++) {
 		pos += mov;
 		int fx = (int)floor(pos.x);
 		int fy = (int)floor(pos.y);
@@ -45,6 +45,9 @@ RAYCAST_RESULT Raycast::cast(float yaw, float pitch) {
 			if (xd == 0) xd = -1;
 			if (yd == 0) yd = -1;
 			if (zd == 0) zd = -1;
+
+			if (yd > block->blockHeight)
+				continue;
 
 			if (xd == 1)
 				face = XPOS;

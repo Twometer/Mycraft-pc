@@ -2,6 +2,7 @@
 #include <vector>
 #include "Section.h"
 #include "OpenGLRenderer.h"
+#include "BlockRegistry.h"
 
 using namespace std;
 
@@ -114,9 +115,12 @@ void Chunk::initialize(ChunkExtracted* data) {
 					for (int x = 0; x < 16; x++)
 					{
 						unsigned char b = (unsigned char)(((data->storage[idx + 1] & 255) << 8 | data->storage[idx] & 255) >> 4);
-						if (b > 0)
+						if (b != 0)
 						{
 							sec->setBlock(x, y, z, b, false);
+							if (!sec->hasFluid && BlockRegistry::getBlock(b)->rendererType == Fluid) {
+								sec->hasFluid = true;
+							}
 						}
 						idx += 2;
 					}

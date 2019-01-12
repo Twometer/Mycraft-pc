@@ -1,6 +1,7 @@
 #pragma once
 #include "GLFW\glfw3.h"
 #include "Chunk.h"
+#include "Vbo.h"
 class Chunk;
 class SectionBuilder;
 class Section
@@ -15,12 +16,8 @@ private:
 	int vertexCount;
 	int vertexCountX;
 	SectionBuilder* builder;
-	GLuint vertexBuffer;
-	GLuint vertexBufferX;
-	GLuint colorBuffer;
-	GLuint colorBufferX;
-	GLuint textureBuffer;
-	GLuint textureBufferX;
+	Vbo regularVbo;
+	Vbo transparentVbo;
 	int state = 0;
 	bool continueRender;
 	bool dataCleared;
@@ -34,8 +31,9 @@ public:
 		STATE_DELETED = 5
 	};
 
-	void setBlock(int x, int y, int z, unsigned char id, bool update);
-	void generate();
+	bool hasFluid;
+
+	void setBlock(int x, int y, int z, unsigned char id, bool update);;
 	unsigned char getBlock(int x, int y, int z);
 	unsigned char* getBlockPointer(int x, int y, int z);
 	void buildVertexData();

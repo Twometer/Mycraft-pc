@@ -201,24 +201,15 @@ static const GLfloat tgrassvertices_d[] = {
 SectionBuilder::SectionBuilder(Section* chunk)
 {
 	this->chunk = chunk;
-	this->vertices = new GLfloat[120000]; // Three entries per vertex
-	this->colors = new GLfloat[120000]; // Three entries per vertex
-	this->textureCoords = new GLfloat[90000]; // Two entries per vertex
-
-	this->verticesX = new GLfloat[30000]; // 3
-	this->colorsX = new GLfloat[30000]; // 3
-	this->textureCoordsX = new GLfloat[22800]; // 2
+	this->regularMesh = new Mesh(120000);
+	if(chunk->hasFluid)
+		this->transparentMesh = new Mesh(30000);
 }
 
 SectionBuilder::~SectionBuilder()
 {
-	delete[] vertices;
-	delete[] colors;
-	delete[] textureCoords;
-
-	delete[] verticesX;
-	delete[] colorsX;
-	delete[] textureCoordsX;
+	delete regularMesh;
+	delete transparentMesh;
 }
 
 bool canOcclude(int x, int y, int z) {
@@ -259,41 +250,23 @@ float getOcclusionFactor(int x, int y, int z, int vx, int vy, int vz, int f) {
 	return 1.0f;
 }
 
-void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int texX, int texY, GLfloat col, GLfloat* vertexPtr, GLfloat* texPtr, GLfloat* colorPtr, int* vertexCtr, int* texCtr, int * colorCtr, int f, float ym) {
+void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int texX, int texY, GLfloat col, Mesh* target, int face, float height) {
 
 	for (int i = 0; i < 18; i += 3) {
 		GLfloat vx = *(vertices + i);
 		GLfloat vy = *(vertices + i + 1);
 		GLfloat vz = *(vertices + i + 2);
-		vy *= ym;
-		GLfloat colx = ym != 1 ? 1.0f : getOcclusionFactor(x, y, z, (int)vx, (int)vy, (int)vz, f);
-		if (*vertexCtr + 6 > 120000)
-			return;
-		*(vertexPtr + *vertexCtr) = vx + x;
-		(*vertexCtr)++;
-		*(vertexPtr + *vertexCtr) = vy + y;
-		(*vertexCtr)++;
-		*(vertexPtr + *vertexCtr) = vz + z;
-		(*vertexCtr)++;
+		vy *= height;
+		GLfloat occlusionModifier = height != 1 ? 1.0f : getOcclusionFactor(x, y, z, (int)vx, (int)vy, (int)vz, face);
 
-		*(colorPtr + *colorCtr) = colx * col;
-		(*colorCtr)++;
-		*(colorPtr + *colorCtr) = colx * col;
-		(*colorCtr)++;
-		*(colorPtr + *colorCtr) = colx * col;
-		(*colorCtr)++;
+		target->addVertex(vx + x, vy + y, vz + z);
+		target->addColor(occlusionModifier * col, occlusionModifier * col, occlusionModifier * col);
 	}
 
 	GLfloat d = 0.03125;
 
 	for (int i = 0; i < 12; i += 2) {
-		*(texPtr + *texCtr) = (*(textures + i)) * d + texX * d;
-		(*texCtr)++;
-		if (ym != 1.0f && f != 1)
-			*(texPtr + *texCtr) = ((*(textures + i + 1)) * ym * d + texY * d);
-		else
-			*(texPtr + *texCtr) = (*(textures + i + 1)) * d + texY * d;
-		(*texCtr)++;
+		target->addTexture(textures[i] * d + texX * d, face != 1 ? textures[i + 1] * height * d + texY * d : textures[i + 1] * d + texY * d);
 	}
 }
 
@@ -314,37 +287,31 @@ void SectionBuilder::build(int xo, int yo, int zo) {
 				Block* block = BlockRegistry::getBlock(blockId);
 
 				const bool isTransparent = block->rendererType == Fluid;
-				GLfloat* vertexPtr = isTransparent ? verticesX : vertices;
-				GLfloat* texPtr = isTransparent ? textureCoordsX : textureCoords;
-				GLfloat* colorPtr = isTransparent ? colorsX : colors;
-
-				int* vertexCtr = isTransparent ? &verticesAllocX : &verticesAlloc;
-				int* colorCtr = isTransparent ? &colorsAllocX : &colorsAlloc;
-				int* texCtr = isTransparent ? &textureCoordsAllocX : &textureCoordsAlloc;
-
+				Mesh* mesh = isTransparent ? transparentMesh : regularMesh;
+				
 				int bx = block->sideTex.x;
 				int by = block->sideTex.y;
 				float ym = block->blockHeight;
 				if (block->rendererType == Plant) {
-					drawDisplacedVertices(tgrassvertices_a, grassvertices_a, absX, absY, absZ, bx, by, 1.0f, vertexPtr, texPtr, colorPtr, vertexCtr, texCtr, colorCtr, 0, ym);
-					drawDisplacedVertices(tgrassvertices_b, grassvertices_b, absX, absY, absZ, bx, by, 1.0f, vertexPtr, texPtr, colorPtr, vertexCtr, texCtr, colorCtr, 0, ym);
-					drawDisplacedVertices(tgrassvertices_c, grassvertices_c, absX, absY, absZ, bx, by, 1.0f, vertexPtr, texPtr, colorPtr, vertexCtr, texCtr, colorCtr, 0, ym);
-					drawDisplacedVertices(tgrassvertices_d, grassvertices_d, absX, absY, absZ, bx, by, 1.0f, vertexPtr, texPtr, colorPtr, vertexCtr, texCtr, colorCtr, 0, ym);
+					drawDisplacedVertices(tgrassvertices_a, grassvertices_a, absX, absY, absZ, bx, by, 1.0f, mesh, 0, ym);
+					drawDisplacedVertices(tgrassvertices_b, grassvertices_b, absX, absY, absZ, bx, by, 1.0f, mesh, 0, ym);
+					drawDisplacedVertices(tgrassvertices_c, grassvertices_c, absX, absY, absZ, bx, by, 1.0f, mesh, 0, ym);
+					drawDisplacedVertices(tgrassvertices_d, grassvertices_d, absX, absY, absZ, bx, by, 1.0f, mesh, 0, ym);
 				}
 				else {
-					if (getBlock(block, x + 1, y, z) == 0) drawDisplacedVertices(tvertices_positive_x, vertices_positive_x, absX, absY, absZ, bx, by, 0.75f, vertexPtr, texPtr, colorPtr, vertexCtr, texCtr, colorCtr, 0, ym);
-					if (getBlock(block, x - 1, y, z) == 0) drawDisplacedVertices(tvertices_negative_x, vertices_negative_x, absX, absY, absZ, bx, by, 0.75f, vertexPtr, texPtr, colorPtr, vertexCtr, texCtr, colorCtr, 0, ym);
+					if (getBlock(block, x + 1, y, z) == 0) drawDisplacedVertices(tvertices_positive_x, vertices_positive_x, absX, absY, absZ, bx, by, 0.75f, mesh, 0, ym);
+					if (getBlock(block, x - 1, y, z) == 0) drawDisplacedVertices(tvertices_negative_x, vertices_negative_x, absX, absY, absZ, bx, by, 0.75f, mesh, 0, ym);
 
-					if (getBlock(block, x, y, z + 1) == 0) drawDisplacedVertices(tvertices_positive_z, vertices_positive_z, absX, absY, absZ, bx, by, 0.65f, vertexPtr, texPtr, colorPtr, vertexCtr, texCtr, colorCtr, 2, ym);
-					if (getBlock(block, x, y, z - 1) == 0) drawDisplacedVertices(tvertices_negative_z, vertices_negative_z, absX, absY, absZ, bx, by, 0.65f, vertexPtr, texPtr, colorPtr, vertexCtr, texCtr, colorCtr, 2, ym);
+					if (getBlock(block, x, y, z + 1) == 0) drawDisplacedVertices(tvertices_positive_z, vertices_positive_z, absX, absY, absZ, bx, by, 0.65f, mesh, 2, ym);
+					if (getBlock(block, x, y, z - 1) == 0) drawDisplacedVertices(tvertices_negative_z, vertices_negative_z, absX, absY, absZ, bx, by, 0.65f, mesh, 2, ym);
 
 					bx = block->topTex.x;
 					by = block->topTex.y;
-					if (getBlock(block, x, y + 1, z) == 0) drawDisplacedVertices(tvertices_positive_y, vertices_positive_y, absX, absY, absZ, bx, by, 1.00f, vertexPtr, texPtr, colorPtr, vertexCtr, texCtr, colorCtr, 1, ym);
+					if (getBlock(block, x, y + 1, z) == 0) drawDisplacedVertices(tvertices_positive_y, vertices_positive_y, absX, absY, absZ, bx, by, 1.00f, mesh, 1, ym);
 
 					bx = block->bottomTex.x;
 					by = block->bottomTex.y;
-					if (getBlock(block, x, y - 1, z) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by, 0.60f, vertexPtr, texPtr, colorPtr, vertexCtr, texCtr, colorCtr, 1, ym);
+					if (getBlock(block, x, y - 1, z) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by, 0.60f, mesh, 1, ym);
 				}
 			}
 		}
