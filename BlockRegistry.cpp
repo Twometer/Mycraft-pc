@@ -10,6 +10,7 @@
 #include "LeavesTextureHandler.h"
 #include "DoorTextureHandler.h"
 #include "DoorVertexHandler.h"
+#include "DoorBoundingBoxProvider.h"
 
 Block** BlockRegistry::registry;
 
@@ -139,7 +140,8 @@ void BlockRegistry::initialize() {
 	registerBlock(64, Transparent)
 		->disableOcclusion()
 		->setTextureHandler(new DoorTextureHandler(TEXTURES(16, 2), TEXTURES(15, 2)))
-		->setVertexHandler(new DoorVertexHandler()); // Doors
+		->setVertexHandler(new DoorVertexHandler())
+		->setBoundingBoxProvider(new DoorBoundingBoxProvider()); // Wooden door
 	registerBlock(65, TEXTURE(9, 6), FlatSide)
 		->disableCollision()
 		->disableOcclusion()
@@ -149,6 +151,11 @@ void BlockRegistry::initialize() {
 		->disableCollision()
 		->setTextureHandler(new RailsTextureHandler(TEXTURES(27, 8), TEXTURES(28, 8)))
 		->setVertexHandler(new RailsVertexHandler());
+	registerBlock(71, Transparent)
+		->disableOcclusion()
+		->setTextureHandler(new DoorTextureHandler(TEXTURES(10, 2), TEXTURES(9, 2)))
+		->setVertexHandler(new DoorVertexHandler())
+		->setBoundingBoxProvider(new DoorBoundingBoxProvider()); // Iron door
 	registerBlock(73, TEXTURE(4, 9)); // Redstone Ore
 	registerBlock(74, TEXTURE(4, 9)); // Glowing Redstone Ore
 	registerBlock(75, TEXTURE(5, 9), Plant)->disableCollision(); // Redstone torch off

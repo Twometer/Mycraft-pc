@@ -7,7 +7,9 @@ class VertexHandler {
 
 public:
 	virtual glm::vec3 process(int meta, GLfloat x, GLfloat, GLfloat z, glm::vec3 worldPos, FACE face) = 0;
-
+	virtual glm::vec2 processTex(GLfloat u, GLfloat v, FACE face) {
+		return glm::vec2(u, v);
+	}
 protected:
 
 	const glm::vec3 moveIn(GLfloat x, GLfloat y, GLfloat z, FACE face, GLfloat factor) {

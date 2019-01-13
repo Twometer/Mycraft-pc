@@ -166,6 +166,7 @@
     <ClInclude Include="BBRenderer.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="BlockRegistry.h" />
+    <ClInclude Include="BoundingBoxProvider.h" />
     <ClInclude Include="C00PacketHandshake.h" />
     <ClInclude Include="C00PacketKeepAlive.h" />
     <ClInclude Include="C00PacketLogin.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="ConnectionManager.h" />
     <ClInclude Include="CrosshairRenderer.h" />
     <ClInclude Include="DefaultTextureHandler.h" />
+    <ClInclude Include="DoorBoundingBoxProvider.h" />
     <ClInclude Include="DoorState.h" />
     <ClInclude Include="DoorTextureHandler.h" />
     <ClInclude Include="DoorVertexHandler.h" />

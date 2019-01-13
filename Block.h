@@ -1,6 +1,7 @@
 #pragma once
 #include "TextureHandler.h"
 #include "VertexHandler.h"
+#include "BoundingBoxProvider.h"
 
 enum RendererType {
 	Fluid,
@@ -26,6 +27,7 @@ public:
 
 	TextureHandler* textureHandler;
 	VertexHandler* vertexHandler;
+	BoundingBoxProvider* bbProvider;
 
 	float blockHeight;
 	float yOffset;
@@ -47,6 +49,11 @@ public:
 
 	Block* setVertexHandler(VertexHandler* handler) {
 		vertexHandler = handler;
+		return this;
+	}
+
+	Block* setBoundingBoxProvider(BoundingBoxProvider* provider) {
+		this->bbProvider = provider;
 		return this;
 	}
 

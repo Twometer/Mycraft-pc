@@ -322,7 +322,12 @@ void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloa
 	GLfloat d = 0.03125;
 
 	for (int i = 0; i < totalT; i += 2) {
-		target->addTexture(textures[i] * d + texX * d, side != 1 ? textures[i + 1] * height * d + texY * d : textures[i + 1] * d + texY * d);
+		if (vertexHandler == nullptr)
+			target->addTexture(textures[i] * d + texX * d, side != 1 ? textures[i + 1] * height * d + texY * d : textures[i + 1] * d + texY * d);
+		else {
+			glm::vec2 tex = vertexHandler->processTex(textures[i], textures[i + 1], face);
+			target->addTexture(tex.x * d + texX * d, side != 1 ? tex.y * height * d + texY * d : tex.y * d + texY * d);
+		}
 	}
 }
 

@@ -146,9 +146,15 @@ vector<AABB> World::getCubes(int xx, int xy, int xz, int r) {
 					continue;
 				Block* block = BlockRegistry::getBlock(bid);
 				float blockHeight = block->blockHeight;
-				float yo = block->getYOffset(getMeta(xx + x, xy + y, xz + z));
+				int meta = getMeta(xx + x, xy + y, xz + z);
+				float yo = block->getYOffset(meta);
 				if (block->canCollide) {
-					cubes.push_back(AABB(glm::vec3(xx + x, xy + y + yo, xz + z), glm::vec3(xx + x, xy + y + yo, xz + z)).expand(1.0, blockHeight, 1.0));
+					if (block->bbProvider != nullptr) {
+						cubes.push_back(block->bbProvider->getBoundingBox(xx + x, xy + y, xz + z, meta));
+					}
+					else {
+						cubes.push_back(AABB(glm::vec3(xx + x, xy + y + yo, xz + z), glm::vec3(xx + x, xy + y + yo, xz + z)).expand(1.0, blockHeight, 1.0));
+					}
 				}
 			}
 		}

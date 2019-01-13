@@ -79,6 +79,9 @@
     <Filter Include="Header Files\Blockstate">
       <UniqueIdentifier>{a3a63398-6a0d-4c41-937b-e9a98403df37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\BoundingBoxes">
+      <UniqueIdentifier>{05814aa9-57f7-434c-b8a6-67057c82f615}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -308,6 +311,12 @@
     </ClInclude>
     <ClInclude Include="DoorVertexHandler.h">
       <Filter>Header Files\VertexHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBoxProvider.h">
+      <Filter>Header Files\BoundingBoxes</Filter>
+    </ClInclude>
+    <ClInclude Include="DoorBoundingBoxProvider.h">
+      <Filter>Header Files\BoundingBoxes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
