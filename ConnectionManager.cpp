@@ -19,8 +19,8 @@ ConnectionManager::~ConnectionManager()
 
 void ConnectionManager::network_thread()
 {
-	MinecraftSocket socket;
-	socket.connectToServer(name, ip, port);
+	MinecraftSocket* socket = new MinecraftSocket();
+	socket->connectToServer(name, ip, port);
 }
 
 void ConnectionManager::connect(const char* name, const char * ip, unsigned short port)

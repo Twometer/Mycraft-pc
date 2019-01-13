@@ -103,13 +103,13 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 					if (packetId == 2) {
 						int* len = 0;
 						string* str = new string(buf->readString(len));
-						//cout << "[Chat Message] " << *str << endl;
 						OpenGLRenderer::chatMessages->push_back(ChatParser::parseJson(str));
 					}
 					if (packetId == 0x40) {
 						int* len = 0;
 						char* str = buf->readString(len);
 						cout << "[Kicked from Server] " << str << endl;
+						OpenGLRenderer::shouldClose = true;
 						delete[] str;
 					}
 					if (packetId == 0x06) {
@@ -138,7 +138,6 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 						if (groundUpContinuous && bitmask == 0)
 						{
 							OpenGLRenderer::world->destroyChunk(chunkX, chunkZ);
-							cout << "Server: Delete chunk " << chunkX << "/" << chunkZ << endl;
 						}
 					}
 					if (packetId == 0x22) {
@@ -153,7 +152,6 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 							int data = buf->readVarInt();
 							int id = data >> 4;
 							int meta = data & 15;
-							printf("Setmultiblock %d %d %d -> %d:%d\n", chunkX + x, y, chunkZ + z, id, meta);
 							OpenGLRenderer::world->setBlockAndMeta(chunkX + x, y, chunkZ + z, id, meta);
 						}
 					}
@@ -164,7 +162,6 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 						int id = data >> 4;
 						int meta = data & 15;
 						POSITION position = POSITION(pos);
-						printf("Setblock %d %d %d -> %d:%d\n", position.x, position.y, position.z, id, meta);
 						OpenGLRenderer::world->setBlockAndMeta(position.x, position.y, position.z, id, meta);
 					}
 					if (packetId == 0x26) {
