@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "VertexHandler.h"
 #include "Block.h"
+#include "RaycastResult.h"
 class Block;
 
 class SectionBuilder
@@ -24,7 +25,7 @@ public:
 	Mesh* regularMesh;
 	Mesh* transparentMesh;
 
-	void drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int tX, int tY, GLfloat col, Mesh* mesh, int face, float height, float yOffset, int meta, VertexHandler* vertexHandler, RendererType r);
+	void drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int tX, int tY, GLfloat col, Mesh* mesh, FACE face, int side, float height, float yOffset, int meta, VertexHandler* vertexHandler, RendererType r);
 	void build(int xoff, int yoff, int zoff);
 	SectionBuilder(Section* chunk);
 	~SectionBuilder();

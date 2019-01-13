@@ -76,6 +76,9 @@
     <Filter Include="Header Files\TextureHandlers">
       <UniqueIdentifier>{352f7b1e-b894-42c1-9a37-6b1d57c909c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Blockstate">
+      <UniqueIdentifier>{a3a63398-6a0d-4c41-937b-e9a98403df37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -290,6 +293,21 @@
     </ClInclude>
     <ClInclude Include="DefaultTextureHandler.h">
       <Filter>Header Files\TextureHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusVertexHandler.h">
+      <Filter>Header Files\VertexHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="LeavesTextureHandler.h">
+      <Filter>Header Files\TextureHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="DoorState.h">
+      <Filter>Header Files\Blockstate</Filter>
+    </ClInclude>
+    <ClInclude Include="DoorTextureHandler.h">
+      <Filter>Header Files\TextureHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="DoorVertexHandler.h">
+      <Filter>Header Files\VertexHandlers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

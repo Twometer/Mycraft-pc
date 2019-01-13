@@ -4,7 +4,7 @@
 class VinesVertexHandler
 	: public VertexHandler
 {
-	glm::vec3 process(int meta, GLfloat x, GLfloat y, GLfloat z)
+	glm::vec3 process(int meta, GLfloat x, GLfloat y, GLfloat z, glm::vec3 worldPos, FACE face)
 	{
 		if (meta == 1) {
 			return rotate90(x, y, z, 0.05f, 0.95f);

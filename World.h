@@ -11,6 +11,7 @@ public:
 	unsigned char getBlock(int x, int y, int z);
 	unsigned char getMeta(int x, int y, int z);
 	void setBlock(int x, int y, int z, unsigned char id);
+	void setBlockAndMeta(int x, int y, int z, unsigned char id, unsigned char meta);
 	void render(bool transparencyPass, bool ignoreFrustum);
 	void addChunk(Chunk* chk);
 	void destroyChunk(int x, int z);

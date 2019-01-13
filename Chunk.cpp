@@ -83,6 +83,21 @@ void Chunk::setBlock(int x, int y, int z, unsigned char id, bool updateSection) 
 	sec->setBlock(x, y - (sectionIdx << 4), z, id, updateSection);
 }
 
+void Chunk::setBlockAndMeta(int x, int y, int z, unsigned char id, unsigned char meta, bool updateSection) {
+	if (x < 0 || y < 0 || z < 0 || x > 15 || y > 255 || z > 15)
+		return;
+	int sectionIdx = y >> 4;
+	Section* sec = *(sections + sectionIdx);
+	if (sec == nullptr) {
+		sec = new Section(this, this->x, sectionIdx, this->z);
+		*(sections + sectionIdx) = sec;
+	}
+	int ty = y - (sectionIdx << 4);
+	sec->setBlock(x, ty, z, id, false);
+	sec->setMeta(x, ty, z, meta);
+	sec->reload();
+}
+
 unsigned char Chunk::getMeta(int x, int y, int z) {
 	if (x < 0 || y < 0 || z < 0 || x > 15 || y > 255 || z > 15) {
 		printf("Tried to retrieve meta outside the bounds %d %d %d", x, y, z);
@@ -97,7 +112,7 @@ unsigned char Chunk::getMeta(int x, int y, int z) {
 
 unsigned char Chunk::getBlock(int x, int y, int z) {
 	if (x < 0 || y < 0 || z < 0 || x > 15 || y > 255 || z > 15) {
-		printf("Tried to retrieve block outside the bounds %d %d %d", x ,y ,z);
+		printf("Tried to retrieve block outside the bounds %d %d %d", x, y, z);
 		return 0;
 	}
 	int sectionIdx = y >> 4;
@@ -145,6 +160,21 @@ void Chunk::initialize(ChunkExtracted* data) {
 
 		}
 	}
+
+	/*for (int i = 0; i < 16; i++)
+	{
+		for (int j = 0; j < 16; j++)
+		{
+			for (int k = 255; k >= 0; k--)
+			{
+				if (getBlock(i, k, j))
+				{
+					skylight[i * 16 + k] = k;
+					break;
+				}
+			}
+		}
+	}*/
 }
 
 void Chunk::reload()

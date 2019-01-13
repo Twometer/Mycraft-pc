@@ -7,7 +7,7 @@ class SectionBuilder;
 class Section
 {
 private:
-	Chunk* parent;
+	
 	unsigned char* data;
 	unsigned char* meta;
 	int x;
@@ -23,6 +23,7 @@ private:
 	bool continueRender;
 	bool dataCleared;
 public:
+	Chunk* parent;
 	enum State {
 		STATE_SHOULD_BUILD = 0,
 		STATE_AWAITING_BUILD = 1,

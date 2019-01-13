@@ -3,7 +3,7 @@
 class PoweredRailsVertexHandler
 	: public VertexHandler
 {
-	glm::vec3 process(int meta, GLfloat x, GLfloat y, GLfloat z) {
+	glm::vec3 process(int meta, GLfloat x, GLfloat y, GLfloat z, glm::vec3 worldPos, FACE face) {
 
 		if ((meta == 13 || meta == 5) && z == 1.0f)
 			return glm::vec3(x, 1, z);

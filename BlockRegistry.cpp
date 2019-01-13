@@ -6,6 +6,10 @@
 #include "RailsVertexHandler.h"
 #include "VinesVertexHandler.h"
 #include "LaddersVertexHandler.h"
+#include "CactusVertexHandler.h"
+#include "LeavesTextureHandler.h"
+#include "DoorTextureHandler.h"
+#include "DoorVertexHandler.h"
 
 Block** BlockRegistry::registry;
 
@@ -67,11 +71,7 @@ void BlockRegistry::initialize() {
 	registerBlock(16, TEXTURE(1, 1)); // Coal Ore
 	registerBlock(17, TEXTURE(29, 6), TEXTURE(28, 6), TEXTURE(29, 6)); // Log
 	registerBlock(18, Transparent)
-		->setTextureHandler((new StatefulTextureHandler(TEXTURE(13, 6)))
-			->setState(1, TEXTURES(18, 6))
-			->setState(2, TEXTURES(15, 6))
-			->setState(3, TEXTURES(16, 6))
-		); // Leaves
+		->setTextureHandler(new LeavesTextureHandler()); // Leaves
 	registerBlock(19)
 		->setTextureHandler((new StatefulTextureHandler(TEXTURE(0, 10)))
 			->setState(1, TEXTURES(1, 10))
@@ -136,6 +136,10 @@ void BlockRegistry::initialize() {
 	registerBlock(60, TEXTURE(11, 3), TEXTURE(30, 1), TEXTURE(30, 1), Transparent, 0.95); // Farmland
 	registerBlock(61, TEXTURE(31, 3), TEXTURE(28, 3), TEXTURE(31, 3)); // Furnace
 	registerBlock(62, TEXTURE(31, 3), TEXTURE(29, 3), TEXTURE(31, 3)); // Burning furnace
+	registerBlock(64, Transparent)
+		->disableOcclusion()
+		->setTextureHandler(new DoorTextureHandler(TEXTURES(16, 2), TEXTURES(15, 2)))
+		->setVertexHandler(new DoorVertexHandler()); // Doors
 	registerBlock(65, TEXTURE(9, 6), FlatSide)
 		->disableCollision()
 		->disableOcclusion()
@@ -152,6 +156,8 @@ void BlockRegistry::initialize() {
 	registerBlock(78, TEXTURE(30, 9), Transparent, 0.1f)->disableOcclusion(); // Snow
 	registerBlock(79, TEXTURE(0, 6), Fluid); // Ice
 	registerBlock(80, TEXTURE(30, 9)); // Snow
+	registerBlock(81, TEXTURE(18, 0), TEXTURE(17, 0), TEXTURE(16, 0), Transparent)
+		->setVertexHandler(new CactusVertexHandler()); // Cactus
 	registerBlock(87, TEXTURE(13, 7)); // Netherrack
 	registerBlock(89, TEXTURE(2, 5)); // Glowstone
 	registerBlock(90, TEXTURE(31, 7)); // Nether Portal

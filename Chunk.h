@@ -13,9 +13,11 @@ public:
 	int z;
 	int worldX;
 	int worldZ;
+
 	unsigned char getBlock(int x, int y, int z);
 	unsigned char getMeta(int x, int y, int z);
 	void setBlock(int x, int y, int z, unsigned char id, bool updateSection);
+	void setBlockAndMeta(int x, int y, int z, unsigned char id, unsigned char meta, bool updateSection);
 	void buildVertexData();
 	void uploadVertexData();
 	void render(bool transparencyPass, bool ignoreFrustum);

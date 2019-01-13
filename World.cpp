@@ -62,6 +62,19 @@ void World::setBlock(int x, int y, int z, unsigned char id)
 	}
 }
 
+void World::setBlockAndMeta(int x, int y, int z, unsigned char id, unsigned char meta)
+{
+	if (y < 0 || y > 255) return;
+	int chunkX = x >> 4;
+	int chunkZ = z >> 4;
+	for (unsigned int i = 0; i < chunkLen; i++) {
+		Chunk* chk = *(chunkArray + i);
+		if (chk != nullptr && chk->x == chunkX && chk->z == chunkZ) {
+			chk->setBlockAndMeta(x & 15, y, z & 15, id, meta, true);
+		}
+	}
+}
+
 void World::render(bool transparencyPass, bool ignoreFrustum) {
 	glm::vec3 pos = OpenGLRenderer::controls->getPosition();
 	int pcx = (int)pos.x >> 4;

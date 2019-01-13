@@ -134,19 +134,38 @@ void MinecraftSocket::connectToServer(const char* username, const char* hostname
 						int chunkZ = buf->readInt();
 						bool groundUpContinuous = buf->readByte() == 0x01;
 						short bitmask = buf->readShort();
-						//int size = buf->readVarInt();
-						if(groundUpContinuous && bitmask == 0)
+						int size = buf->readVarInt();
+						if (groundUpContinuous && bitmask == 0)
 						{
 							OpenGLRenderer::world->destroyChunk(chunkX, chunkZ);
 							cout << "Server: Delete chunk " << chunkX << "/" << chunkZ << endl;
 						}
 					}
+					if (packetId == 0x22) {
+						int chunkX = buf->readInt() * 16;
+						int chunkZ = buf->readInt() * 16;
+						int records = buf->readVarInt();
+						for (int i = 0; i < records; i++) {
+							uint8_t horizontalPosition = buf->readByte();
+							uint8_t x = (horizontalPosition & 0xF0) >> 4;
+							uint8_t z = (horizontalPosition & 0x0F);
+							uint8_t y = buf->readByte();
+							int data = buf->readVarInt();
+							int id = data >> 4;
+							int meta = data & 15;
+							printf("Setmultiblock %d %d %d -> %d:%d\n", chunkX + x, y, chunkZ + z, id, meta);
+							OpenGLRenderer::world->setBlockAndMeta(chunkX + x, y, chunkZ + z, id, meta);
+						}
+					}
 					if (packetId == 0x23)
 					{
 						uint64_t pos = buf->readUlong();
-						int id = buf->readVarInt() >> 4;
+						int data = buf->readVarInt();
+						int id = data >> 4;
+						int meta = data & 15;
 						POSITION position = POSITION(pos);
-						OpenGLRenderer::world->setBlock(position.x, position.y, position.z, id);
+						printf("Setblock %d %d %d -> %d:%d\n", position.x, position.y, position.z, id, meta);
+						OpenGLRenderer::world->setBlockAndMeta(position.x, position.y, position.z, id, meta);
 					}
 					if (packetId == 0x26) {
 						bool skylight = buf->readByte() == 0x01;

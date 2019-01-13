@@ -33,6 +33,8 @@
 #include "GuiRespawn.h"
 #include "ShadowMapRenderer.h"
 #include "BlockRegistry.h"
+#include <bitset>
+#include <sstream>
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -111,6 +113,15 @@ void OpenGLRenderer::onKilled()
 {
 	guiRenderer->displayGui(new GuiRespawn());
 }
+
+string to_binary(uint8_t v) {
+	std::bitset<8> x(v);
+	std::stringstream ss;
+	ss << x;
+	return ss.str();
+}
+
+
 void OpenGLRenderer::start()
 {
 	width = 854;
@@ -446,7 +457,8 @@ void OpenGLRenderer::start()
 			Font::roboto.renderTextWithShadow(" XYZ: " + to_string(playerPos.x) + " " + to_string(playerPos.y) + " " + to_string(playerPos.z), colorLocation, 25, 61, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
 			uint8_t bid = world->getBlock(result.blockX, result.blockY, result.blockZ);
 			if (bid != 0) {
-				Font::roboto.renderTextWithShadow("Looking at : " + to_string(bid) + ":" + to_string(world->getMeta(result.blockX, result.blockY, result.blockZ)), colorLocation, 25, 81, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+				uint8_t meta = world->getMeta(result.blockX, result.blockY, result.blockZ);
+				Font::roboto.renderTextWithShadow("Looking at : " + to_string(bid) + ":" + to_string(meta) + "     bin=" + to_binary(meta), colorLocation, 25, 81, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
 			}
 		}
 		guiRenderer->onRender(xpos, ypos, FONT, colorLocation);
@@ -478,6 +490,7 @@ void OpenGLRenderer::start()
 	glfwTerminate();
 	return;
 }
+
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {

@@ -173,6 +173,7 @@
     <ClInclude Include="C06PlayerPosLook.h" />
     <ClInclude Include="C07PlayerDigging.h" />
     <ClInclude Include="C16Respawn.h" />
+    <ClInclude Include="CactusVertexHandler.h" />
     <ClInclude Include="ChatMessage.h" />
     <ClInclude Include="ChatParser.h" />
     <ClInclude Include="Chunk.h" />
@@ -180,6 +181,9 @@
     <ClInclude Include="ConnectionManager.h" />
     <ClInclude Include="CrosshairRenderer.h" />
     <ClInclude Include="DefaultTextureHandler.h" />
+    <ClInclude Include="DoorState.h" />
+    <ClInclude Include="DoorTextureHandler.h" />
+    <ClInclude Include="DoorVertexHandler.h" />
     <ClInclude Include="Fbo.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Frustum.h" />
@@ -192,6 +196,7 @@
     <ClInclude Include="GuiSettings.h" />
     <ClInclude Include="ImageRenderer.h" />
     <ClInclude Include="LaddersVertexHandler.h" />
+    <ClInclude Include="LeavesTextureHandler.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Position.h" />
