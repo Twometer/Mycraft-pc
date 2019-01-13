@@ -366,36 +366,38 @@ void SectionBuilder::build(int xo, int yo, int zo) {
 				else if (rendererType == Flat) {
 					drawDisplacedVertices(tflatvertices, flatvertices, absX, absY, absZ, bx, by, 1.0f, mesh, 1, ym, yo, meta, vertexHandler, rendererType);
 				}
-				else if (rendererType  == FlatSide) {
+				else if (rendererType == FlatSide) {
 					drawDisplacedVertices(tvertices_flat_side, vertices_flat_side, absX, absY, absZ, bx, by, 1.0f, mesh, 1, ym, yo, meta, vertexHandler, rendererType);
 				}
 				else {
-					if (getBlock(block, x + 1, y, z) == 0) drawDisplacedVertices(tvertices_positive_x, vertices_positive_x, absX, absY, absZ, bx, by, 0.75f, mesh, 0, ym, yo, meta, vertexHandler, rendererType);
-					if (getBlock(block, x - 1, y, z) == 0) drawDisplacedVertices(tvertices_negative_x, vertices_negative_x, absX, absY, absZ, bx, by, 0.75f, mesh, 0, ym, yo, meta, vertexHandler, rendererType);
+					if (getBlock(block, x + 1, y, z, 0) == 0) drawDisplacedVertices(tvertices_positive_x, vertices_positive_x, absX, absY, absZ, bx, by, 0.75f, mesh, 0, ym, yo, meta, vertexHandler, rendererType);
+					if (getBlock(block, x - 1, y, z, 1) == 0) drawDisplacedVertices(tvertices_negative_x, vertices_negative_x, absX, absY, absZ, bx, by, 0.75f, mesh, 0, ym, yo, meta, vertexHandler, rendererType);
 
-					if (getBlock(block, x, y, z + 1) == 0) drawDisplacedVertices(tvertices_positive_z, vertices_positive_z, absX, absY, absZ, bx, by, 0.65f, mesh, 2, ym, yo, meta, vertexHandler, rendererType);
-					if (getBlock(block, x, y, z - 1) == 0) drawDisplacedVertices(tvertices_negative_z, vertices_negative_z, absX, absY, absZ, bx, by, 0.65f, mesh, 2, ym, yo, meta, vertexHandler, rendererType);
+					if (getBlock(block, x, y, z + 1, 2) == 0) drawDisplacedVertices(tvertices_positive_z, vertices_positive_z, absX, absY, absZ, bx, by, 0.65f, mesh, 2, ym, yo, meta, vertexHandler, rendererType);
+					if (getBlock(block, x, y, z - 1, 3) == 0) drawDisplacedVertices(tvertices_negative_z, vertices_negative_z, absX, absY, absZ, bx, by, 0.65f, mesh, 2, ym, yo, meta, vertexHandler, rendererType);
 
 					bx = textures.top.x;
 					by = textures.top.y;
-					if (getBlock(block, x, y + 1, z) == 0) drawDisplacedVertices(tvertices_positive_y, vertices_positive_y, absX, absY, absZ, bx, by, 1.00f, mesh, 1, ym, yo, meta, vertexHandler, rendererType);
+					if (getBlock(block, x, y + 1, z, 4) == 0) drawDisplacedVertices(tvertices_positive_y, vertices_positive_y, absX, absY, absZ, bx, by, 1.00f, mesh, 1, ym, yo, meta, vertexHandler, rendererType);
 
 					bx = textures.bottom.x;
 					by = textures.bottom.y;
-					if (getBlock(block, x, y - 1, z) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by, 0.60f, mesh, 1, ym, yo, meta, vertexHandler, rendererType);
+					if (getBlock(block, x, y - 1, z, 5) == 0) drawDisplacedVertices(tvertices_negative_y, vertices_negative_y, absX, absY, absZ, bx, by, 0.60f, mesh, 1, ym, yo, meta, vertexHandler, rendererType);
 				}
 			}
 		}
 	}
 }
 
-unsigned char SectionBuilder::getBlock(Block* me, int x, int y, int z) {
+unsigned char SectionBuilder::getBlock(Block* me, int x, int y, int z, int f) {
 	unsigned char id = 0;
 	if (x < 0 || y < 0 || z < 0 || x > 15 || y > 15 || z > 15) id = OpenGLRenderer::world->getBlock(xo + x, yo + y, zo + z);
 	else id = chunk->getBlock(x, y, z);
 	if (id == 0)
 		return 0;
 	Block* other = BlockRegistry::getBlock(id);
+	if (f == 4 && me->rendererType == Fluid && other->rendererType != Fluid)
+		return 0;
 	if ((!me->rendererType == Fluid && other->rendererType == Fluid) || me->isTransparent() || other->isTransparent())
 		return 0;
 	return id;

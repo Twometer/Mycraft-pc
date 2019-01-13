@@ -19,7 +19,7 @@ private:
 	int y;
 	int z;
 	int xo, yo, zo;
-	unsigned char getBlock(Block* block, int x, int y, int z);
+	unsigned char getBlock(Block* block, int x, int y, int z, int f);
 public:
 	Mesh* regularMesh;
 	Mesh* transparentMesh;
