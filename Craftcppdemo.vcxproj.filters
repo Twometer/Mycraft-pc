@@ -321,6 +321,9 @@
     <ClInclude Include="C08PlayerBlockPlacement.h">
       <Filter>Header Files\Packets</Filter>
     </ClInclude>
+    <ClInclude Include="CactusBoundingBoxProvider.h">
+      <Filter>Header Files\BoundingBoxes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

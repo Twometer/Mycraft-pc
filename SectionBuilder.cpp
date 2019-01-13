@@ -300,7 +300,8 @@ float getOcclusionFactor(int x, int y, int z, int vx, int vy, int vz, int f) {
 }
 
 void SectionBuilder::drawDisplacedVertices(const GLfloat* textures, const GLfloat* vertices, int x, int y, int z, int texX, int texY, GLfloat col, Mesh* target, FACE face, int side, float height, float yOffset, int meta, VertexHandler* vertexHandler, RendererType r) {
-
+	if (target == nullptr)
+		return;
 	int totalV = r == FlatSide ? 36 : 18;
 	int totalT = r == FlatSide ? 24 : 12;
 	for (int i = 0; i < totalV; i += 3) {

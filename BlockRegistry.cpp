@@ -11,6 +11,7 @@
 #include "DoorTextureHandler.h"
 #include "DoorVertexHandler.h"
 #include "DoorBoundingBoxProvider.h"
+#include "CactusBoundingBoxProvider.h"
 
 Block** BlockRegistry::registry;
 
@@ -164,7 +165,8 @@ void BlockRegistry::initialize() {
 	registerBlock(79, TEXTURE(0, 6), Fluid); // Ice
 	registerBlock(80, TEXTURE(30, 9)); // Snow
 	registerBlock(81, TEXTURE(18, 0), TEXTURE(17, 0), TEXTURE(16, 0), Transparent)
-		->setVertexHandler(new CactusVertexHandler()); // Cactus
+		->setVertexHandler(new CactusVertexHandler())
+		->setBoundingBoxProvider(new CactusBoundingBoxProvider()); // Cactus
 	registerBlock(87, TEXTURE(13, 7)); // Netherrack
 	registerBlock(89, TEXTURE(2, 5)); // Glowstone
 	registerBlock(90, TEXTURE(31, 7)); // Nether Portal
@@ -182,7 +184,8 @@ void BlockRegistry::initialize() {
 		->disableOcclusion()
 		->setVertexHandler(new VinesVertexHandler()); // Vines
 	registerBlock(110, TEXTURE(12, 7), TEXTURE(11, 7), TEXTURE(30, 1)); // Mycelium
-	registerBlock(111, TEXTURE(25, 10), Flat); // Lily pad
+	registerBlock(111, TEXTURE(25, 10), Flat, 0)
+		->disableOcclusion(); // Lily pad
 	registerBlock(112, TEXTURE(14, 7)); // Nether bricks
 	registerBlock(115, TEXTURE(17, 7), Plant)->disableCollision(); // Nether wart
 	registerBlock(121, TEXTURE(10, 3)); // Endstone

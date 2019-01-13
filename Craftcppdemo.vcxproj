@@ -175,6 +175,7 @@
     <ClInclude Include="C07PlayerDigging.h" />
     <ClInclude Include="C08PlayerBlockPlacement.h" />
     <ClInclude Include="C16Respawn.h" />
+    <ClInclude Include="CactusBoundingBoxProvider.h" />
     <ClInclude Include="CactusVertexHandler.h" />
     <ClInclude Include="ChatMessage.h" />
     <ClInclude Include="ChatParser.h" />
