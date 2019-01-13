@@ -189,6 +189,6 @@ void McBuffer::putFloat(float flt) {
 }
 void McBuffer::putBool(bool b) {
 	char* chr = new char[1];
-	chr[0] = 1;
+	chr[0] = b ? 1 : 0;
 	putBytes(chr, 1);
 }

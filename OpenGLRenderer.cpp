@@ -35,6 +35,7 @@
 #include "BlockRegistry.h"
 #include <bitset>
 #include <sstream>
+#include "C08PlayerBlockPlacement.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment (lib, "glfw3.lib")
@@ -58,7 +59,8 @@ Fbo fbo;
 Fbo highlightFbo;
 PostProcessing postProc;
 
-bool lastPressed;
+bool lastPressed1;
+bool lastPressed2;
 
 GLFWwindow* window;
 
@@ -382,14 +384,22 @@ void OpenGLRenderer::start()
 		glEnable(GL_CULL_FACE);
 
 		if (!guiRenderer->isGuiOpen() && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
-			if (!lastPressed) {
+			if (!lastPressed1) {
 				sendPacket(new C07PlayerDigging(START_DESTROY_BLOCK, POSITION(result.blockX, result.blockY, result.blockZ), result.face));
 				sendPacket(new C07PlayerDigging(STOP_DESTROY_BLOCK, POSITION(result.blockX, result.blockY, result.blockZ), result.face));
 				world->setBlock(result.blockX, result.blockY, result.blockZ, 0);
 			}
-			lastPressed = true;
+			lastPressed1 = true;
 		}
-		else lastPressed = false;
+		else lastPressed1 = false;
+
+		if (!guiRenderer->isGuiOpen() && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
+			if (!lastPressed2) {
+				sendPacket(new C08PlayerBlockPlacement(POSITION(result.blockX, result.blockY, result.blockZ), result.face, 0, 0, 0));
+			}
+			lastPressed2 = true;
+		}
+		else lastPressed2 = false;
 
 		fbo.unbindFrameBuffer();
 

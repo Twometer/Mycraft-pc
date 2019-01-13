@@ -318,6 +318,9 @@
     <ClInclude Include="DoorBoundingBoxProvider.h">
       <Filter>Header Files\BoundingBoxes</Filter>
     </ClInclude>
+    <ClInclude Include="C08PlayerBlockPlacement.h">
+      <Filter>Header Files\Packets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -484,6 +487,9 @@
     </ClCompile>
     <ClCompile Include="TextureHandler.cpp">
       <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="C08PlayerBlockPlacement.cpp">
+      <Filter>Source Files\Packets</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
